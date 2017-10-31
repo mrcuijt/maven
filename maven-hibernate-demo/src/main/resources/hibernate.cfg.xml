@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"http://www.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+	<session-factory>
+		<property name="dialect">org.hibernate.dialect.MySQL5Dialect</property>
+		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="connection.url">jdbc:mysql://localhost:3306/file_upload</property>
+		<property name="connection.username">root</property>
+		<property name="connection.password">root</property>
+		<property name="current_session_context_class">thread</property> 
+		<!-- 是否根据需要自动建表 -->
+	<!-- <property name="hbm2ddl.auto">update</property> -->  
+        <!-- 是否显示sql语句 -->  
+        <property name="show_sql">true</property>  
+        <!-- 将SQL脚本进行格式化后再输出 -->  
+        <property name="hibernate.format_sql">true</property>
+		<!-- <mapping package="science.mrcuijt.hibernate.entity"/> -->
+		<mapping class="science.mrcuijt.hibernate.entity.FileUploadList"/>
+	</session-factory>
+
+	
+
+</hibernate-configuration>

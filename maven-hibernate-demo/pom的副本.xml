@@ -1,0 +1,75 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>science.mrcuijt.hibernate</groupId>
+	<artifactId>maven-hibernate-demo</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+
+		<!-- 引用 jar 包注释： ejb3-persistence 与 hibernate5.core 自身包含的 persistence-jpa 
+			存在引用冲突 -->
+		<!-- <dependency> <groupId>org.hibernate</groupId> <artifactId>ejb3-persistence</artifactId> 
+			<version>1.0.2.GA</version> </dependency> -->
+		<!-- 引用 jar 包注释： 需要使用更高版本的 annotation 注解 jar 包 -->
+		<!-- <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-annotations</artifactId> 
+			<version>3.5.6-Final</version> </dependency> -->
+
+		<!-- https://mvnrepository.com/artifact/org.hibernate.common/hibernate-commons-annotations -->
+		<dependency>
+			<groupId>org.hibernate.common</groupId>
+			<artifactId>hibernate-commons-annotations</artifactId>
+			<version>5.0.1.Final</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>5.1.5.Final</version>
+		</dependency>
+
+		<!-- 如果需要使用 slf4j 作为日志可以使用 -->
+		<!-- 注：hibernate5.x 版本中可能会自行依赖 jboss-logging .jar 作为日志输出 如果已有 jboss-logging.jar 
+			包的引用可以忽略对 slf4j .jar 的日志输入引用 -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.21</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.21</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.38</version>
+		</dependency>
+
+
+	</dependencies>
+</project>

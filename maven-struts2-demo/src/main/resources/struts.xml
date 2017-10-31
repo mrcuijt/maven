@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+
+	<include file="struts-default.xml" />
+
+	<!-- 设置 struts2 的编码格式为 utf-8 (默认就是 utf-8 编码) -->
+	<constant name="struts.il8n.encoding" value="UTF-8" />
+
+	<!-- 选择错误信息使用的属性配置文件，放在 src 目录下 -->
+	<constant name="struts.custom.i18n.resources" value="message" />
+
+	<!-- 设置 Struts2 自动扫描生成 Action 的包 -->
+	<constant name="struts.convention.package.locators.basePackage"
+		value="science.mrcuijt.struts2.action" />
+
+	<!-- 设置只对类名后缀为 Action 的类，自动扫描生成 Action -->
+	<constant name="struts.convention.action.suffix" value="Action" />
+
+	<!-- 设置Struts请求的后缀 -->
+	<constant name="struts.action.extension" value="action,do" />
+
+	<!-- 上传文件的大小 ,这里的配置是控制整个表单中上传的文件大小 -1 表示不限制 -->
+	<constant name="struts.multipart.maxSize" value="-1" />
+
+	<package name="base" namespace="/" extends="struts-default">
+
+
+	</package>
+
+	<package name="comm" namespace="/comm" extends="base">
+
+	</package>
+
+</struts>
