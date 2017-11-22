@@ -45,6 +45,9 @@ public class FileUploadAction implements Serializable {
 
 	private File file = null;
 
+	// 内容类型
+	private String fileContentType;
+
 	private InputStream inputStream = null;
 
 	private byte[] buffer = new byte[1024 * 2];
@@ -61,15 +64,18 @@ public class FileUploadAction implements Serializable {
 	 */
 	public String execute() {
 
-		if(fileFileName == null || fileFileName.trim().length() == 0 || file == null){
+		if (fileFileName == null || fileFileName.trim().length() == 0
+				|| file == null) {
 
 			message = "请选择文件后重新进行上传！";
-			
+
 			return "error";
 		}
-		
+
 		String savePath = ServletActionContext.getServletContext().getRealPath(
 				GlobalFiled.UPLOADER_SPACE + "/" + fileFileName);
+
+		System.out.println(fileContentType);
 
 		File file = new File(savePath);
 
@@ -199,6 +205,20 @@ public class FileUploadAction implements Serializable {
 	 */
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	/**
+	 * @return the fileContentType
+	 */
+	public String getFileContentType() {
+		return fileContentType;
+	}
+
+	/**
+	 * @param fileContentType the fileContentType to set
+	 */
+	public void setFileContentType(String fileContentType) {
+		this.fileContentType = fileContentType;
 	}
 
 }
