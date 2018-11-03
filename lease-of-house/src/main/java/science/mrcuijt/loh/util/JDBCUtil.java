@@ -12,6 +12,8 @@ import java.sql.Statement;
 
 import org.apache.log4j.Logger;
 
+import com.alibaba.druid.pool.DruidDataSource;
+
 /**
  * @author Administrator
  *
@@ -20,6 +22,8 @@ public class JDBCUtil {
 
 	private static final Logger LOG = Logger.getLogger(JDBCUtil.class);
 
+	private static final DruidDataSource DRUID_DATA_SOURCE = new DruidDataSource();
+	
 	private static final String DRVIER = "com.mysql.jdbc.Driver";
 
 	// mysql 数据库连接url jdbc\:mysql\://localhost\:3306/test1
@@ -33,7 +37,10 @@ public class JDBCUtil {
 	static {
 		LOG.info("加载 MySQL JDBC 驱动");
 		try {
-			Class.forName(DRVIER);
+			//Class.forName(DRVIER);
+			DRUID_DATA_SOURCE.setUsername(USER);
+			DRUID_DATA_SOURCE.setPassword(PASSWORD);
+			DRUID_DATA_SOURCE.setUrl(URL);
 		} catch (Exception e) {
 			LOG.info("加载 MySQL JDBC 驱动出现异常", e);
 			e.printStackTrace();
@@ -54,7 +61,7 @@ public class JDBCUtil {
 		try {
 
 			// 返回函数值
-			return DriverManager.getConnection(URL, USER, PASSWORD);
+			return DRUID_DATA_SOURCE.getConnection();
 
 		} catch (SQLException e) {
 			LOG.info("获取数据库 Connection 连接异常", e);

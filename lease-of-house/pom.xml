@@ -21,6 +21,7 @@
 		<druid.version>1.1.10</druid.version>
 		<!-- log4j日志文件管理包版本 -->
 		<log4j.version>1.2.17</log4j.version>
+		<log4j-core.version>2.9.0</log4j-core.version>
 		<!-- slf4j日志工具包版 -->
 		<org-slf4j.version>1.7.21</org-slf4j.version>
 		<slf4j-log4j12.version>1.7.21</slf4j-log4j12.version>
@@ -68,19 +69,35 @@
 			<version>${mysql-connector-java.version}</version>
 		</dependency>
 
-
+		<!-- 阿里巴巴 druid 数据库连接池 -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid</artifactId>
 			<version>${druid.version}</version>
 		</dependency>
-		
+
 		<!-- 日志工具 -->
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>${log4j.version}</version>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j-core.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${log4j-core.version}</version>
+		</dependency>
+
+
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
