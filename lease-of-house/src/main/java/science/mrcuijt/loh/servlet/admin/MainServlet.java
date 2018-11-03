@@ -1,7 +1,7 @@
 /**
  * 
  */
-package science.mrcuijt.loh.servlet.loh.lease;
+package science.mrcuijt.loh.servlet.admin;
 
 import java.io.IOException;
 
@@ -19,15 +19,8 @@ public class MainServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-		request.getRequestDispatcher("/WEB-INF/html/loh/lease/main.jsp").forward(request, response);
-	}
-
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-
 		
+		request.getRequestDispatcher("/WEB-INF/html/admin/main.jsp").forward(request, response);
 	}
 
 }

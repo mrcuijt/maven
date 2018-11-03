@@ -25,7 +25,7 @@
 	
 	<div class="container">
 		<div class="row">
-			<form name="loginForm" class="login-form" method="post" action="#">
+			<form name="loginForm" class="login-form" method="post" action="<%=request.getContextPath()%>/loh/lease/releaseHouse.do">
 				<div class="col-sm-5">
 						<table>
 							<tr>

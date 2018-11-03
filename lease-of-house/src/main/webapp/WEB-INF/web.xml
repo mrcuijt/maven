@@ -156,6 +156,28 @@
 		<servlet-name>loh.lease.showReleaseHouseServlet</servlet-name>
 		<url-pattern>/loh/lease/showReleaseHouse.do</url-pattern>
 	</servlet-mapping>
+	
+	<!-- 管理平台主页 -->
+	<servlet>
+		<servlet-name>loh.admin.mainServlet</servlet-name>
+		<servlet-class>science.mrcuijt.loh.servlet.admin.MainServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>loh.admin.mainServlet</servlet-name>
+		<url-pattern>/loh/admin/main.do</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 管理平台添加数据页 -->
+	<servlet>
+		<servlet-name>loh.admin.data.addDataServlet</servlet-name>
+		<servlet-class>science.mrcuijt.loh.servlet.admin.data.AddDataServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>loh.admin.data.addDataServlet</servlet-name>
+		<url-pattern>/loh/admin/data/addData.do</url-pattern>
+	</servlet-mapping>
 
 	<welcome-file-list>
 		<!-- <welcome-file>index.html</welcome-file> <welcome-file>index.htm</welcome-file> 
