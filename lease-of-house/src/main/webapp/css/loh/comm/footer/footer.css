@@ -1,0 +1,10 @@
+@charset "UTF-8";
+
+.page-footer.container{
+	
+}
+
+.page-footer.container>.row>div{
+	margin:0 auto;
+	text-align: center;
+}

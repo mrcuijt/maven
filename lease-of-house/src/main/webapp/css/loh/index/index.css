@@ -1,0 +1,15 @@
+@charset "UTF-8";
+
+.carousel {
+	height: 200px;
+}
+
+.carousel-inner>.item>a>img, .carousel-inner>.item>img, .img-responsive,
+	.thumbnail a>img, .thumbnail>img {
+	height: 200px;
+}
+
+.loh-house-info{
+	border: 2px;
+	height: 300px;
+}

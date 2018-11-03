@@ -1,0 +1,234 @@
+package science.mrcuijt.loh.entity;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+public class LohHouseInfo {
+	/**
+	 *
+	 */
+	private Integer lohHouseInfoId;
+
+	/**
+	 *
+	 */
+	private Date gmtCreate;
+
+	/**
+	 *
+	 */
+	private Date gmtModified;
+
+	/**
+	 *
+	 */
+	private String houseTitle;
+
+	/**
+	 *
+	 */
+	private Integer userInfoId;
+
+	/**
+	 *
+	 */
+	private Integer lohFileInfoId;
+
+	/**
+	 *
+	 */
+	private Integer lohHouseTypeId;
+
+	/**
+	 *
+	 */
+	private Integer regionInfoId;
+
+	/**
+	 *
+	 */
+	private BigDecimal price;
+
+	/**
+	 *
+	 */
+	private Date pushDate;
+
+	/**
+	 *
+	 */
+	private String contacts;
+
+	/**
+	 *
+	 */
+	private String qrcodeLink;
+
+	/**
+	 *
+	 */
+	public Integer getLohHouseInfoId() {
+		return lohHouseInfoId;
+	}
+
+	/**
+	 *
+	 */
+	public void setLohHouseInfoId(Integer lohHouseInfoId) {
+		this.lohHouseInfoId = lohHouseInfoId;
+	}
+
+	/**
+	 *
+	 */
+	public Date getGmtCreate() {
+		return gmtCreate;
+	}
+
+	/**
+	 *
+	 */
+	public void setGmtCreate(Date gmtCreate) {
+		this.gmtCreate = gmtCreate;
+	}
+
+	/**
+	 *
+	 */
+	public Date getGmtModified() {
+		return gmtModified;
+	}
+
+	/**
+	 *
+	 */
+	public void setGmtModified(Date gmtModified) {
+		this.gmtModified = gmtModified;
+	}
+
+	/**
+	 *
+	 */
+	public String getHouseTitle() {
+		return houseTitle;
+	}
+
+	/**
+	 *
+	 */
+	public void setHouseTitle(String houseTitle) {
+		this.houseTitle = houseTitle;
+	}
+
+	/**
+	 *
+	 */
+	public Integer getUserInfoId() {
+		return userInfoId;
+	}
+
+	/**
+	 *
+	 */
+	public void setUserInfoId(Integer userInfoId) {
+		this.userInfoId = userInfoId;
+	}
+
+	/**
+	 *
+	 */
+	public Integer getLohFileInfoId() {
+		return lohFileInfoId;
+	}
+
+	/**
+	 *
+	 */
+	public void setLohFileInfoId(Integer lohFileInfoId) {
+		this.lohFileInfoId = lohFileInfoId;
+	}
+
+	/**
+	 *
+	 */
+	public Integer getLohHouseTypeId() {
+		return lohHouseTypeId;
+	}
+
+	/**
+	 *
+	 */
+	public void setLohHouseTypeId(Integer lohHouseTypeId) {
+		this.lohHouseTypeId = lohHouseTypeId;
+	}
+
+	/**
+	 *
+	 */
+	public Integer getRegionInfoId() {
+		return regionInfoId;
+	}
+
+	/**
+	 *
+	 */
+	public void setRegionInfoId(Integer regionInfoId) {
+		this.regionInfoId = regionInfoId;
+	}
+
+	/**
+	 *
+	 */
+	public BigDecimal getPrice() {
+		return price;
+	}
+
+	/**
+	 *
+	 */
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
+
+	/**
+	 *
+	 */
+	public Date getPushDate() {
+		return pushDate;
+	}
+
+	/**
+	 *
+	 */
+	public void setPushDate(Date pushDate) {
+		this.pushDate = pushDate;
+	}
+
+	/**
+	 *
+	 */
+	public String getContacts() {
+		return contacts;
+	}
+
+	/**
+	 *
+	 */
+	public void setContacts(String contacts) {
+		this.contacts = contacts;
+	}
+
+	/**
+	 *
+	 */
+	public String getQrcodeLink() {
+		return qrcodeLink;
+	}
+
+	/**
+	 * 
+	 */
+	public void setQrcodeLink(String qrcodeLink) {
+		this.qrcodeLink = qrcodeLink;
+	}
+}
