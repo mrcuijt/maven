@@ -4,12 +4,14 @@
 package science.mrcuijt.loh.dao;
 
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Test;
 
 import com.alibaba.fastjson.JSON;
 
 import science.mrcuijt.loh.dao.impl.LohAdminDaoImpl;
+import science.mrcuijt.loh.entity.LohHouseInfo;
 import science.mrcuijt.loh.entity.LohHouseType;
 
 /**
@@ -47,5 +49,23 @@ public class LohAdminDaoTest {
 
 		System.out.println(JSON.toJSONString(lohHouseType));
 	}
+	
+	@Test
+	public void testindLohHouseTypeList() {
+
+		List<LohHouseType> lohHouseType = lohAdminDao.findLohHouseTypeList();
+
+		System.out.println(JSON.toJSONString(lohHouseType));
+	}
+	
+	@Test
+	public void testFindLohHouseTypeByPrimaryKey() {
+		
+		LohHouseType lohHouseType = lohAdminDao.findLohHouseTypeByPrimaryKey(0);
+
+		System.out.println(JSON.toJSONString(lohHouseType));
+	}
+	
+	
 
 }

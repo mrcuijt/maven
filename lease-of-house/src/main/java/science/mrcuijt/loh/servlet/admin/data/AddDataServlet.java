@@ -4,7 +4,9 @@
 package science.mrcuijt.loh.servlet.admin.data;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -27,6 +29,10 @@ public class AddDataServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		// 查询房屋类型
+		List<LohHouseType> lohHouseTypeList = lohAdminService.findLohHouseTypeList();
+		
+		request.setAttribute("lohHouseTypeList", lohHouseTypeList);
 		request.getRequestDispatcher("/WEB-INF/html/admin/data/add_data.jsp").forward(request, response);
 	}
 

@@ -101,6 +101,7 @@ public class LoginServlet extends HttpServlet {
 		// 登录成功
 		// 保存用户登录标识
 		request.getSession().setAttribute("login_info_id", loginInfo.getLoginInfoId());
+		request.getSession().setAttribute("user_info_id", loginInfo.getUserInfoId());
 		
 		// 更新用户登录状态（1、记录用户登录时间 2、记录用户登录IP）
 		loginInfo.setLastLoginTime(loginInfo.getCurrentLoginTime());

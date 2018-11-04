@@ -14,6 +14,10 @@ import org.apache.log4j.Logger;
 
 import com.alibaba.druid.pool.DruidDataSource;
 
+import science.mrcuijt.loh.entity.LoginInfo;
+import science.mrcuijt.loh.entity.LohHouseInfo;
+import science.mrcuijt.loh.entity.LohHouseType;
+
 /**
  * @author Administrator
  *
@@ -163,5 +167,77 @@ public class JDBCUtil {
 		}finally {
 			JDBCUtil.closeAll(null, stmt, conn);
 		}
+	}
+
+	/**
+	 * 转换 ResultSet 为 LohHouseType 的方法
+	 * 
+	 * @param rs
+	 * @return
+	 * @throws SQLException
+	 */
+	public static LohHouseType convertResultSetToLohHouseType(ResultSet rs) throws SQLException {
+
+		LohHouseType lohHouseType = new LohHouseType();
+
+		lohHouseType.setLohHouseTypeId(rs.getInt("loh_house_type_id"));
+		lohHouseType.setGmtCreate(rs.getDate("gmt_create"));
+		lohHouseType.setGmtModified(rs.getDate("gmt_modified"));
+		lohHouseType.setHouseType(rs.getString("house_type"));
+		
+		// 返回函数值
+		return lohHouseType;
+	}
+
+	/**
+	 * 转换 ResultSet 为 LohHouseInfo 的方法
+	 * @param rs
+	 * @return
+	 * @throws SQLException 
+	 */
+	public static LohHouseInfo convertResultSetToLohHouseInfo(ResultSet rs) throws SQLException {
+		
+		LohHouseInfo lohHouseInfo = new LohHouseInfo();
+		
+		lohHouseInfo.setLohHouseInfoId(rs.getInt("loh_house_info_id"));
+		lohHouseInfo.setGmtCreate(rs.getDate("gmt_create"));
+		lohHouseInfo.setGmtModified(rs.getDate("gmt_modified"));
+		lohHouseInfo.setHouseTitle(rs.getString("house_title"));
+		lohHouseInfo.setUserInfoId(rs.getInt("user_info_id"));
+		lohHouseInfo.setLohHouseTypeId(rs.getInt("loh_house_type_id"));
+		lohHouseInfo.setRegionInfoId(rs.getInt("region_info_id"));
+		lohHouseInfo.setHouseAddress(rs.getString("house_address"));
+		lohHouseInfo.setPrice(rs.getBigDecimal("price"));
+		lohHouseInfo.setPushDate(rs.getDate("push_date"));
+		lohHouseInfo.setContacts(rs.getString("contacts"));
+		lohHouseInfo.setCellPhone(rs.getString("cell_phone"));
+		lohHouseInfo.setQrcodeLink(rs.getString("qrcode_link"));
+		
+		return lohHouseInfo;
+	}
+
+	
+	/**
+	 * 转换 ResultSet 为 LoginInfo 的方法
+	 * 
+	 * @param rs
+	 * @return
+	 * @throws SQLException
+	 */
+	public static LoginInfo convertResultSetToLoginInfo(ResultSet rs) throws SQLException {
+
+		LoginInfo loginInfo = new LoginInfo();
+
+		loginInfo.setLoginInfoId(rs.getInt("login_info_id"));
+		loginInfo.setGmtCreate(rs.getTimestamp("gmt_create"));
+		loginInfo.setGmtModified(rs.getTimestamp("gmt_modified"));
+		loginInfo.setLoginAccount(rs.getString("login_account"));
+		loginInfo.setLoginPassword(rs.getString("login_password"));
+		loginInfo.setUserInfoId(rs.getInt("user_info_id"));
+		loginInfo.setCurrentLoginTime(rs.getTimestamp("current_login_time"));
+		loginInfo.setLastLoginTime(rs.getTimestamp("last_login_time"));
+		loginInfo.setLoginIp(rs.getString("login_ip"));
+
+		return loginInfo;
 	}
 }

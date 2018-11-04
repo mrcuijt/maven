@@ -43,6 +43,7 @@
 			<div class="col-sm-12">
 				<table class="loh-house-info" border="2">
 					<tr>
+						<th width="100px;">序号</th>
 						<th width="100px;">房屋类型</th>
 						<th width="100px;">房屋价格</th>
 						<th width="100px;">发布日期</th>
@@ -52,17 +53,15 @@
 						<th width="150px;">查看</th>
 						<th width="150px;">收藏</th>
 					</tr>
-					<%
-						request.setAttribute("items", new String[] { "1", "2" });
-					%>
-					<c:forEach items="${items }" var="option" varStatus="vs">
+					<c:forEach items="${pagination }" var="houseInfo" varStatus="vs">
 						<tr>
-							<td>${option }</td>
-							<td>${option }</td>
-							<td>${option }</td>
-							<td>${option }</td>
-							<td>${option }</td>
-							<td>${option }</td>
+							<td>${vs.count }</td>
+							<td>${houseInfo.lohHouseTypeId }</td>
+							<td>${houseInfo.price }</td>
+							<td>${houseInfo.pushDate }</td>
+							<td>${houseInfo.contacts }</td>
+							<td>${houseInfo.cellPhone }</td>
+							<td>${houseInfo.cellPhone }</td>
 							<td>查看</td>
 							<td>收藏</td>
 						</tr>

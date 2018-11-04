@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,6 +17,13 @@
 <script src="<%=request.getContextPath()%>/js/require/picturefill/3.0.2/picturefill.min.js" async></script>
 <!-- 引入 Bootstrap 样式 -->
 <link rel="stylesheet" href="<%=request.getContextPath()%>/js/require/bootstrap/3.3.7/css/bootstrap.min.css" />
+<script type="text/javascript">
+	<%
+		String path = request.getContextPath();
+		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+	%>
+	var basePath = <%=basePath%>
+</script>
 </head>
 <body>
 
@@ -32,7 +41,20 @@
 					<button class="btn btn-default" type="submit">添加</button>
 				</form>
 			</div>
-		</div>
+			<div class="col-sm-12">
+				<label>房屋类型</label>
+				<select>
+					<c:forEach items="${lohHouseTypeList }" var="lohHouseType" varStatus="vs">
+						<option value="${lohHouseType.lohHouseTypeId }">${lohHouseType.houseType }</option>
+					</c:forEach>
+				</select>
+			</div>
+			<div class="col-sm-12">
+				<c:forEach items="${lohHouseTypeList }" var="lohHouseType" varStatus="vs">
+					${lohHouseType.houseType }<input name="lohHouseTypeId" type="checkbox" value="${lohHouseType.lohHouseTypeId }"/><button type="button" class="btn btn-default">删除</button><br/>
+				</c:forEach>
+			</div>
+		</div> 
 	</div>
 	
 	<!-- 引入公共的页脚 -->
@@ -42,5 +64,14 @@
 	<script src="<%=request.getContextPath()%>/js/require/jquery/jquery-1.12.4.min.js"></script>
 	<!-- 引入 Bootstrap -->
 	<script src="<%=request.getContextPath()%>/js/require/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	<script type="text/javascript">
+	
+	    // post 请求获取 参数有 url , data , success{} ,
+	    $.post("<%=basePath%>verifyEmail.sv", "email=" + email,function(resultString){
+	          
+	    });
+	
+	</script>
 </body>
 </html>

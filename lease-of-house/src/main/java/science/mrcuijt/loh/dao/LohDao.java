@@ -3,7 +3,10 @@
  */
 package science.mrcuijt.loh.dao;
 
+import java.util.Map;
+
 import science.mrcuijt.loh.entity.LoginInfo;
+import science.mrcuijt.loh.entity.LohHouseInfo;
 import science.mrcuijt.loh.entity.UserInfo;
 
 /**
@@ -53,5 +56,24 @@ public interface LohDao {
 	 * @return
 	 */
 	public abstract boolean updateLoginInfo(LoginInfo loginInfo);
+
+	/**
+	 * 添加 LohHouseInfo 的方法
+	 * 
+	 * @param lohHouseInfo
+	 * @return
+	 */
+	public abstract boolean addLohHouseInfo(LohHouseInfo lohHouseInfo);
+
+	/**
+	 * 用户发布法务信息（LohHouseInfo）的分页查询方法
+	 * 
+	 * @param pageIndex
+	 * @param pageSize
+	 * @param queryParam
+	 * @return
+	 */
+	public abstract Map<String, Object> queryHouseInfoPagination(Integer pageIndex, Integer pageSize,
+			Map<String, Object> queryParam);
 
 }

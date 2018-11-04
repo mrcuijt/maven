@@ -9,8 +9,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import science.mrcuijt.loh.dao.LohAdminDao;
+import science.mrcuijt.loh.entity.LoginInfo;
+import science.mrcuijt.loh.entity.LohHouseInfo;
 import science.mrcuijt.loh.entity.LohHouseType;
 import science.mrcuijt.loh.util.JDBCUtil;
 
@@ -57,12 +61,7 @@ public class LohAdminDaoImpl implements LohAdminDao {
 
 			while (rs.next()) {
 
-				lohHouseType = new LohHouseType();
-
-				lohHouseType.setLohHouseTypeId(rs.getInt("loh_house_type_id"));
-				lohHouseType.setGmtCreate(rs.getDate("gmt_create"));
-				lohHouseType.setGmtModified(rs.getDate("gmt_modified"));
-				lohHouseType.setHouseType(rs.getString("house_type"));
+				lohHouseType = JDBCUtil.convertResultSetToLohHouseType(rs);
 
 			}
 
@@ -126,34 +125,196 @@ public class LohAdminDaoImpl implements LohAdminDao {
 				}
 
 				conn.commit();
-				
+
 				addLohHouseTypeResult = true;
-				
+
 			} else {
 
 				conn.rollback();
 			}
 
 		} catch (SQLException e) {
-			
+
 			try {
-				
+
 				conn.rollback();
-				
+
 			} catch (SQLException e1) {
-				
+
 				e1.printStackTrace();
 			}
-			
+
 			e.printStackTrace();
-			
+
 		} finally {
-			
+
 			JDBCUtil.closeAll(rs, ps, conn);
 		}
-		
+
 		// 返回函数值
 		return addLohHouseTypeResult;
 	}
+
+	/**
+	 * 查询所有的房屋类型
+	 * 
+	 * @return
+	 */
+	@Override
+	public List<LohHouseType> findLohHouseTypeList() {
+
+		List<LohHouseType> lohHouseTypeList = new ArrayList<LohHouseType>();
+
+		StringBuffer strbFindLohHouseTypeList = new StringBuffer();
+
+		strbFindLohHouseTypeList.append(" SELECT ");
+		strbFindLohHouseTypeList.append(" loh_house_type_id , ");
+		strbFindLohHouseTypeList.append(" gmt_create , ");
+		strbFindLohHouseTypeList.append(" gmt_modified , ");
+		strbFindLohHouseTypeList.append(" house_type ");
+		strbFindLohHouseTypeList.append(" FROM loh_house_type ");
+
+		String sql = strbFindLohHouseTypeList.toString();
+
+		Connection conn = JDBCUtil.getConnection();
+		Statement stms = null;
+		ResultSet rs = null;
+
+		try {
+
+			stms = conn.createStatement();
+			rs = stms.executeQuery(sql);
+
+			while (rs.next()) {
+
+				LohHouseType lohHouseType = JDBCUtil.convertResultSetToLohHouseType(rs);
+
+				lohHouseTypeList.add(lohHouseType);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeAll(rs, stms, conn);
+		}
+
+		return lohHouseTypeList;
+	}
+
+	
+
+	/**
+	 * 根据房屋类型Id查询房屋类型
+	 * 
+	 * @param lohHouseTypeId
+	 * @return
+	 */
+	@Override
+	public LohHouseType findLohHouseTypeByPrimaryKey(Integer lohHouseTypeId) {
+		
+		LohHouseType lohHouseType = null;
+
+		StringBuffer strbfindLohHouseType = new StringBuffer();
+		strbfindLohHouseType.append(" SELECT ");
+		strbfindLohHouseType.append(" loh_house_type_id , ");
+		strbfindLohHouseType.append(" gmt_create , ");
+		strbfindLohHouseType.append(" gmt_modified , ");
+		strbfindLohHouseType.append(" house_type ");
+		strbfindLohHouseType.append(" FROM loh_house_type ");
+		strbfindLohHouseType.append(" WHERE loh_house_type_id = ? ");
+
+		String sql = strbfindLohHouseType.toString();
+
+		Connection conn = JDBCUtil.getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			ps = conn.prepareStatement(sql);
+
+			ps.setInt(1, lohHouseTypeId);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				lohHouseType = JDBCUtil.convertResultSetToLohHouseType(rs);
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+
+		return lohHouseType;
+	}
+
+	/**
+	 * 根据房屋类型Id查询房屋信息
+	 * 
+	 * @param lohHouseTypeId
+	 * @return
+	 */
+	@Override
+	public List<LohHouseInfo> findLohHouseInfoByLohHouseTypeId(Integer lohHouseTypeId) {
+
+		List<LohHouseInfo> lohHouseInfoList = new ArrayList<LohHouseInfo>();
+		
+		StringBuffer strbFindLohHouseInfoByLohHouseTypeId = new StringBuffer();
+		
+		strbFindLohHouseInfoByLohHouseTypeId.append(" SELECT ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" loh_house_info_id , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" gmt_create , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" gmt_modified , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" house_title , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" user_info_id , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" loh_file_info_id , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" loh_house_type_id , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" region_info_id , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" house_address , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" price , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" push_date , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" contacts , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" cell_phone , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" qrcode_link  ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" FROM loh_house_info ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" WHERE loh_house_type_id = ? ");
+
+		String sql = strbFindLohHouseInfoByLohHouseTypeId.toString();
+		
+		Connection conn = JDBCUtil.getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try {
+			
+			ps = conn.prepareStatement(sql);
+			
+			ps.setInt(1, lohHouseTypeId);
+			
+			rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				
+				LohHouseInfo lohHouseInfo = JDBCUtil.convertResultSetToLohHouseInfo(rs);
+				
+				lohHouseInfoList.add(lohHouseInfo);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+		
+		return lohHouseInfoList;
+	}
+
+	
+	
+	
 
 }

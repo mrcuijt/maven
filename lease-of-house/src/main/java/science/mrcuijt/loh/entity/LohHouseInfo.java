@@ -32,17 +32,17 @@ public class LohHouseInfo {
 	/**
 	 *
 	 */
-	private Integer lohFileInfoId;
-
-	/**
-	 *
-	 */
 	private Integer lohHouseTypeId;
 
 	/**
 	 *
 	 */
 	private Integer regionInfoId;
+
+	/**
+	 *
+	 */
+	private String houseAddress;
 
 	/**
 	 *
@@ -58,6 +58,11 @@ public class LohHouseInfo {
 	 *
 	 */
 	private String contacts;
+
+	/**
+	 *
+	 */
+	private String cellPhone;
 
 	/**
 	 *
@@ -137,20 +142,6 @@ public class LohHouseInfo {
 	/**
 	 *
 	 */
-	public Integer getLohFileInfoId() {
-		return lohFileInfoId;
-	}
-
-	/**
-	 *
-	 */
-	public void setLohFileInfoId(Integer lohFileInfoId) {
-		this.lohFileInfoId = lohFileInfoId;
-	}
-
-	/**
-	 *
-	 */
 	public Integer getLohHouseTypeId() {
 		return lohHouseTypeId;
 	}
@@ -174,6 +165,20 @@ public class LohHouseInfo {
 	 */
 	public void setRegionInfoId(Integer regionInfoId) {
 		this.regionInfoId = regionInfoId;
+	}
+
+	/**
+	 *
+	 */
+	public String getHouseAddress() {
+		return houseAddress;
+	}
+
+	/**
+	 *
+	 */
+	public void setHouseAddress(String houseAddress) {
+		this.houseAddress = houseAddress;
 	}
 
 	/**
@@ -216,6 +221,20 @@ public class LohHouseInfo {
 	 */
 	public void setContacts(String contacts) {
 		this.contacts = contacts;
+	}
+
+	/**
+	 *
+	 */
+	public String getCellPhone() {
+		return cellPhone;
+	}
+
+	/**
+	 *
+	 */
+	public void setCellPhone(String cellPhone) {
+		this.cellPhone = cellPhone;
 	}
 
 	/**
