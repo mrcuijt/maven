@@ -11,11 +11,6 @@ public class LohFileType {
 	/**
 	 *
 	 */
-	private Integer lohFileInfoId;
-
-	/**
-	 *
-	 */
 	private Date gmtCreate;
 
 	/**
@@ -40,20 +35,6 @@ public class LohFileType {
 	 */
 	public void setLohFileTypeId(Integer lohFileTypeId) {
 		this.lohFileTypeId = lohFileTypeId;
-	}
-
-	/**
-	 *
-	 */
-	public Integer getLohFileInfoId() {
-		return lohFileInfoId;
-	}
-
-	/**
-	 *
-	 */
-	public void setLohFileInfoId(Integer lohFileInfoId) {
-		this.lohFileInfoId = lohFileInfoId;
 	}
 
 	/**

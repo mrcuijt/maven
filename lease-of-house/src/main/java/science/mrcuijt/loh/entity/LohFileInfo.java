@@ -21,7 +21,7 @@ public class LohFileInfo {
 	/**
 	 *
 	 */
-	private String lohHouseInfoId;
+	private Integer lohHouseInfoId;
 
 	/**
 	 *
@@ -38,6 +38,17 @@ public class LohFileInfo {
 	 */
 	private String fileLink;
 
+	/**
+	 * LohFileInfo 无参构造
+	 * 
+	 */
+	public LohFileInfo(){
+		
+		this.gmtCreate = new Date();
+		this.gmtModified = new Date();
+		
+	}
+	
 	/**
 	 *
 	 */
@@ -83,14 +94,14 @@ public class LohFileInfo {
 	/**
 	 *
 	 */
-	public String getLohHouseInfoId() {
+	public Integer getLohHouseInfoId() {
 		return lohHouseInfoId;
 	}
 
 	/**
 	 *
 	 */
-	public void setLohHouseInfoId(String lohHouseInfoId) {
+	public void setLohHouseInfoId(Integer lohHouseInfoId) {
 		this.lohHouseInfoId = lohHouseInfoId;
 	}
 

@@ -38,10 +38,6 @@ public class RegionInfo {
 	 */
 	private Integer parentRegionId;
 
-	/**
-	 *
-	 */
-	private Integer lohHouseInfoId;
 
 	/**
 	 *
@@ -141,17 +137,4 @@ public class RegionInfo {
 		this.parentRegionId = parentRegionId;
 	}
 
-	/**
-	 * 
-	 */
-	public Integer getLohHouseInfoId() {
-		return lohHouseInfoId;
-	}
-
-	/**
-	 * 
-	 */
-	public void setLohHouseInfoId(Integer lohHouseInfoId) {
-		this.lohHouseInfoId = lohHouseInfoId;
-	}
 }
