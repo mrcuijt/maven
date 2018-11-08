@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadFactory;
 
 import org.junit.Test;
 
@@ -24,7 +25,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import science.mrcuijt.loh.dao.impl.LohAdminDaoImpl;
-import science.mrcuijt.loh.entity.LohHouseType;
 import science.mrcuijt.loh.entity.RegionInfo;
 import science.mrcuijt.loh.util.JDBCUtil;
 
@@ -32,101 +32,13 @@ import science.mrcuijt.loh.util.JDBCUtil;
  * @author Administrator
  *
  */
-public class LohAdminDaoTest {
+public class AddThreadTest {
 
-	LohAdminDao lohAdminDao = new LohAdminDaoImpl();
+	static LohAdminDao lohAdminDao = new LohAdminDaoImpl();
 
-	@Test
-	public void testAddLohHouseType() {
+	private static final DruidDataSource DB_SOURCE_1 = new DruidDataSource();
 
-		LohHouseType lohHouseType = new LohHouseType();
-		lohHouseType.setGmtCreate(new Date());
-		lohHouseType.setGmtModified(new Date());
-		lohHouseType.setHouseType("一室一厅");
-
-		boolean addResult = lohAdminDao.addLohHouseType(lohHouseType);
-
-		if (addResult) {
-			System.out.println("添加成功！");
-			System.out.println(JSON.toJSONString(lohHouseType));
-		} else {
-			System.out.println("添加失败！");
-		}
-	}
-
-	@Test
-	public void testFindLohHouseTypeByHouseType() {
-
-		String houseType = "一室一厅";
-
-		LohHouseType lohHouseType = lohAdminDao.findLohHouseTypeByHouseType(houseType);
-
-		System.out.println(JSON.toJSONString(lohHouseType));
-	}
-
-	@Test
-	public void testindLohHouseTypeList() {
-
-		List<LohHouseType> lohHouseType = lohAdminDao.findLohHouseTypeList();
-
-		System.out.println(JSON.toJSONString(lohHouseType));
-	}
-
-	@Test
-	public void testFindLohHouseTypeByPrimaryKey() {
-
-		LohHouseType lohHouseType = lohAdminDao.findLohHouseTypeByPrimaryKey(0);
-
-		System.out.println(JSON.toJSONString(lohHouseType));
-	}
-
-	public void addRegionInfoTest() {
-
-		RegionInfo regionInfo = new RegionInfo();
-
-		regionInfo.setGmtCreate(new Date());
-
-		regionInfo.setGmtModified(new Date());
-
-		regionInfo.setParentRegionId(null);
-
-		regionInfo.setRegionCode(null);
-
-		regionInfo.setRegionLevel(1);
-
-		regionInfo.setRegionName("??");
-
-		lohAdminDao.addRegionInfo(regionInfo);
-
-		System.out.println(JSON.toJSONString(regionInfo));
-	}
-
-	public void updateRegionInfoTest() {
-
-		RegionInfo regionInfo = lohAdminDao.findRegionInfoByPrimaryKey(2);
-
-		regionInfo.setRegionCode("001");
-
-		regionInfo.setRegionName("北京");
-
-		lohAdminDao.updateRegionInfoByPrimaryKey(regionInfo);
-
-		System.out.println(JSON.toJSONString(regionInfo));
-	}
-
-	public void findRegionInfoTest() {
-
-		RegionInfo regionInfo = lohAdminDao.findRegionInfoByPrimaryKey(2);
-
-		System.out.println(JSON.toJSONString(regionInfo));
-	}
-
-	// 1、查询所有级别为 1 的 region 信息
-	public List<Map<String, Object>> findAllRegionInfo() {
-
-		List<Map<String, Object>> list = new ArrayList<>();
-
-		DruidDataSource dataSource = new DruidDataSource();
+	static {
 
 		String DRVIER = "com.mysql.jdbc.Driver";
 
@@ -136,9 +48,16 @@ public class LohAdminDaoTest {
 
 		String PASSWORD = "root12";
 
-		dataSource.setUsername(USER);
-		dataSource.setPassword(PASSWORD);
-		dataSource.setUrl(URL);
+		DB_SOURCE_1.setUsername(USER);
+		DB_SOURCE_1.setPassword(PASSWORD);
+		DB_SOURCE_1.setUrl(URL);
+
+	}
+
+	// 1、查询所有级别为 1 的 region 信息
+	public List<Map<String, Object>> findAllRegionInfo() {
+
+		List<Map<String, Object>> list = new ArrayList<>();
 
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -161,7 +80,7 @@ public class LohAdminDaoTest {
 
 		try {
 
-			conn = dataSource.getConnection();
+			conn = DB_SOURCE_1.getConnection();
 
 			ps = conn.prepareStatement(sql);
 
@@ -192,6 +111,8 @@ public class LohAdminDaoTest {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
 		}
 
 		System.out.println(JSON.toJSONString(list));
@@ -199,23 +120,9 @@ public class LohAdminDaoTest {
 		return list;
 	}
 
-	public List<Map<String, Object>> findRegionBy(String key) {
+	public static List<Map<String, Object>> findRegionBy(String key) {
 
 		List<Map<String, Object>> list = new ArrayList<>();
-
-		DruidDataSource dataSource = new DruidDataSource();
-
-		String DRVIER = "com.mysql.jdbc.Driver";
-
-		String URL = "jdbc:mysql://localhost:3306/region?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull";
-
-		String USER = "root";
-
-		String PASSWORD = "root12";
-
-		dataSource.setUsername(USER);
-		dataSource.setPassword(PASSWORD);
-		dataSource.setUrl(URL);
 
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -238,7 +145,7 @@ public class LohAdminDaoTest {
 
 		try {
 
-			conn = dataSource.getConnection();
+			conn = DB_SOURCE_1.getConnection();
 
 			ps = conn.prepareStatement(sql);
 
@@ -247,15 +154,6 @@ public class LohAdminDaoTest {
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
-
-				strb.append(" gmt_create , ");
-				strb.append(" gmt_modified , ");
-				strb.append(" code , ");
-				strb.append(" alias , ");
-				strb.append(" parent_code , ");
-				strb.append(" type_code , ");
-				strb.append(" children_source_link , ");
-				strb.append(" level ");
 
 				Map<String, Object> map = new HashMap<String, Object>();
 
@@ -271,6 +169,61 @@ public class LohAdminDaoTest {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+		return list;
+	}
+
+	public List<RegionInfo> newFindRegionBy(String key) {
+
+		List<RegionInfo> list = new ArrayList<>();
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		StringBuffer strb = new StringBuffer();
+		strb.append(" SELECT ");
+		strb.append(" gmt_create , ");
+		strb.append(" gmt_modified , ");
+		strb.append(" code , ");
+		strb.append(" alias , ");
+		strb.append(" parent_code , ");
+		strb.append(" type_code , ");
+		strb.append(" children_source_link , ");
+		strb.append(" level ");
+		strb.append(" FROM region ");
+		strb.append(" WHERE parent_code = ?");
+
+		String sql = strb.toString();
+
+		try {
+
+			conn = DB_SOURCE_1.getConnection();
+
+			ps = conn.prepareStatement(sql);
+
+			ps.setString(1, key);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				RegionInfo regionInfo = new RegionInfo();
+				regionInfo.setGmtCreate(rs.getTimestamp("gmt_create"));
+				regionInfo.setGmtModified(rs.getTimestamp("gmt_modified"));
+				regionInfo.setRegionCode(rs.getString("code"));
+				regionInfo.setRegionName(rs.getString("alias"));
+				regionInfo.setRegionLevel(rs.getInt("level"));
+
+				list.add(regionInfo);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
 		}
 		return list;
 	}
@@ -301,7 +254,7 @@ public class LohAdminDaoTest {
 		}
 	}
 
-	public RegionInfo convertJSONObjectToRegionInfo(JSONObject obj) {
+	public static RegionInfo convertJSONObjectToRegionInfo(JSONObject obj) {
 
 		RegionInfo regionInfo = new RegionInfo();
 
@@ -359,12 +312,12 @@ public class LohAdminDaoTest {
 				e.printStackTrace();
 			}
 		}
-		
+
 		// 释放数据库资源
 		JDBCUtil.closeAll(null, null, conn);
 	}
 
-	public void diguifangfa(RegionInfo regionInfo, Connection conn) throws Exception {
+	public static void diguifangfa(RegionInfo regionInfo, Connection conn) throws Exception {
 
 		// 流程化处理的数据
 
@@ -450,13 +403,96 @@ public class LohAdminDaoTest {
 
 			// 释放数据库资源
 			JDBCUtil.closeAll(rs, ps, null);
-			
+
 			// 单个 Region 添加完毕，向下递归数据
 			if (reg.getRegionLevel() < 5) {
-
 				// 加载子集数据
 				diguifangfa(reg, conn);
 			}
 		}
 	}
+
+	public void testAll() {
+
+		List<RegionInfo> regionList = lohAdminDao.findRegionInfoByLevel(1);
+
+		// region_code 作为 map 的 key 存储一个 list
+		// Map<String, List<RegionInfo>> mapLevel1 = new HashMap<>();
+
+		Map<String, List<RegionInfo>> mapLevel2 = new HashMap<>();
+
+		Map<String, List<RegionInfo>> mapLevel3 = new HashMap<>();
+
+		Map<String, List<RegionInfo>> mapLevel4 = new HashMap<>();
+
+		Map<String, List<RegionInfo>> mapLevel5 = new HashMap<>();
+
+//		RegionInfo reg1 = regionList.get(0);
+//
+//		List<RegionInfo> reg2List = newFindRegionBy(reg1.getRegionCode());
+//
+//		RegionInfo reg2 = reg2List.get(0);
+//
+//		List<RegionInfo> reg3List = newFindRegionBy(reg2.getRegionCode());
+//
+//		RegionInfo reg3 = reg3List.get(0);
+//
+//		List<RegionInfo> reg4List = newFindRegionBy(reg3.getRegionCode());
+//
+//		RegionInfo reg4 = reg4List.get(0);
+//
+//		List<RegionInfo> reg5List = newFindRegionBy(reg4.getRegionCode());
+
+		
+		for (RegionInfo regionInfo : regionList) {
+			List<RegionInfo> reg2List = newFindRegionBy(regionInfo.getRegionCode());
+			mapLevel2.put(regionInfo.getRegionCode(), reg2List);
+			// 查询所有的二级数据就需要 1 分钟时间
+			// 查询三级数据四级数据就会更多的循环和查询需要的时间也就会更长
+			// 做多线程处理吧
+//			for (RegionInfo regionInfo2 : regionList) {
+//				List<RegionInfo> reg3List = newFindRegionBy(regionInfo2.getRegionCode());
+//				mapLevel3.put(regionInfo2.getRegionCode(), reg3List);
+//			}
+			// 做多线程就不一定能会到主线程了。
+			// 所有任务都在后台线程，独立执行，互不干扰？
+			// 多线程适合做异步事件通知。
+			
+			// 定义好一个线程类，给线程类固定的方法。类似于递归但是用过线程来更好的利用 CPU 资源了。
+			// 创建多个线程对象，传入不同的参数，执行同样的流程操作。
+			// 也就是说不用很麻烦，使用现有的方法，封装到 Thread 中。同步执行。
+			// 考虑内存是否够用。
+			
+		}
+		
+		System.out.println(JSON.toJSONString(mapLevel2, true));
+		System.out.println(JSON.toJSONString(mapLevel3, true));
+		
+		RegionInfo reg1 = regionList.get(0);
+
+		List<RegionInfo> reg2List = newFindRegionBy(reg1.getRegionCode());
+
+		RegionInfo reg2 = reg2List.get(0);
+
+		List<RegionInfo> reg3List = newFindRegionBy(reg2.getRegionCode());
+
+		RegionInfo reg3 = reg3List.get(0);
+
+		List<RegionInfo> reg4List = newFindRegionBy(reg3.getRegionCode());
+
+		RegionInfo reg4 = reg4List.get(0);
+
+		List<RegionInfo> reg5List = newFindRegionBy(reg4.getRegionCode());
+		
+		// 第一层级方法 region_code
+
+		// 下层的放 parent_code
+
+		List<RegionInfo> regionLists = new ArrayList<>();
+
+	}
+	// 1、 主线程中启用线程池，并等待线程执行完毕后才退出
+
+	// 2、 每个线程内开启自己的事务管理
+
 }
