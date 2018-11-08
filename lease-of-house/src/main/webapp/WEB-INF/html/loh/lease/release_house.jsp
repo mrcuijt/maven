@@ -17,6 +17,13 @@
 <script src="<%=request.getContextPath()%>/js/require/picturefill/3.0.2/picturefill.min.js" async></script>
 <!-- 引入 Bootstrap 样式 -->
 <link rel="stylesheet" href="<%=request.getContextPath()%>/js/require/bootstrap/3.3.7/css/bootstrap.min.css" />
+<script type="text/javascript">
+	<%
+		String path = request.getContextPath();
+		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+	%>
+	var basePath = "<%=basePath%>";
+</script>
 </head>
 <body>
 
@@ -25,46 +32,65 @@
 	
 	<div class="container">
 		<div class="row">
-			<form name="loginForm" class="login-form" method="post" action="<%=request.getContextPath()%>/loh/lease/releaseHouse.do">
-				<div class="col-sm-5">
-						<table>
-							<tr>
-								<td>
-									<label for="username">房屋类型：</label> 
-									<input name="username" type="text" placeholder="请输入用户名"  value="zhangsan"/>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<label for="username">所在地址：</label> 
-									<input name="username" type="text" placeholder="请输入用户名"  value="zhangsan"/>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<label for="username">联系人：</label> 
-									<input name="username" type="text" placeholder="请输入用户名"  value="zhangsan"/>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<label for="username">联系方式：</label> 
-									<input name="username" type="text" placeholder="请输入用户名"  value="zhangsan"/>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									
-								</td>
-							</tr>
-						</table>
-				</div>
+			<form name="loginForm" class="login-form" enctype="multipart/form-data"
+				method="post" action="<%=request.getContextPath()%>/loh/lease/releaseHouse.do">
 				<div class="col-sm-7">
 					<table>
 						<tr>
 							<td>
-								<label for="username">房屋预览图：</label> 
-								<input name="username" type="file" placeholder="请选择图片" />
+								<label for="houseTitle">房屋标题：</label> 
+								<input name="houseTitle" type="text" placeholder="请输入房屋标题"  value="房屋出租"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="houseType">房屋类型：</label> 
+								<select name="houseType">
+									<c:forEach items="${lohHouseTypeList }" var="lohHouseType" varStatus="">
+										<option value="${lohHouseType.lohHouseTypeId}">${lohHouseType.houseType}</option>
+									</c:forEach>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="housePrice">房屋价格：</label> 
+								<input name="housePrice" type="text" placeholder="请输入出租金额"  value="100"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="houseAddress">所在地址：</label> 
+								<select id="province" name="regionInfo">
+									<c:forEach items="${regionInfoList }" var="regionInfo" varStatus="vs">
+										<option value="${regionInfo.regionInfoId }">${regionInfo.regionName }</option>
+									</c:forEach>
+								</select>
+								<select id="city" name="regionInfo"></select>
+								<select id="county" name="regionInfo"></select>
+								<input name="houseAddress" type="text" placeholder="请输入所在地址"  value="北京海淀"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="contacts">联系人：</label> 
+								<input name="contacts" type="text" placeholder="请输入联系人"  value="zhangsan"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="cellPhone">联系方式：</label> 
+								<input name="cellPhone" type="text" placeholder="请输入联系方式"  value="18612496104"/>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="col-sm-5">
+					<table>
+						<tr>
+							<td>
+								<label for="image">房屋预览图：</label> 
+								<input name="image" type="file" placeholder="请选择图片" />
 							</td>
 						</tr>
 					</table>
@@ -72,6 +98,7 @@
 				<div class="col-sm-12">
 					<a role="button" class="btn btn-default" href="#">保存</a>
 					<button class="btn btn-default" type="submit">发布</button>
+					<p>${message }</p>
 				</div>
 			</form>
 		</div>
@@ -84,5 +111,7 @@
 	<script src="<%=request.getContextPath()%>/js/require/jquery/jquery-1.12.4.min.js"></script>
 	<!-- 引入 Bootstrap -->
 	<script src="<%=request.getContextPath()%>/js/require/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<!-- 引入当前页面的 js -->
+	<script src="<%=request.getContextPath()%>/js/loh/lease/release_house.js"></script>
 </body>
 </html>

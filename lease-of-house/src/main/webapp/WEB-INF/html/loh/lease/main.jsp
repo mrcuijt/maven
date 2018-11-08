@@ -46,6 +46,7 @@
 						<th width="100px;">序号</th>
 						<th width="100px;">房屋类型</th>
 						<th width="100px;">房屋价格</th>
+						<th width="100px;">房屋地址</th>
 						<th width="100px;">发布日期</th>
 						<th width="100px;">联系人</th>
 						<th width="100px;">联系方式</th>
@@ -58,6 +59,7 @@
 							<td>${vs.count }</td>
 							<td>${houseInfo.lohHouseTypeId }</td>
 							<td>${houseInfo.price }</td>
+							<td>${houseInfo.houseAddress }</td>
 							<td>${houseInfo.pushDate }</td>
 							<td>${houseInfo.contacts }</td>
 							<td>${houseInfo.cellPhone }</td>
@@ -66,6 +68,20 @@
 							<td>收藏</td>
 						</tr>
 					</c:forEach>
+					<tr>
+						<td colspan="8">总共有 ${totalRecord } 条记录，当前是第 ${pageIndex } 页，共有 ${totalPage } 页</td>
+						<td>
+							<a href="<%=request.getContextPath()%>/loh/lease/main.do?pageIndex=1&pageSize=${pageSize}">首页</a>
+							<c:if test="${pageIndex > 1 }">
+								<a href="<%=request.getContextPath()%>/loh/lease/main.do?pageIndex=${pageIndex - 1}&pageSize=${pageSize}">上一页</a></td>
+							</c:if>
+						<td>
+							<c:if test="${pageIndex < totalPage}">
+								<a href="<%=request.getContextPath()%>/loh/lease/main.do?pageIndex=${pageIndex + 1}&pageSize=${pageSize}">下一页</a>
+							</c:if>
+							<a href="<%=request.getContextPath()%>/loh/lease/main.do?pageIndex=${totalPage}&pageSize=${pageSize}">最后一页</a>
+						</td>
+					</tr>
 				</table>
 			</div>
 		</div>

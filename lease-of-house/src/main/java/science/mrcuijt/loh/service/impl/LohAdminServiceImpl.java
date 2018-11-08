@@ -87,5 +87,7 @@ public class LohAdminServiceImpl implements LohAdminService {
 	public List<LohHouseInfo> findLohHouseInfoByLohHouseTypeId(Integer lohHouseTypeId) {
 		return lohAdminDao.findLohHouseInfoByLohHouseTypeId(lohHouseTypeId);
 	}
+	
+	
 
 }

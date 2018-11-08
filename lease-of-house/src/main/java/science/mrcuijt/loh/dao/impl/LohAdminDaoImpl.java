@@ -9,13 +9,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.plaf.synth.Region;
 
 import science.mrcuijt.loh.dao.LohAdminDao;
 import science.mrcuijt.loh.entity.LoginInfo;
 import science.mrcuijt.loh.entity.LohHouseInfo;
 import science.mrcuijt.loh.entity.LohHouseType;
+import science.mrcuijt.loh.entity.RegionInfo;
 import science.mrcuijt.loh.util.JDBCUtil;
 
 /**
@@ -201,8 +205,6 @@ public class LohAdminDaoImpl implements LohAdminDao {
 		return lohHouseTypeList;
 	}
 
-	
-
 	/**
 	 * 根据房屋类型Id查询房屋类型
 	 * 
@@ -211,7 +213,7 @@ public class LohAdminDaoImpl implements LohAdminDao {
 	 */
 	@Override
 	public LohHouseType findLohHouseTypeByPrimaryKey(Integer lohHouseTypeId) {
-		
+
 		LohHouseType lohHouseType = null;
 
 		StringBuffer strbfindLohHouseType = new StringBuffer();
@@ -262,16 +264,15 @@ public class LohAdminDaoImpl implements LohAdminDao {
 	public List<LohHouseInfo> findLohHouseInfoByLohHouseTypeId(Integer lohHouseTypeId) {
 
 		List<LohHouseInfo> lohHouseInfoList = new ArrayList<LohHouseInfo>();
-		
+
 		StringBuffer strbFindLohHouseInfoByLohHouseTypeId = new StringBuffer();
-		
+
 		strbFindLohHouseInfoByLohHouseTypeId.append(" SELECT ");
 		strbFindLohHouseInfoByLohHouseTypeId.append(" loh_house_info_id , ");
 		strbFindLohHouseInfoByLohHouseTypeId.append(" gmt_create , ");
 		strbFindLohHouseInfoByLohHouseTypeId.append(" gmt_modified , ");
 		strbFindLohHouseInfoByLohHouseTypeId.append(" house_title , ");
 		strbFindLohHouseInfoByLohHouseTypeId.append(" user_info_id , ");
-		strbFindLohHouseInfoByLohHouseTypeId.append(" loh_file_info_id , ");
 		strbFindLohHouseInfoByLohHouseTypeId.append(" loh_house_type_id , ");
 		strbFindLohHouseInfoByLohHouseTypeId.append(" region_info_id , ");
 		strbFindLohHouseInfoByLohHouseTypeId.append(" house_address , ");
@@ -284,37 +285,310 @@ public class LohAdminDaoImpl implements LohAdminDao {
 		strbFindLohHouseInfoByLohHouseTypeId.append(" WHERE loh_house_type_id = ? ");
 
 		String sql = strbFindLohHouseInfoByLohHouseTypeId.toString();
-		
+
 		Connection conn = JDBCUtil.getConnection();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		
+
 		try {
-			
+
 			ps = conn.prepareStatement(sql);
-			
+
 			ps.setInt(1, lohHouseTypeId);
-			
+
 			rs = ps.executeQuery();
-			
-			while(rs.next()) {
-				
+
+			while (rs.next()) {
+
 				LohHouseInfo lohHouseInfo = JDBCUtil.convertResultSetToLohHouseInfo(rs);
-				
+
 				lohHouseInfoList.add(lohHouseInfo);
 			}
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			JDBCUtil.closeAll(rs, ps, conn);
 		}
-		
+
 		return lohHouseInfoList;
 	}
 
-	
-	
-	
+	/**
+	 * 添加地区信息的方法
+	 * 
+	 * @param regionInfo
+	 * @return
+	 */
+	@Override
+	public boolean addRegionInfo(RegionInfo regionInfo) {
+
+		boolean addRegionInfoResult = false;
+
+		StringBuffer strbAddRegionInfo = new StringBuffer();
+
+		strbAddRegionInfo.append(" INSERT INTO region_info ");
+		strbAddRegionInfo.append(" ( ");
+		strbAddRegionInfo.append(" gmt_create , ");
+		strbAddRegionInfo.append(" gmt_modified , ");
+		strbAddRegionInfo.append(" region_code , ");
+		strbAddRegionInfo.append(" region_name , ");
+		strbAddRegionInfo.append(" region_level , ");
+		strbAddRegionInfo.append(" parent_region_id ");
+		strbAddRegionInfo.append(" ) ");
+		strbAddRegionInfo.append(" VALUES ( ?, ?, ?, ?, ?,  ? )");
+
+		String sql = strbAddRegionInfo.toString();
+
+		Connection conn = JDBCUtil.getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			// 设置自动提交事务为 false
+			conn.setAutoCommit(false);
+
+			// 设置返回自动增长的 id
+			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+			ps.setTimestamp(1, new Timestamp(regionInfo.getGmtCreate().getTime()));
+			ps.setTimestamp(2, new Timestamp(regionInfo.getGmtModified().getTime()));
+			ps.setString(3, regionInfo.getRegionCode());
+			ps.setString(4, regionInfo.getRegionName());
+			ps.setInt(5, regionInfo.getRegionLevel());
+			if (regionInfo.getParentRegionId() == null) {
+				ps.setNull(6, Types.INTEGER);
+			} else {
+				ps.setInt(6, regionInfo.getParentRegionId());
+			}
+
+			int count = ps.executeUpdate();
+
+			if (count <= 0) {
+
+				conn.rollback();
+
+				return addRegionInfoResult;
+			}
+
+			rs = ps.getGeneratedKeys();
+
+			while (rs.next()) {
+				regionInfo.setParentRegionId(rs.getInt(1));
+			}
+
+			conn.commit();
+
+			addRegionInfoResult = true;
+
+		} catch (SQLException e) {
+
+			try {
+
+				conn.rollback();
+
+			} catch (SQLException e1) {
+
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+
+		return addRegionInfoResult;
+	}
+
+	/**
+	 * 根据地区信息表主键查询地区信息表记录
+	 * 
+	 * @param regionInfoId
+	 * @return
+	 */
+	@Override
+	public RegionInfo findRegionInfoByPrimaryKey(Integer regionInfoId) {
+
+		RegionInfo regionInfo = null;
+
+		StringBuffer strbFindRegionInfo = new StringBuffer();
+
+		strbFindRegionInfo.append(" SELECT  ");
+		strbFindRegionInfo.append(" region_info_id , ");
+		strbFindRegionInfo.append(" gmt_create , ");
+		strbFindRegionInfo.append(" gmt_modified , ");
+		strbFindRegionInfo.append(" region_code , ");
+		strbFindRegionInfo.append(" region_name , ");
+		strbFindRegionInfo.append(" region_level , ");
+		strbFindRegionInfo.append(" parent_region_id ");
+		strbFindRegionInfo.append(" FROM region_info ");
+		strbFindRegionInfo.append(" WHERE region_info_id = ? ");
+
+		String sql = strbFindRegionInfo.toString();
+
+		Connection conn = JDBCUtil.getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			ps = conn.prepareStatement(sql);
+
+			ps.setInt(1, regionInfoId);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				regionInfo = JDBCUtil.convertResultSetToRegionInfo(rs);
+
+			}
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+
+		// 返回函数值
+		return regionInfo;
+	}
+
+	/**
+	 * 根据地区信息表主键更新地区信息表记录
+	 * 
+	 * @param regionInfo
+	 * @return
+	 */
+	@Override
+	public boolean updateRegionInfoByPrimaryKey(RegionInfo regionInfo) {
+
+		boolean updateRegionInfoResult = false;
+
+		StringBuffer strbAddRegionInfo = new StringBuffer();
+
+		strbAddRegionInfo.append(" UPDATE region_info");
+		strbAddRegionInfo.append(" SET ");
+		strbAddRegionInfo.append(" gmt_create = ?, ");
+		strbAddRegionInfo.append(" gmt_modified = ? , ");
+		strbAddRegionInfo.append(" region_code = ? , ");
+		strbAddRegionInfo.append(" region_name = ? , ");
+		strbAddRegionInfo.append(" region_level = ? , ");
+		strbAddRegionInfo.append(" parent_region_id = ? ");
+		strbAddRegionInfo.append(" WHERE region_info_id = ? ");
+
+		String sql = strbAddRegionInfo.toString();
+
+		Connection conn = JDBCUtil.getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			// 设置自动提交事务为 false
+			conn.setAutoCommit(false);
+
+			ps = conn.prepareStatement(sql);
+
+			ps.setTimestamp(1, new Timestamp(regionInfo.getGmtCreate().getTime()));
+			ps.setTimestamp(2, new Timestamp(regionInfo.getGmtModified().getTime()));
+			ps.setString(3, regionInfo.getRegionCode());
+			ps.setString(4, regionInfo.getRegionName());
+			ps.setInt(5, regionInfo.getRegionLevel());
+			if (regionInfo.getParentRegionId() == null) {
+				ps.setNull(6, Types.INTEGER);
+			} else {
+				ps.setInt(6, regionInfo.getParentRegionId());
+			}
+			ps.setInt(7, regionInfo.getRegionInfoId());
+
+			int count = ps.executeUpdate();
+
+			if (count <= 0) {
+
+				conn.rollback();
+
+				return updateRegionInfoResult;
+			}
+
+			conn.commit();
+
+			updateRegionInfoResult = true;
+
+		} catch (SQLException e) {
+
+			try {
+
+				conn.rollback();
+
+			} catch (SQLException e1) {
+
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+
+		return updateRegionInfoResult;
+	}
+
+	/**
+	 * 根据区域等级查询所有区域信息
+	 * 
+	 * @param level
+	 * @return
+	 */
+	@Override
+	public List<RegionInfo> findRegionInfoByLevel(Integer level) {
+
+		List<RegionInfo> regionInfoList = new ArrayList<>();
+
+		StringBuffer strbFindRegionInfo = new StringBuffer();
+
+		strbFindRegionInfo.append(" SELECT  ");
+		strbFindRegionInfo.append(" region_info_id , ");
+		strbFindRegionInfo.append(" gmt_create , ");
+		strbFindRegionInfo.append(" gmt_modified , ");
+		strbFindRegionInfo.append(" region_code , ");
+		strbFindRegionInfo.append(" region_name , ");
+		strbFindRegionInfo.append(" region_level , ");
+		strbFindRegionInfo.append(" parent_region_id ");
+		strbFindRegionInfo.append(" FROM region_info ");
+		strbFindRegionInfo.append(" WHERE region_level = ? ");
+
+		String sql = strbFindRegionInfo.toString();
+
+		Connection conn = JDBCUtil.getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			ps = conn.prepareStatement(sql);
+
+			ps.setInt(1, level);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				regionInfoList.add(JDBCUtil.convertResultSetToRegionInfo(rs));
+
+			}
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+
+		// 返回函数值
+		return regionInfoList;
+	}
 
 }

@@ -3,10 +3,14 @@
  */
 package science.mrcuijt.loh.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import science.mrcuijt.loh.entity.LoginInfo;
+import science.mrcuijt.loh.entity.LohFileInfo;
 import science.mrcuijt.loh.entity.LohHouseInfo;
+import science.mrcuijt.loh.entity.LohHouseType;
+import science.mrcuijt.loh.entity.RegionInfo;
 import science.mrcuijt.loh.entity.UserInfo;
 
 /**
@@ -66,6 +70,14 @@ public interface LohDao {
 	public abstract boolean addLohHouseInfo(LohHouseInfo lohHouseInfo);
 
 	/**
+	 * 添加房屋信息和房屋文件信息的信息
+	 * 
+	 * @param lohHouseInfo
+	 * @param lohFileInfoList
+	 */
+	public abstract boolean addLohHouseInfo(LohHouseInfo lohHouseInfo, List<LohFileInfo> lohFileInfoList);
+	
+	/**
 	 * 用户发布法务信息（LohHouseInfo）的分页查询方法
 	 * 
 	 * @param pageIndex
@@ -75,5 +87,52 @@ public interface LohDao {
 	 */
 	public abstract Map<String, Object> queryHouseInfoPagination(Integer pageIndex, Integer pageSize,
 			Map<String, Object> queryParam);
+
+	/**
+	 * 查询所有房屋类型记录
+	 * 
+	 * @return
+	 */
+	public abstract List<LohHouseType> findAllLohHouseType();
+
+	/**
+	 * 根据地区级别查询地区信息
+	 * 
+	 * @param regionLevel
+	 * @return
+	 */
+	public abstract List<RegionInfo> findRegionInfoByLevel(Integer regionLevel);
+
+	/**
+	 * 根据父级地区Id查询对应的子集地区信息
+	 * 
+	 * @param parentRegionId
+	 * @return
+	 */
+	public abstract List<RegionInfo> findregionInfoByParentRegionId(Integer parentRegionId);
+
+	/**
+	 * 根据主键查询查询房屋类型信息
+	 * 
+	 * @param lohHouseTypeId
+	 * @return
+	 */
+	public abstract LohHouseType findLohHouseTypeByPrimaryKey(Integer lohHouseTypeId);
+
+	/**
+	 * 根据房屋信息主键查询房屋信息
+	 * 
+	 * @param lohHouseInfoId
+	 * @return
+	 */
+	public abstract LohHouseInfo findLohHouseInfoByPrimaryKey(Integer lohHouseInfoId);
+
+	/**
+	 * 根据房屋信息 Id 查询房屋文件信息
+	 * 
+	 * @param lohHouseInfoId
+	 * @return
+	 */
+	public abstract List<LohFileInfo> findLohFileInfoByLohHouseInfoId(Integer lohHouseInfoId);
 
 }

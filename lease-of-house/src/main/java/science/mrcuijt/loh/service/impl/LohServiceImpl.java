@@ -4,12 +4,16 @@
 package science.mrcuijt.loh.service.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import science.mrcuijt.loh.dao.LohDao;
 import science.mrcuijt.loh.dao.impl.LohDaoImpl;
 import science.mrcuijt.loh.entity.LoginInfo;
+import science.mrcuijt.loh.entity.LohFileInfo;
 import science.mrcuijt.loh.entity.LohHouseInfo;
+import science.mrcuijt.loh.entity.LohHouseType;
+import science.mrcuijt.loh.entity.RegionInfo;
 import science.mrcuijt.loh.entity.UserInfo;
 import science.mrcuijt.loh.service.LohService;
 
@@ -116,6 +120,34 @@ public class LohServiceImpl implements LohService {
 
 		return lohDao.addLohHouseInfo(lohHouseInfo);
 	}
+	
+	/**
+	 * 添加房屋信息的业务逻辑接口
+	 * 
+	 * @param lohHouseInfo
+	 * @param lohFileInfoList
+	 */
+	@Override
+	public boolean addLohHouseInfo(LohHouseInfo lohHouseInfo, List<LohFileInfo> lohFileInfoList) {
+		
+		if(lohFileInfoList == null || lohFileInfoList.size() == 0) {
+			return lohDao.addLohHouseInfo(lohHouseInfo);
+		}
+		
+		return lohDao.addLohHouseInfo(lohHouseInfo, lohFileInfoList);
+	}
+	
+	/**
+	 * 根据房屋信息主键查询房屋信息的业务逻辑接口
+	 * 
+	 * @param lohHouseInfoId
+	 * @return
+	 */
+	@Override
+	public LohHouseInfo findLohHouseInfoByPrimaryKey(Integer lohHouseInfoId) {
+
+		return lohDao.findLohHouseInfoByPrimaryKey(lohHouseInfoId);
+	}
 
 	/**
 	 * 查询用户信息的业务逻辑接口
@@ -148,6 +180,76 @@ public class LohServiceImpl implements LohService {
 		// 分页查询
 
 		return lohDao.queryHouseInfoPagination(pageIndex, pageSize, queryParam);
+	}
+
+	/**
+	 * 查询全部房屋类型列表的业务逻辑接口
+	 * 
+	 * @return
+	 */
+	@Override
+	public List<LohHouseType> findAllLohHouseType() {
+		return lohDao.findAllLohHouseType();
+	}
+
+	/**
+	 * 根据地区级别查询地区信息的业务逻辑接口
+	 * 
+	 * @param regionLevel
+	 * @return
+	 */
+	@Override
+	public List<RegionInfo> findRegionInfoByLevel(Integer regionLevel) {
+
+		return lohDao.findRegionInfoByLevel(regionLevel);
+	}
+
+	/**
+	 * 根据父级地区Id查询对应的子集地区信息的业务逻辑接口
+	 * 
+	 * @param parentRegionId
+	 * @return
+	 */
+	@Override
+	public List<RegionInfo> findregionInfoByParentRegionId(Integer parentRegionId) {
+
+		return lohDao.findregionInfoByParentRegionId(parentRegionId);
+	}
+
+	/**
+	 * 验证房屋类型是否存在的业务逻辑接口
+	 * 
+	 * @param lohHouseTypeId
+	 * @return
+	 */
+	@Override
+	public boolean existsLohHouseTypeByPrimaryKey(Integer lohHouseTypeId) {
+		LohHouseType lohHouseType = lohDao.findLohHouseTypeByPrimaryKey(lohHouseTypeId);
+		return lohHouseType == null ? false : true;
+	}
+	
+	/**
+	 * 根据房屋类型Id查询房屋类型的业务逻辑接口
+	 * 
+	 * @param lohHouseTypeId
+	 * @return
+	 */
+	@Override
+	public LohHouseType findLohHouseTypeByPrimaryKey(Integer lohHouseTypeId) {
+		LohHouseType lohHouseType = lohDao.findLohHouseTypeByPrimaryKey(lohHouseTypeId);
+		return lohHouseType;
+	}
+
+	/**
+	 * 根据房屋信息 Id 查询房屋文件信息的业务逻辑接口
+	 * 
+	 * @param lohHouseInfoId
+	 * @return
+	 */
+	@Override
+	public List<LohFileInfo> findLohFileInfoByLohHouseInfoId(Integer lohHouseInfoId) {
+
+		return lohDao.findLohFileInfoByLohHouseInfoId(lohHouseInfoId);
 	}
 
 }

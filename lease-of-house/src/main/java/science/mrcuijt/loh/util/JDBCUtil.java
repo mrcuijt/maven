@@ -4,7 +4,6 @@
 package science.mrcuijt.loh.util;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,8 +14,10 @@ import org.apache.log4j.Logger;
 import com.alibaba.druid.pool.DruidDataSource;
 
 import science.mrcuijt.loh.entity.LoginInfo;
+import science.mrcuijt.loh.entity.LohFileInfo;
 import science.mrcuijt.loh.entity.LohHouseInfo;
 import science.mrcuijt.loh.entity.LohHouseType;
+import science.mrcuijt.loh.entity.RegionInfo;
 
 /**
  * @author Administrator
@@ -27,7 +28,7 @@ public class JDBCUtil {
 	private static final Logger LOG = Logger.getLogger(JDBCUtil.class);
 
 	private static final DruidDataSource DRUID_DATA_SOURCE = new DruidDataSource();
-	
+
 	private static final String DRVIER = "com.mysql.jdbc.Driver";
 
 	// mysql 数据库连接url jdbc\:mysql\://localhost\:3306/test1
@@ -41,7 +42,7 @@ public class JDBCUtil {
 	static {
 		LOG.info("加载 MySQL JDBC 驱动");
 		try {
-			//Class.forName(DRVIER);
+			// Class.forName(DRVIER);
 			DRUID_DATA_SOURCE.setUsername(USER);
 			DRUID_DATA_SOURCE.setPassword(PASSWORD);
 			DRUID_DATA_SOURCE.setUrl(URL);
@@ -110,7 +111,7 @@ public class JDBCUtil {
 			}
 		}
 	}
-	
+
 	/**
 	 * 关闭数据库连接
 	 * 
@@ -151,7 +152,7 @@ public class JDBCUtil {
 		Connection conn = getConnection();
 
 		Statement stmt = null;
-		
+
 		try {
 			conn.setAutoCommit(false);
 			stmt = conn.createStatement();
@@ -164,7 +165,7 @@ public class JDBCUtil {
 				e1.printStackTrace();
 			}
 			e.printStackTrace();
-		}finally {
+		} finally {
 			JDBCUtil.closeAll(null, stmt, conn);
 		}
 	}
@@ -184,21 +185,22 @@ public class JDBCUtil {
 		lohHouseType.setGmtCreate(rs.getDate("gmt_create"));
 		lohHouseType.setGmtModified(rs.getDate("gmt_modified"));
 		lohHouseType.setHouseType(rs.getString("house_type"));
-		
+
 		// 返回函数值
 		return lohHouseType;
 	}
 
 	/**
 	 * 转换 ResultSet 为 LohHouseInfo 的方法
+	 * 
 	 * @param rs
 	 * @return
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	public static LohHouseInfo convertResultSetToLohHouseInfo(ResultSet rs) throws SQLException {
-		
+
 		LohHouseInfo lohHouseInfo = new LohHouseInfo();
-		
+
 		lohHouseInfo.setLohHouseInfoId(rs.getInt("loh_house_info_id"));
 		lohHouseInfo.setGmtCreate(rs.getDate("gmt_create"));
 		lohHouseInfo.setGmtModified(rs.getDate("gmt_modified"));
@@ -212,11 +214,10 @@ public class JDBCUtil {
 		lohHouseInfo.setContacts(rs.getString("contacts"));
 		lohHouseInfo.setCellPhone(rs.getString("cell_phone"));
 		lohHouseInfo.setQrcodeLink(rs.getString("qrcode_link"));
-		
+
 		return lohHouseInfo;
 	}
 
-	
 	/**
 	 * 转换 ResultSet 为 LoginInfo 的方法
 	 * 
@@ -239,5 +240,49 @@ public class JDBCUtil {
 		loginInfo.setLoginIp(rs.getString("login_ip"));
 
 		return loginInfo;
+	}
+
+	/**
+	 * 转换 ResultSet 为 RegionInfo 的方法
+	 * 
+	 * @param rs
+	 * @return
+	 * @throws SQLException
+	 */
+	public static RegionInfo convertResultSetToRegionInfo(ResultSet rs) throws SQLException {
+
+		RegionInfo regionInfo = new RegionInfo();
+		
+		regionInfo.setRegionInfoId(rs.getInt("region_info_id"));
+		regionInfo.setGmtCreate(rs.getTimestamp("gmt_create"));
+		regionInfo.setGmtModified(rs.getTimestamp("gmt_modified"));
+		regionInfo.setRegionCode(rs.getString("region_code"));
+		regionInfo.setRegionName(rs.getString("region_name"));
+		regionInfo.setRegionLevel(rs.getInt("region_level"));
+		regionInfo.setParentRegionId(rs.getInt("parent_region_id") == 0 ? null : rs.getInt("parent_region_id"));
+		
+		return regionInfo;
+	}
+	
+	/**
+	 * 转换 ResultSet 为 LohFileInfo 的方法
+	 * 
+	 * @param rs
+	 * @return
+	 * @throws SQLException
+	 */
+	public static LohFileInfo convertResultSetToLohFileInfo(ResultSet rs) throws SQLException {
+		
+		LohFileInfo lohFileInfo = new LohFileInfo();
+		
+		lohFileInfo.setLohFileInfoId(rs.getInt("loh_file_info_id"));
+		lohFileInfo.setGmtCreate(rs.getDate("gmt_create"));
+		lohFileInfo.setGmtModified(rs.getDate("gmt_modified"));
+		lohFileInfo.setLohHouseInfoId(rs.getInt("loh_house_info_id"));
+		lohFileInfo.setLohFileTypeId(rs.getInt("loh_file_type_id"));
+		lohFileInfo.setFileTitle(rs.getString("file_title"));
+		lohFileInfo.setFileLink(rs.getString("file_link"));
+		
+		return lohFileInfo;
 	}
 }

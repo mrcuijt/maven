@@ -6,6 +6,16 @@
 	version="3.1" metadata-complete="true">
 	<display-name>lease-of-house</display-name>
 
+	<!-- 请求处理的 Filter -->
+	<!-- <filter>
+		<filter-name>requestFilter</filter-name>
+		<filter-class>science.mrcuijt.loh.filter.RequestFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>requestFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping> -->
+
 	<!-- 配置 StatViewServlet -->
 	<!-- （1）提供监控信息展示的 html 页面 -->
 	<!-- （2）提供监控信息的JSON API -->
@@ -57,7 +67,8 @@
 		<filter-name>DruidWebStatFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-
+	
+	<!-- 检查用户登录的过滤器 -->
 	<filter>
 		<filter-name>loginFilter</filter-name>
 		<filter-class>science.mrcuijt.loh.filter.LoginFilter</filter-class>
@@ -67,6 +78,7 @@
 		<url-pattern>*.do</url-pattern>
 	</filter-mapping>
 
+	<!-- 负责创建新的用户会话标识的过滤器 -->
 	<filter>
 		<filter-name>newSessionFilter</filter-name>
 		<filter-class>science.mrcuijt.loh.filter.NewSessionFilter</filter-class>
@@ -76,6 +88,7 @@
 		<servlet-name>loginServlet</servlet-name>
 	</filter-mapping>
 
+	<!-- 登录的 Servlet -->
 	<servlet>
 		<servlet-name>loginServlet</servlet-name>
 		<servlet-class>science.mrcuijt.loh.servlet.LoginServlet</servlet-class>
@@ -86,6 +99,7 @@
 		<url-pattern>/login.do</url-pattern>
 	</servlet-mapping>
 
+	<!-- 登出的 Servlet -->
 	<servlet>
 		<servlet-name>logoutServlet</servlet-name>
 		<servlet-class>science.mrcuijt.loh.servlet.LogoutServlet</servlet-class>
@@ -96,6 +110,7 @@
 		<url-pattern>/logout.do</url-pattern>
 	</servlet-mapping>
 
+	<!-- 用户注册的 Servlet -->
 	<servlet>
 		<servlet-name>registerServlet</servlet-name>
 		<servlet-class>science.mrcuijt.loh.servlet.RegisterServlet</servlet-class>
@@ -106,6 +121,7 @@
 		<url-pattern>/register.do</url-pattern>
 	</servlet-mapping>
 
+	<!-- 显示注册结果的 Servlet -->
 	<servlet>
 		<servlet-name>registerResultServlet</servlet-name>
 		<servlet-class>science.mrcuijt.loh.servlet.RegisterResultServlet</servlet-class>
@@ -117,6 +133,7 @@
 	</servlet-mapping>
 
 
+	<!--  -->
 	<servlet>
 		<servlet-name>loh.mainServlet</servlet-name>
 		<servlet-class>science.mrcuijt.loh.servlet.loh.MainServlet</servlet-class>
@@ -127,6 +144,7 @@
 		<url-pattern>/loh/main.do</url-pattern>
 	</servlet-mapping>
 
+	<!-- 房屋租赁者主页的 Servlet -->
 	<servlet>
 		<servlet-name>loh.lease.mainServlet</servlet-name>
 		<servlet-class>science.mrcuijt.loh.servlet.loh.lease.MainServlet</servlet-class>
@@ -137,6 +155,7 @@
 		<url-pattern>/loh/lease/main.do</url-pattern>
 	</servlet-mapping>
 
+	<!-- 发布房屋租赁信息的 Servlet -->
 	<servlet>
 		<servlet-name>loh.lease.releaseHouseServlet</servlet-name>
 		<servlet-class>science.mrcuijt.loh.servlet.loh.lease.ReleaseHouseServlet</servlet-class>
@@ -147,6 +166,7 @@
 		<url-pattern>/loh/lease/releaseHouse.do</url-pattern>
 	</servlet-mapping>
 
+	<!-- 显示房屋租赁信息的 Servlet -->
 	<servlet>
 		<servlet-name>loh.lease.showReleaseHouseServlet</servlet-name>
 		<servlet-class>science.mrcuijt.loh.servlet.loh.lease.ShowReleaseHouseServlet</servlet-class>
@@ -177,6 +197,16 @@
 	<servlet-mapping>
 		<servlet-name>loh.admin.data.addDataServlet</servlet-name>
 		<url-pattern>/loh/admin/data/addData.do</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 查询地区信息的 Servlet -->
+	<servlet>
+		<servlet-name>loh.getRegionServlet</servlet-name>
+		<servlet-class>science.mrcuijt.loh.servlet.loh.lease.GetRegionServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>loh.getRegionServlet</servlet-name>
+		<url-pattern>/loh/getRegion.do</url-pattern>
 	</servlet-mapping>
 
 	<welcome-file-list>

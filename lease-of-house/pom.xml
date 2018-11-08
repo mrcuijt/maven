@@ -15,6 +15,9 @@
 		<javax-servlet-jsp-jstl.version>1.2.1</javax-servlet-jsp-jstl.version>
 		<!-- taglib c 表达式 -->
 		<taglibs-standard.version>1.1.2</taglibs-standard.version>
+		<!-- apache 文件上传组件  -->
+		<commons-io.version>2.4</commons-io.version>
+		<commons-fileupload.version>1.3.3</commons-fileupload.version>
 		<!-- MySQL数据库插件包版本号 -->
 		<mysql-connector-java.version>5.1.30</mysql-connector-java.version>
 		<!-- 阿里巴巴 druid 数据库连接池 -->
@@ -26,9 +29,9 @@
 		<org-slf4j.version>1.7.21</org-slf4j.version>
 		<slf4j-log4j12.version>1.7.21</slf4j-log4j12.version>
 		<!-- 阿里巴巴 JSON解析包版本 -->
-		<com-alibaba-version>1.2.28</com-alibaba-version>
+		<com-alibaba.version>1.2.28</com-alibaba.version>
 		<!-- json-lib包版本 -->
-		<json-lib-version>2.4</json-lib-version>
+		<json-lib.version>2.4</json-lib.version>
 	</properties>
 
 	<dependencies>
@@ -55,11 +58,25 @@
 			<version>${taglibs-standard.version}</version>
 		</dependency>
 
+		<!--  -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${commons-io.version}</version>
+		</dependency>
+
+		<dependency>
+		    <groupId>commons-fileupload</groupId>
+		    <artifactId>commons-fileupload</artifactId>
+		    <version>${commons-fileupload.version}</version>
+		</dependency>
+
+
 		<!-- 引入阿里巴巴 fastjson -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
-			<version>${com-alibaba-version}</version>
+			<version>${com-alibaba.version}</version>
 		</dependency>
 
 		<!-- 引入 MySQL数据库链接插件 -->
@@ -82,7 +99,7 @@
 			<artifactId>log4j</artifactId>
 			<version>${log4j.version}</version>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>

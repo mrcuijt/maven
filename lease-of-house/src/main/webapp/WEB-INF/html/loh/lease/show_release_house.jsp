@@ -25,48 +25,53 @@
 	
 	<div class="container">
 		<div class="row">
-				<div class="col-sm-5">
-						<table>
-							<tr>
-								<td>
-									<label for="username">房屋类型：</label> 
-									<label for="username">zhangsan</label> 
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<label for="username">所在地址：</label> 
-									<label for="username">zhangsan</label> 
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<label for="username">联系人：</label> 
-									<label for="username">zhangsan</label> 
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<label for="username">联系方式：</label> 
-									<label for="username">zhangsan</label> 
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<img/>
-								</td>
-							</tr>
-						</table>
-				</div>
-				<div class="col-sm-7">
-					<table>
-						<tr>
-							<td>
-								<label for="username">房屋预览图：</label> 
-							</td>
-						</tr>
-					</table>
-				</div>
+			<div class="col-sm-5">
+				<table>
+					<tr>
+						<td>
+							<span>房屋标题：${lohHouseInfo.houseTitle }</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span>房屋类型：${lohHouseType.houseType }</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span>房屋价格：${lohHouseInfo.price }</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span>房屋所在地址：${lohHouseInfo.houseAddress }</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span>联系人：${lohHouseInfo.contacts }</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<span>联系方式：${lohHouseInfo.cellPhone }</span>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="col-sm-7">
+				<table>
+					<tr>
+						<td>
+							<label for="username">房屋预览图：</label> 
+							<c:forEach items="${lohFileInfoList}" var="lohFileInfo"  varStatus="vs">
+								<img src="<%=request.getContextPath()%>/${lohFileInfo.fileLink}" />
+							</c:forEach>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<p>${message }</p>
 		</div>
 	</div>
 	

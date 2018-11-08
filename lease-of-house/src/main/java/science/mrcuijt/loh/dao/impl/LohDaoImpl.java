@@ -13,6 +13,7 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +21,10 @@ import org.apache.log4j.Logger;
 
 import science.mrcuijt.loh.dao.LohDao;
 import science.mrcuijt.loh.entity.LoginInfo;
+import science.mrcuijt.loh.entity.LohFileInfo;
 import science.mrcuijt.loh.entity.LohHouseInfo;
+import science.mrcuijt.loh.entity.LohHouseType;
+import science.mrcuijt.loh.entity.RegionInfo;
 import science.mrcuijt.loh.entity.UserInfo;
 import science.mrcuijt.loh.util.JDBCUtil;
 
@@ -523,6 +527,164 @@ public class LohDaoImpl implements LohDao {
 
 			} else {
 				conn.rollback();
+				return addLohHouseInfoResult;
+			}
+
+			// 提交事务
+			conn.commit();
+
+			addLohHouseInfoResult = true;
+
+		} catch (SQLException e) {
+
+			try {
+
+				conn.rollback();
+
+			} catch (SQLException e1) {
+
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+
+		return addLohHouseInfoResult;
+	}
+
+	/**
+	 * 添加房屋信息和房屋文件信息的信息
+	 * 
+	 * @param lohHouseInfo
+	 * @param lohFileInfoList
+	 */
+	@Override
+	public boolean addLohHouseInfo(LohHouseInfo lohHouseInfo, List<LohFileInfo> lohFileInfoList) {
+
+		boolean addLohHouseInfoResult = false;
+
+		StringBuffer strbAddLohHouseInfo = new StringBuffer();
+
+		strbAddLohHouseInfo.append(" INSERT INTO loh_house_info ");
+		strbAddLohHouseInfo.append(" ( ");
+		strbAddLohHouseInfo.append(" gmt_create , ");
+		strbAddLohHouseInfo.append(" gmt_modified , ");
+		strbAddLohHouseInfo.append(" house_title , ");
+		strbAddLohHouseInfo.append(" user_info_id , ");
+		strbAddLohHouseInfo.append(" loh_house_type_id , ");
+		strbAddLohHouseInfo.append(" region_info_id , ");
+		strbAddLohHouseInfo.append(" house_address , ");
+		strbAddLohHouseInfo.append(" price , ");
+		strbAddLohHouseInfo.append(" push_date , ");
+		strbAddLohHouseInfo.append(" contacts , ");
+		strbAddLohHouseInfo.append(" cell_phone , ");
+		strbAddLohHouseInfo.append(" qrcode_link ");
+		strbAddLohHouseInfo.append(" ) ");
+		strbAddLohHouseInfo.append(" VALUES ( ?, ?, ?, ?, ?,  ?, ?, ?, ?, ?,  ?, ? )");
+
+		StringBuffer strbAddLohFileInfo = new StringBuffer();
+		strbAddLohFileInfo.append(" INSERT INTO loh_file_info ");
+		strbAddLohFileInfo.append(" ( ");
+		strbAddLohFileInfo.append(" gmt_create , ");
+		strbAddLohFileInfo.append(" gmt_modified , ");
+		strbAddLohFileInfo.append(" loh_house_info_id , ");
+		strbAddLohFileInfo.append(" loh_file_type_id , ");
+		strbAddLohFileInfo.append(" file_title , ");
+		strbAddLohFileInfo.append(" file_link ");
+		strbAddLohFileInfo.append(" ) ");
+		strbAddLohFileInfo.append(" VALUES ( ?, ?, ?, ?, ?,  ? ) ");
+
+		// 添加房屋信息的 SQL
+		String addLohHouseInfoSQL = strbAddLohHouseInfo.toString();
+
+		// 添加房屋文件信息的 SQL
+		String addLohFileInfoSQL = strbAddLohFileInfo.toString();
+
+		Connection conn = JDBCUtil.getConnection();
+
+		PreparedStatement ps = null;
+
+		ResultSet rs = null;
+
+		try {
+
+			conn.setAutoCommit(false);
+
+			ps = conn.prepareStatement(addLohHouseInfoSQL, Statement.RETURN_GENERATED_KEYS);
+
+			ps.setTimestamp(1, new Timestamp(lohHouseInfo.getGmtCreate().getTime()));
+			ps.setTimestamp(2, new Timestamp(lohHouseInfo.getGmtModified().getTime()));
+			ps.setString(3, lohHouseInfo.getHouseTitle());
+			ps.setInt(4, lohHouseInfo.getUserInfoId());
+			ps.setInt(5, lohHouseInfo.getLohHouseTypeId());
+			if (lohHouseInfo.getRegionInfoId() == null) {
+				ps.setNull(6, Types.INTEGER);
+			} else {
+				ps.setInt(6, lohHouseInfo.getRegionInfoId());
+			}
+			ps.setString(7, lohHouseInfo.getHouseAddress());
+			ps.setBigDecimal(8, lohHouseInfo.getPrice());
+			ps.setDate(9, new Date(lohHouseInfo.getPushDate().getTime()));
+			ps.setString(10, lohHouseInfo.getContacts());
+			ps.setString(11, lohHouseInfo.getCellPhone());
+			ps.setString(12, lohHouseInfo.getQrcodeLink());
+
+			int addLohHouseInfoCount = ps.executeUpdate();
+
+			if (addLohHouseInfoCount > 0) {
+
+				// 获取自动增长列
+				rs = ps.getGeneratedKeys();
+
+				while (rs.next()) {
+
+					// 设置 LohHouseInfoId
+					lohHouseInfo.setLohHouseInfoId(rs.getInt(1));
+				}
+
+			} else {
+				conn.rollback();
+				return addLohHouseInfoResult;
+			}
+			JDBCUtil.closeAll(rs, ps, null);
+			if (lohHouseInfo.getLohHouseInfoId() != null && lohHouseInfo.getLohHouseInfoId() > 0) {
+
+				// 添加房屋文件信息记录
+				Iterator<LohFileInfo> lohFileInfoIterator = lohFileInfoList.iterator();
+				while (lohFileInfoIterator.hasNext()) {
+					LohFileInfo lohFileInfo = lohFileInfoIterator.next();
+					// 设置房屋文件信息记录所属的房屋信息
+					lohFileInfo.setLohHouseInfoId(lohHouseInfo.getLohHouseInfoId());
+
+					ps = conn.prepareStatement(addLohFileInfoSQL, Statement.RETURN_GENERATED_KEYS);
+					ps.setTimestamp(1, new Timestamp(lohFileInfo.getGmtCreate().getTime()));
+					ps.setTimestamp(2, new Timestamp(lohFileInfo.getGmtModified().getTime()));
+					ps.setInt(3, lohFileInfo.getLohHouseInfoId());
+					ps.setInt(4, lohFileInfo.getLohFileTypeId());
+					ps.setString(5, lohFileInfo.getFileTitle());
+					ps.setString(6, lohFileInfo.getFileLink());
+
+					int addLohFileInfoCount = ps.executeUpdate();
+
+					if (addLohFileInfoCount > 0) {
+
+						// 获取自动增长列
+						rs = ps.getGeneratedKeys();
+
+						while (rs.next()) {
+
+							// 设置 LohHouseInfoId
+							lohFileInfo.setLohFileInfoId(rs.getInt(1));
+						}
+
+					} else {
+						conn.rollback();
+						return addLohHouseInfoResult;
+					}
+					JDBCUtil.closeAll(rs, ps, null);
+				}
+
 			}
 
 			// 提交事务
@@ -668,6 +830,331 @@ public class LohDaoImpl implements LohDao {
 		queryPagination.put("pagination", lohHouseInfoList);
 
 		return queryPagination;
+	}
+
+	/**
+	 * 查询所有房屋类型记录
+	 * 
+	 * @return
+	 */
+	@Override
+	public List<LohHouseType> findAllLohHouseType() {
+
+		List<LohHouseType> lohHouseTypeList = new ArrayList<LohHouseType>();
+
+		StringBuffer strbFindLohHouseTypeList = new StringBuffer();
+
+		strbFindLohHouseTypeList.append(" SELECT ");
+		strbFindLohHouseTypeList.append(" loh_house_type_id , ");
+		strbFindLohHouseTypeList.append(" gmt_create , ");
+		strbFindLohHouseTypeList.append(" gmt_modified , ");
+		strbFindLohHouseTypeList.append(" house_type ");
+		strbFindLohHouseTypeList.append(" FROM loh_house_type ");
+
+		String sql = strbFindLohHouseTypeList.toString();
+
+		Connection conn = JDBCUtil.getConnection();
+		Statement stms = null;
+		ResultSet rs = null;
+
+		try {
+
+			stms = conn.createStatement();
+			rs = stms.executeQuery(sql);
+
+			while (rs.next()) {
+
+				LohHouseType lohHouseType = JDBCUtil.convertResultSetToLohHouseType(rs);
+
+				lohHouseTypeList.add(lohHouseType);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeAll(rs, stms, conn);
+		}
+
+		return lohHouseTypeList;
+	}
+
+	/**
+	 * 根据地区级别查询地区信息
+	 * 
+	 * @param regionLevel
+	 * @return
+	 */
+	@Override
+	public List<RegionInfo> findRegionInfoByLevel(Integer regionLevel) {
+
+		List<RegionInfo> regionInfoList = new ArrayList<>();
+
+		StringBuffer strbFindRegionInfo = new StringBuffer();
+
+		strbFindRegionInfo.append(" SELECT  ");
+		strbFindRegionInfo.append(" region_info_id , ");
+		strbFindRegionInfo.append(" gmt_create , ");
+		strbFindRegionInfo.append(" gmt_modified , ");
+		strbFindRegionInfo.append(" region_code , ");
+		strbFindRegionInfo.append(" region_name , ");
+		strbFindRegionInfo.append(" region_level , ");
+		strbFindRegionInfo.append(" parent_region_id ");
+		strbFindRegionInfo.append(" FROM region_info ");
+		strbFindRegionInfo.append(" WHERE region_level = ? ");
+
+		String sql = strbFindRegionInfo.toString();
+
+		Connection conn = JDBCUtil.getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			ps = conn.prepareStatement(sql);
+
+			ps.setInt(1, regionLevel);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				regionInfoList.add(JDBCUtil.convertResultSetToRegionInfo(rs));
+
+			}
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+
+		// 返回函数值
+		return regionInfoList;
+
+	}
+
+	/**
+	 * 根据父级地区Id查询对应的子集地区信息
+	 * 
+	 * @param parentRegionId
+	 * @return
+	 */
+	@Override
+	public List<RegionInfo> findregionInfoByParentRegionId(Integer parentRegionId) {
+
+		List<RegionInfo> regionInfoList = new ArrayList<>();
+
+		StringBuffer strbFindRegionInfo = new StringBuffer();
+
+		strbFindRegionInfo.append(" SELECT  ");
+		strbFindRegionInfo.append(" region_info_id , ");
+		strbFindRegionInfo.append(" gmt_create , ");
+		strbFindRegionInfo.append(" gmt_modified , ");
+		strbFindRegionInfo.append(" region_code , ");
+		strbFindRegionInfo.append(" region_name , ");
+		strbFindRegionInfo.append(" region_level , ");
+		strbFindRegionInfo.append(" parent_region_id ");
+		strbFindRegionInfo.append(" FROM region_info ");
+		strbFindRegionInfo.append(" WHERE parent_region_id = ? ");
+
+		String sql = strbFindRegionInfo.toString();
+
+		Connection conn = JDBCUtil.getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			ps = conn.prepareStatement(sql);
+
+			ps.setInt(1, parentRegionId);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				regionInfoList.add(JDBCUtil.convertResultSetToRegionInfo(rs));
+
+			}
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+
+		// 返回函数值
+		return regionInfoList;
+
+	}
+
+	/**
+	 * 根据主键查询查询房屋类型信息
+	 * 
+	 * @param lohHouseTypeId
+	 * @return
+	 */
+	@Override
+	public LohHouseType findLohHouseTypeByPrimaryKey(Integer lohHouseTypeId) {
+
+		LohHouseType lohHouseType = null;
+
+		StringBuffer strbfindLohHouseType = new StringBuffer();
+		strbfindLohHouseType.append(" SELECT ");
+		strbfindLohHouseType.append(" loh_house_type_id , ");
+		strbfindLohHouseType.append(" gmt_create , ");
+		strbfindLohHouseType.append(" gmt_modified , ");
+		strbfindLohHouseType.append(" house_type ");
+		strbfindLohHouseType.append(" FROM loh_house_type ");
+		strbfindLohHouseType.append(" WHERE loh_house_type_id = ? ");
+
+		String sql = strbfindLohHouseType.toString();
+
+		Connection conn = JDBCUtil.getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			ps = conn.prepareStatement(sql);
+
+			ps.setInt(1, lohHouseTypeId);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				lohHouseType = JDBCUtil.convertResultSetToLohHouseType(rs);
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+
+		// 返回函数值
+		return lohHouseType;
+	}
+
+	/**
+	 * 根据房屋信息主键查询房屋信息
+	 * 
+	 * @param lohHouseInfoId
+	 * @return
+	 */
+	@Override
+	public LohHouseInfo findLohHouseInfoByPrimaryKey(Integer lohHouseInfoId) {
+
+		LohHouseInfo lohHouseInfo = null;
+
+		StringBuffer strbFindLohHouseInfoByLohHouseTypeId = new StringBuffer();
+
+		strbFindLohHouseInfoByLohHouseTypeId.append(" SELECT ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" loh_house_info_id , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" gmt_create , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" gmt_modified , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" house_title , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" user_info_id , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" loh_house_type_id , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" region_info_id , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" house_address , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" price , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" push_date , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" contacts , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" cell_phone , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" qrcode_link  ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" FROM loh_house_info ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" WHERE loh_house_info_id = ? ");
+
+		String sql = strbFindLohHouseInfoByLohHouseTypeId.toString();
+
+		Connection conn = JDBCUtil.getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			ps = conn.prepareStatement(sql);
+
+			ps.setInt(1, lohHouseInfoId);
+
+			rs = ps.executeQuery();
+
+			if (rs.next()) {
+
+				lohHouseInfo = JDBCUtil.convertResultSetToLohHouseInfo(rs);
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+
+		// 返回函数值
+		return lohHouseInfo;
+	}
+
+	/**
+	 * 根据房屋信息 Id 查询房屋文件信息
+	 * 
+	 * @param lohHouseInfoId
+	 * @return
+	 */
+	@Override
+	public List<LohFileInfo> findLohFileInfoByLohHouseInfoId(Integer lohHouseInfoId) {
+
+		List<LohFileInfo> lohFileInfoList = new ArrayList<>();
+
+		StringBuffer strbFindLohFileInfo = new StringBuffer();
+		strbFindLohFileInfo.append(" SELECT ");
+		strbFindLohFileInfo.append(" loh_file_info_id , ");
+		strbFindLohFileInfo.append(" gmt_create , ");
+		strbFindLohFileInfo.append(" gmt_modified , ");
+		strbFindLohFileInfo.append(" loh_house_info_id , ");
+		strbFindLohFileInfo.append(" loh_file_type_id , ");
+		strbFindLohFileInfo.append(" file_title , ");
+		strbFindLohFileInfo.append(" file_link ");
+		strbFindLohFileInfo.append(" FROM loh_file_info ");
+		strbFindLohFileInfo.append(" WHERE loh_house_info_id = ? ");
+
+		String sql = strbFindLohFileInfo.toString();
+
+		Connection conn = JDBCUtil.getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			
+			ps = conn.prepareStatement(sql);
+			
+			ps.setInt(1, lohHouseInfoId);
+			
+			rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				
+				LohFileInfo lohFileInfo = JDBCUtil.convertResultSetToLohFileInfo(rs);
+				
+				lohFileInfoList.add(lohFileInfo);
+				
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+
+		// 返回函数值
+		return lohFileInfoList;
 	}
 
 }
