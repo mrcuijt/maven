@@ -29,9 +29,9 @@
 				<button type="submit" class="btn btn-default">搜索</button>
 			</form>
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="#">登录</a></li>
-				<li><a href="#">注册</a></li>
-				<li><a href="#">登出</a></li>
+				<li><a href="<%=request.getContextPath() %>/login.do">登录</a></li>
+				<li><a href="<%=request.getContextPath() %>/register.do">注册</a></li>
+				<li><a href="<%=request.getContextPath() %>/logout.do">登出</a></li>
 				<li><a href="<%=request.getContextPath() %>/loh/lease/releaseHouse.do">出租者</a></li>
 				<li><a href="#">租房者</a></li>
 <!-- 				

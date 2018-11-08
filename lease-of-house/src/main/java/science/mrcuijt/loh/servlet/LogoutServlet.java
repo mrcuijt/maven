@@ -20,21 +20,10 @@ public class LogoutServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		// 清空 Session
+		request.getSession().invalidate();
 		
-		
-		super.doGet(request, response);
-	}
-
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		super.doPost(request, response);
-	}
-
-	@Override
-	protected void service(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		super.service(request, response);
+		response.sendRedirect(request.getContextPath() + "/login.do");
 	}
 
 }
