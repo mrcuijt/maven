@@ -76,7 +76,7 @@ public interface LohService {
 	 * @param lohFileInfoList
 	 */
 	public abstract boolean addLohHouseInfo(LohHouseInfo lohHouseInfo, List<LohFileInfo> lohFileInfoList);
-	
+
 	/**
 	 * 根据房屋信息主键查询房屋信息的业务逻辑接口
 	 * 
@@ -84,6 +84,15 @@ public interface LohService {
 	 * @return
 	 */
 	public abstract LohHouseInfo findLohHouseInfoByPrimaryKey(Integer lohHouseInfoId);
+
+	/**
+	 * 删除指定的房屋信息记录以及房屋文件信息记录的业务逻辑接口
+	 * 
+	 * @param lohHouseInfo
+	 * @param webRootPath
+	 * @return
+	 */
+	public abstract boolean deleteLohHouseInfo(LohHouseInfo lohHouseInfo, String webRoot);
 	
 	/**
 	 * 查询用户信息的业务逻辑接口
@@ -134,7 +143,7 @@ public interface LohService {
 	 * @return
 	 */
 	public abstract boolean existsLohHouseTypeByPrimaryKey(Integer lohHouseTypeId);
-	
+
 	/**
 	 * 根据房屋类型Id查询房屋类型的业务逻辑接口
 	 * 
@@ -165,7 +174,7 @@ public interface LohService {
 	 * @param lohHouseInfo
 	 * @param imageIdList
 	 * @param lohFileInfoList
-	 * @param webRootPath 
+	 * @param webRootPath
 	 * @return
 	 */
 	public abstract boolean updateLohFileInfo(LohHouseInfo lohHouseInfo, List<Integer> imageIdList,

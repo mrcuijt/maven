@@ -5,7 +5,6 @@ package science.mrcuijt.loh.service.impl;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -153,6 +152,56 @@ public class LohServiceImpl implements LohService {
 	public LohHouseInfo findLohHouseInfoByPrimaryKey(Integer lohHouseInfoId) {
 
 		return lohDao.findLohHouseInfoByPrimaryKey(lohHouseInfoId);
+	}
+	
+	/**
+	 * 删除指定的房屋文件信息记录与房屋信息记录的业务逻辑接口
+	 * 
+	 * @param lohHouseInfo
+	 * @param webRootPath
+	 * @return
+	 */	
+	@Override
+	public boolean deleteLohHouseInfo(LohHouseInfo lohHouseInfo, String webRootPath) {
+		
+		// 查询当前房屋信息所有文件信息记录
+		List<LohFileInfo> lohFileInfoList = lohDao.findLohFileInfoByLohHouseInfoId(lohHouseInfo.getLohHouseInfoId());
+		// 删除文件信息记录
+		boolean deleteResult = lohDao.deleteFileInfoList(lohFileInfoList);
+		
+		if(deleteResult) {
+			
+			// 循环删除所有上传文件
+			for (LohFileInfo lohFileInfo : lohFileInfoList) {
+				
+				String relPath = webRootPath + lohFileInfo.getFileLink();
+				
+				try {
+					File file = new File(relPath);
+					if (file.exists() && file.isFile()) {
+						// 删除文件
+						file.delete();
+					}
+					// 判断当前目录下还有其它文件没有
+					File parentFile = file.getParentFile();
+					if (parentFile.isDirectory() && parentFile.listFiles().length == 0) {
+						// 删除目录
+						parentFile.delete();
+					}
+				} catch (Exception e) {
+					LOG.error("删除文件失败，文件目录为：" + relPath, e);
+				}
+			}
+			
+			try {
+				deleteResult = lohDao.deleteLohHouseInfoByPrimaryKey(lohHouseInfo.getLohHouseInfoId());
+			} catch (Exception e) {
+				deleteResult = false;
+				e.printStackTrace();
+			}
+		}
+		// 返回函数值
+		return deleteResult;
 	}
 
 	/**

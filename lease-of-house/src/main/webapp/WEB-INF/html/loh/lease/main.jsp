@@ -69,6 +69,7 @@
 							<td>
 								<a href="<%=request.getContextPath() %>/loh/lease/showReleaseHouse.do?id=${houseInfo.lohHouseInfoId}">查看</a>
 								<a href="<%=request.getContextPath() %>/loh/lease/toUpdateReleaseHouse.do?id=${houseInfo.lohHouseInfoId}">更新</a>
+								<a href="<%=request.getContextPath() %>/loh/lease/toDeleteReleaseHouse.do?id=${houseInfo.lohHouseInfoId}">删除</a>
 							</td>
 							<td>收藏</td>
 						</tr>

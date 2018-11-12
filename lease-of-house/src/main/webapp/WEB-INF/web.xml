@@ -210,6 +210,39 @@
 		<url-pattern>/loh/lease/updateReleaseHouse.do</url-pattern>
 	</servlet-mapping>
 	
+	<!-- 去删除新房屋租赁信息的 Servlet -->
+	<servlet>
+		<servlet-name>loh.lease.toDeleteReleaseHouseServlet</servlet-name>
+		<servlet-class>science.mrcuijt.loh.servlet.loh.lease.ToDeleteReleaseHouseServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>loh.lease.toDeleteReleaseHouseServlet</servlet-name>
+		<url-pattern>/loh/lease/toDeleteReleaseHouse.do</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 删除新房屋租赁信息的 Servlet -->
+	<servlet>
+		<servlet-name>loh.lease.deleteLohHouseInfoServlet</servlet-name>
+		<servlet-class>science.mrcuijt.loh.servlet.loh.lease.DeleteLohHouseInfoServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>loh.lease.deleteLohHouseInfoServlet</servlet-name>
+		<url-pattern>/loh/lease/deleteLohHouseInfo.do</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 删除新房屋租赁信息结果的 Servlet -->
+	<servlet>
+		<servlet-name>loh.lease.deleteLohHouseInfoResultServelt</servlet-name>
+		<servlet-class>science.mrcuijt.loh.servlet.loh.lease.DeleteLohHouseInfoResultServelt</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>loh.lease.deleteLohHouseInfoResultServelt</servlet-name>
+		<url-pattern>/loh/lease/deleteLohHouseInfoResult.do</url-pattern>
+	</servlet-mapping>
+	
 	<!-- 管理平台主页 -->
 	<servlet>
 		<servlet-name>loh.admin.mainServlet</servlet-name>

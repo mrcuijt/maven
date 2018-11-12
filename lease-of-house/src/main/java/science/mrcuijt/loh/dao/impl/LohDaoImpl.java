@@ -804,7 +804,67 @@ public class LohDaoImpl implements LohDao {
 	}
 
 	/**
-	 * 用户发布法务信息（LohHouseInfo）的分页查询方法
+	 * 删除房屋信息
+	 * 
+	 * @param lohHouseInfoId
+	 * @return
+	 */
+	@Override
+	public boolean deleteLohHouseInfoByPrimaryKey(Integer lohHouseInfoId) {
+
+		boolean deleteLohHouseInfoResult = false;
+		
+		StringBuffer strbDeleteLohHouseInfo = new StringBuffer();
+		strbDeleteLohHouseInfo.append(" DELETE FROM loh_house_info ");
+		strbDeleteLohHouseInfo.append(" WHERE loh_house_info_id = ? ");
+		
+		String sql = strbDeleteLohHouseInfo.toString();
+		
+		Connection conn = JDBCUtil.getConnection();
+		PreparedStatement ps = null;
+		
+		try {
+			
+			// 关闭自动事务提交
+			conn.setAutoCommit(false);
+			
+			ps = conn.prepareStatement(sql);
+			
+			ps.setInt(1, lohHouseInfoId);
+			
+			int deleteCount = ps.executeUpdate();
+			
+			if(deleteCount <= 0) {
+				
+				// 回滚事务
+				conn.rollback();
+				
+				// 返回函数值
+				return deleteLohHouseInfoResult;
+			}
+			
+			// 提交事务
+			conn.commit();
+			
+			deleteLohHouseInfoResult = true;
+			
+		} catch (SQLException e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		}finally {
+			JDBCUtil.closeAll(null, ps, conn);
+		}
+		
+		// 返回函数值
+		return deleteLohHouseInfoResult;
+	}
+
+	/**
+	 * 用户发布房屋信息（LohHouseInfo）的分页查询方法
 	 * 
 	 * @param pageIndex
 	 * @param pageSize
@@ -891,8 +951,8 @@ public class LohDaoImpl implements LohDao {
 			JDBCUtil.closeAll(rs, ps, null);
 		}
 
-		if (totalRecord <= 0) {
-			totalRecord = 1;
+		if (totalRecord < 0) {
+			totalRecord = 0;
 		}
 
 		totalPage = totalRecord / pageSize;
@@ -1308,7 +1368,7 @@ public class LohDaoImpl implements LohDao {
 	 * @return
 	 */
 	@Override
-	public boolean deleteFileInfoList(List<LohFileInfo> deleteLohFileInfoList) {
+	public boolean deleteFileInfoList(List<LohFileInfo> lohFileInfoList) {
 
 		boolean deleteFileInfoResult = false;
 
@@ -1328,7 +1388,7 @@ public class LohDaoImpl implements LohDao {
 			
 			ps = conn.prepareStatement(sql);
 
-			for (LohFileInfo lohFileInfo : deleteLohFileInfoList) {
+			for (LohFileInfo lohFileInfo : lohFileInfoList) {
 				ps.setInt(1, lohFileInfo.getLohFileInfoId());
 				// 添加到批量处理的 SQL 队列中
 				ps.addBatch();

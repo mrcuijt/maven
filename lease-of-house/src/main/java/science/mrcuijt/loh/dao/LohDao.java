@@ -86,7 +86,15 @@ public interface LohDao {
 	public abstract boolean updateHouseInfoResult(LohHouseInfo lohHouseInfo);
 	
 	/**
-	 * 用户发布法务信息（LohHouseInfo）的分页查询方法
+	 * 删除房屋信息
+	 * 
+	 * @param lohHouseInfoId
+	 * @return
+	 */
+	public abstract boolean deleteLohHouseInfoByPrimaryKey(Integer lohHouseInfoId);
+	
+	/**
+	 * 用户发布房屋信息（LohHouseInfo）的分页查询方法
 	 * 
 	 * @param pageIndex
 	 * @param pageSize
@@ -146,10 +154,10 @@ public interface LohDao {
 	/**
 	 * 删除房屋文件信息列表
 	 * 
-	 * @param deleteLohFileInfoList
+	 * @param lohFileInfoList
 	 * @return
 	 */
-	public abstract boolean deleteFileInfoList(List<LohFileInfo> deleteLohFileInfoList);
+	public abstract boolean deleteFileInfoList(List<LohFileInfo> lohFileInfoList);
 
 	/**
 	 * 添加房屋文件信息列表
