@@ -247,9 +247,16 @@ public class ReleaseHouseServlet extends HttpServlet {
 			
 			encodeFileName = AppMD5Util.getMD5(filename) + filename.substring(filename.lastIndexOf("."));
 			
-			File uploadFile = new File(filepath + "/" + encodeFileName);
-
-			System.out.println(uploadFile.getAbsolutePath());
+			String timeznoe = System.currentTimeMillis() + "";
+			
+			// 为文件加上当前时间戳路径
+			String relFilePath = filepath + "/" + timeznoe + "/";
+			
+			if(!new File(relFilePath).exists()) {
+				new File(relFilePath).mkdirs();
+			}
+			
+			File uploadFile = new File(relFilePath + encodeFileName);
 
 			// 将文件写入到服务器中
 			try {
@@ -260,7 +267,7 @@ public class ReleaseHouseServlet extends HttpServlet {
 
 				// 添加 LohFileInfo 信息记录
 				LohFileInfo lohFileInfo = new LohFileInfo();
-				lohFileInfo.setFileLink(Constants.UPLOAD_DIR + "/" + encodeFileName);
+				lohFileInfo.setFileLink(Constants.UPLOAD_DIR + "/" + timeznoe + "/" + encodeFileName);
 				lohFileInfo.setLohFileTypeId(LohFileType.LohHousePicture);
 				lohFileInfo.setFileTitle(filename);
 				
@@ -289,7 +296,7 @@ public class ReleaseHouseServlet extends HttpServlet {
 		// boolean addLohHouseInfoResult = lohService.addLohHouseInfo(lohHouseInfo);
 
 		boolean addLohHouseInfoResult = lohService.addLohHouseInfo(lohHouseInfo, lohFileInfoList);
-		;
+		
 
 		if (!addLohHouseInfoResult) {
 			message = "添加失败，请重试";
