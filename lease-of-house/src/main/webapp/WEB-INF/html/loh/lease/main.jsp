@@ -25,8 +25,8 @@
 	
 	<div class="container">
 		<div class="row">
-			<div class="col-sm-12">
-				<form name="loh-search-form"  action="#" method="get">
+			<form name="loh-search-form" action="<%=request.getContextPath()%>/loh/lease/main.do" method="get">
+				<div class="col-sm-12">
 					<div class="form-group">
 						<label for="lohRegion">地区：</label>
 						<input name="lohRegion" type="text" value="${lohRegion }" class="form-control" placeholder="地区"/>
@@ -38,58 +38,84 @@
 						<input name="houseAddress" type="text" value="${houseAddress }" class="form-control" placeholder="房屋价格"/>
 						<button type="submit" class="form-control btn btn-default">搜索</button>
 					</div>
-				</form>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-12">
-				<table class="loh-house-info" border="2">
-					<tr>
-						<th width="100px;">序号</th>
-						<th width="100px;">房屋类型</th>
-						<th width="100px;">房屋价格</th>
-						<th width="100px;">房屋地址</th>
-						<th width="100px;">发布日期</th>
-						<th width="100px;">联系人</th>
-						<th width="100px;">联系方式</th>
-						<th width="150px;">预览图</th>
-						<th width="150px;">查看</th>
-						<th width="150px;">收藏</th>
-					</tr>
-					<c:forEach items="${pagination }" var="houseInfo" varStatus="vs">
+				</div>
+				<div class="col-sm-12">
+					<table class="loh-house-info" border="2">
 						<tr>
-							<td>${vs.count }</td>
-							<td>${houseInfo.lohHouseTypeId }</td>
-							<td>${houseInfo.price }</td>
-							<td>${houseInfo.houseAddress }</td>
-							<td>${houseInfo.pushDate }</td>
-							<td>${houseInfo.contacts }</td>
-							<td>${houseInfo.cellPhone }</td>
-							<td>${houseInfo.cellPhone }</td>
-							<td>
-								<a href="<%=request.getContextPath() %>/loh/lease/showReleaseHouse.do?id=${houseInfo.lohHouseInfoId}">查看</a>
-								<a href="<%=request.getContextPath() %>/loh/lease/toUpdateReleaseHouse.do?id=${houseInfo.lohHouseInfoId}">更新</a>
-								<a href="<%=request.getContextPath() %>/loh/lease/toDeleteReleaseHouse.do?id=${houseInfo.lohHouseInfoId}">删除</a>
-							</td>
-							<td>收藏</td>
+							<th width="100px;">序号</th>
+							<th width="100px;">房屋类型</th>
+							<th width="100px;">房屋价格</th>
+							<th width="100px;">房屋地址</th>
+							<th width="100px;">发布日期</th>
+							<th width="100px;">联系人</th>
+							<th width="100px;">联系方式</th>
+							<th width="150px;">预览图</th>
+							<th width="150px;">查看</th>
+							<th width="150px;">收藏</th>
 						</tr>
-					</c:forEach>
-					<tr>
-						<td colspan="8">总共有 ${totalRecord } 条记录，当前是第 ${pageIndex } 页，共有 ${totalPage } 页</td>
-						<td>
-							<a href="<%=request.getContextPath()%>/loh/lease/main.do?pageIndex=1&pageSize=${pageSize}${queryParam}">首页</a>
-							<c:if test="${pageIndex > 1 }">
-								<a href="<%=request.getContextPath()%>/loh/lease/main.do?pageIndex=${pageIndex - 1}&pageSize=${pageSize}${queryParam}">上一页</a></td>
-							</c:if>
-						<td>
-							<c:if test="${pageIndex < totalPage}">
-								<a href="<%=request.getContextPath()%>/loh/lease/main.do?pageIndex=${pageIndex + 1}&pageSize=${pageSize}${queryParam}">下一页</a>
-							</c:if>
-							<a href="<%=request.getContextPath()%>/loh/lease/main.do?pageIndex=${totalPage}&pageSize=${pageSize}${queryParam}">最后一页</a>
-						</td>
-					</tr>
-				</table>
-			</div>
+						<c:forEach items="${pagination }" var="houseInfo" varStatus="vs">
+							<tr>
+								<td>${vs.count }</td>
+								<td>${houseInfo.lohHouseTypeId }</td>
+								<td>${houseInfo.price }</td>
+								<td>${houseInfo.houseAddress }</td>
+								<td>${houseInfo.pushDate }</td>
+								<td>${houseInfo.contacts }</td>
+								<td>${houseInfo.cellPhone }</td>
+								<td>${houseInfo.cellPhone }</td>
+								<td>
+									<a href="<%=request.getContextPath() %>/loh/lease/showReleaseHouse.do?id=${houseInfo.lohHouseInfoId}">查看</a>
+									<a href="<%=request.getContextPath() %>/loh/lease/toUpdateReleaseHouse.do?id=${houseInfo.lohHouseInfoId}">更新</a>
+									<a href="<%=request.getContextPath() %>/loh/lease/toDeleteReleaseHouse.do?id=${houseInfo.lohHouseInfoId}">删除</a>
+								</td>
+								<td>收藏</td>
+							</tr>
+						</c:forEach>
+						<tr>
+							<td colspan="5">总共有 ${totalRecord } 条记录，当前是第 ${pageIndex } 页，共有 ${totalPage } 页</td>
+							<td colspan="2">
+								每页
+								<select name="pageSize">
+									<c:forEach items="3" var="count" varStatus="vs">
+										<c:choose>
+											<c:when test="${pageSize == 10 }">
+												<option selected="selected" value="10">10</option>
+												<option value="20">20</option>
+												<option value="30">30</option>
+											</c:when>
+											<c:when test="${pageSize == 20 }">
+												<option value="10">10</option>
+												<option selected="selected" value="20">20</option>
+												<option value="30">30</option>
+											</c:when>
+											<c:when test="${pageSize == 30 }">
+												<option value="10">10</option>
+												<option value="20">20</option>
+												<option selected="selected" value="30">30</option>
+											</c:when>
+										</c:choose>
+									</c:forEach>
+								</select>条记录
+							</td>
+							<td>
+								去第<input name="pageIndex" type="text" value="${pageIndex }" style="width: 50px"/>页
+								<button type="submit">GO</button>
+							</td>
+							<td>
+								<a href="<%=request.getContextPath()%>/loh/lease/main.do?pageIndex=1&pageSize=${pageSize}${queryParam}">首页</a>
+								<c:if test="${pageIndex > 1 }">
+									<a href="<%=request.getContextPath()%>/loh/lease/main.do?pageIndex=${pageIndex - 1}&pageSize=${pageSize}${queryParam}">上一页</a></td>
+								</c:if>
+							<td>
+								<c:if test="${pageIndex < totalPage}">
+									<a href="<%=request.getContextPath()%>/loh/lease/main.do?pageIndex=${pageIndex + 1}&pageSize=${pageSize}${queryParam}">下一页</a>
+								</c:if>
+								<a href="<%=request.getContextPath()%>/loh/lease/main.do?pageIndex=${totalPage}&pageSize=${pageSize}${queryParam}">最后一页</a>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</form>
 		</div>
 	</div>
 	
