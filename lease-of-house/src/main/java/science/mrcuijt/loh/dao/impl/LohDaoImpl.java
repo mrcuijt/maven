@@ -3,6 +3,7 @@
  */
 package science.mrcuijt.loh.dao.impl;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -14,6 +15,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -711,6 +713,97 @@ public class LohDaoImpl implements LohDao {
 	}
 
 	/**
+	 * 根据房屋信息 Id 更新房屋信息
+	 * 
+	 * @param lohHouseInfo
+	 * @return
+	 */
+	@Override
+	public boolean updateHouseInfoResult(LohHouseInfo lohHouseInfo) {
+
+		boolean updateLohHouseInfoResult = false;
+
+		StringBuffer strbAddLohHouseInfo = new StringBuffer();
+
+		strbAddLohHouseInfo.append(" UPDATE loh_house_info ");
+		strbAddLohHouseInfo.append(" SET ");
+		strbAddLohHouseInfo.append(" gmt_create = ? , ");
+		strbAddLohHouseInfo.append(" gmt_modified = ? , ");
+		strbAddLohHouseInfo.append(" house_title = ? , ");
+		strbAddLohHouseInfo.append(" user_info_id = ? , ");
+		strbAddLohHouseInfo.append(" loh_house_type_id = ? , ");
+		strbAddLohHouseInfo.append(" region_info_id = ? , ");
+		strbAddLohHouseInfo.append(" house_address = ? , ");
+		strbAddLohHouseInfo.append(" price = ? , ");
+		strbAddLohHouseInfo.append(" push_date = ? , ");
+		strbAddLohHouseInfo.append(" contacts = ? , ");
+		strbAddLohHouseInfo.append(" cell_phone = ? , ");
+		strbAddLohHouseInfo.append(" qrcode_link = ? ");
+		strbAddLohHouseInfo.append(" WHERE loh_house_info_id = ? ");
+
+		String sql = strbAddLohHouseInfo.toString();
+
+		Connection conn = JDBCUtil.getConnection();
+
+		PreparedStatement ps = null;
+
+		ResultSet rs = null;
+
+		try {
+
+			conn.setAutoCommit(false);
+
+			ps = conn.prepareStatement(sql);
+
+			ps.setTimestamp(1, new Timestamp(lohHouseInfo.getGmtCreate().getTime()));
+			ps.setTimestamp(2, new Timestamp(lohHouseInfo.getGmtModified().getTime()));
+			ps.setString(3, lohHouseInfo.getHouseTitle());
+			ps.setInt(4, lohHouseInfo.getUserInfoId());
+			ps.setInt(5, lohHouseInfo.getLohHouseTypeId());
+			if (lohHouseInfo.getRegionInfoId() == null) {
+				ps.setNull(6, Types.NULL);
+			} else {
+				ps.setInt(6, lohHouseInfo.getRegionInfoId());
+			}
+			ps.setString(7, lohHouseInfo.getHouseAddress());
+			ps.setBigDecimal(8, lohHouseInfo.getPrice());
+			ps.setDate(9, new Date(lohHouseInfo.getPushDate().getTime()));
+			ps.setString(10, lohHouseInfo.getContacts());
+			ps.setString(11, lohHouseInfo.getCellPhone());
+			ps.setString(12, lohHouseInfo.getQrcodeLink());
+			ps.setInt(13, lohHouseInfo.getLohHouseInfoId());
+
+			int updateLohHouseInfoCount = ps.executeUpdate();
+
+			if (updateLohHouseInfoCount <= 0) {
+				conn.rollback();
+				return updateLohHouseInfoResult;
+			}
+
+			// 提交事务
+			conn.commit();
+
+			updateLohHouseInfoResult = true;
+
+		} catch (SQLException e) {
+
+			try {
+
+				conn.rollback();
+
+			} catch (SQLException e1) {
+
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+
+		return updateLohHouseInfoResult;
+	}
+
+	/**
 	 * 用户发布法务信息（LohHouseInfo）的分页查询方法
 	 * 
 	 * @param pageIndex
@@ -726,6 +819,8 @@ public class LohDaoImpl implements LohDao {
 
 		List<LohHouseInfo> lohHouseInfoList = new ArrayList<LohHouseInfo>();
 
+		LinkedList<Object> queryParamValue = new LinkedList<>();
+
 		Integer totalRecord = 0;
 		Integer totalPage = 0;
 
@@ -735,6 +830,18 @@ public class LohDaoImpl implements LohDao {
 		strbComm.append(" WHERE user_info_id = ? ");
 		// 动态拼接查询条件
 		strbComm.append("  ");
+		if (queryParam.get("lohHouseTypeId") != null) {
+			strbComm.append(" and loh_house_type_id = ? ");
+			queryParamValue.add(queryParam.get("lohHouseTypeId"));
+		}
+		if (queryParam.get("lohPrice") != null) {
+			strbComm.append(" and price = ? ");
+			queryParamValue.add(queryParam.get("lohPrice"));
+		}
+		if (queryParam.get("houseAddress") != null) {
+			strbComm.append(" and house_address like ? ");
+			queryParamValue.add(queryParam.get("houseAddress") + "%");
+		}
 
 		// 查询总记录数
 		StringBuffer strbCount = new StringBuffer();
@@ -750,7 +857,25 @@ public class LohDaoImpl implements LohDao {
 
 			ps.setInt(1, (int) queryParam.get("userInfoId"));
 
+			int paramStart = 2;
+
 			// 动态添加查询条件参数
+			for (Object object : queryParamValue) {
+
+				switch (object.getClass().getName()) {
+				case "java.lang.Integer":
+					ps.setInt(paramStart, (int) object);
+					break;
+				case "java.math.BigDecimal":
+					ps.setBigDecimal(paramStart, (BigDecimal) object);
+					break;
+				case "java.lang.String":
+					ps.setString(paramStart, (String) object);
+					break;
+				}
+
+				paramStart++;
+			}
 
 			rs = ps.executeQuery();
 
@@ -808,6 +933,25 @@ public class LohDaoImpl implements LohDao {
 
 			ps.setInt(1, (int) queryParam.get("userInfoId"));
 			// 动态添加查询条件参数
+
+			int paramStart = 2;
+
+			for (Object object : queryParamValue) {
+
+				switch (object.getClass().getName()) {
+				case "java.lang.Integer":
+					ps.setInt(paramStart, (int) object);
+					break;
+				case "java.math.BigDecimal":
+					ps.setBigDecimal(paramStart, (BigDecimal) object);
+					break;
+				case "java.lang.String":
+					ps.setString(paramStart, (String) object);
+					break;
+				}
+
+				paramStart++;
+			}
 
 			rs = ps.executeQuery();
 
@@ -1132,21 +1276,21 @@ public class LohDaoImpl implements LohDao {
 		ResultSet rs = null;
 
 		try {
-			
+
 			ps = conn.prepareStatement(sql);
-			
+
 			ps.setInt(1, lohHouseInfoId);
-			
+
 			rs = ps.executeQuery();
-			
-			while(rs.next()) {
-				
+
+			while (rs.next()) {
+
 				LohFileInfo lohFileInfo = JDBCUtil.convertResultSetToLohFileInfo(rs);
-				
+
 				lohFileInfoList.add(lohFileInfo);
-				
+
 			}
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -1155,6 +1299,169 @@ public class LohDaoImpl implements LohDao {
 
 		// 返回函数值
 		return lohFileInfoList;
+	}
+
+	/**
+	 * 删除房屋文件信息列表
+	 * 
+	 * @param deleteLohFileInfoList
+	 * @return
+	 */
+	@Override
+	public boolean deleteFileInfoList(List<LohFileInfo> deleteLohFileInfoList) {
+
+		boolean deleteFileInfoResult = false;
+
+		StringBuffer strbDeleteFileInfo = new StringBuffer();
+		strbDeleteFileInfo.append(" DELETE FROM loh_file_info ");
+		strbDeleteFileInfo.append(" WHERE loh_file_info_id = ? ");
+
+		String sql = strbDeleteFileInfo.toString();
+
+		Connection conn = JDBCUtil.getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			
+			conn.setAutoCommit(false);
+			
+			ps = conn.prepareStatement(sql);
+
+			for (LohFileInfo lohFileInfo : deleteLohFileInfoList) {
+				ps.setInt(1, lohFileInfo.getLohFileInfoId());
+				// 添加到批量处理的 SQL 队列中
+				ps.addBatch();
+			}
+
+			// 执行所有的 SQL 语句
+			int[] counts = ps.executeBatch();
+			
+			for (int count : counts) {
+				if (count <= 0) {
+					conn.rollback();
+					return deleteFileInfoResult;
+				}
+			}
+			
+			// 提交事务
+			conn.commit();
+			deleteFileInfoResult = true;
+		} catch (SQLException e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+
+		return deleteFileInfoResult;
+	}
+
+	/**
+	 * 添加房屋文件信息列表
+	 * 
+	 * @param lohHouseInfo 
+	 * @param lohFileInfoList
+	 * @return
+	 */
+
+	@Override
+	public boolean addFileInfoList(LohHouseInfo lohHouseInfo, List<LohFileInfo> lohFileInfoList) {
+		
+		boolean addFileInfoListResult = false;
+		
+		StringBuffer strbAddLohFileInfo = new StringBuffer();
+		strbAddLohFileInfo.append(" INSERT INTO loh_file_info ");
+		strbAddLohFileInfo.append(" ( ");
+		strbAddLohFileInfo.append(" gmt_create , ");
+		strbAddLohFileInfo.append(" gmt_modified , ");
+		strbAddLohFileInfo.append(" loh_house_info_id , ");
+		strbAddLohFileInfo.append(" loh_file_type_id , ");
+		strbAddLohFileInfo.append(" file_title , ");
+		strbAddLohFileInfo.append(" file_link ");
+		strbAddLohFileInfo.append(" ) ");
+		strbAddLohFileInfo.append(" VALUES ( ?, ?, ?, ?, ?,  ? ) ");
+		
+		String sql = strbAddLohFileInfo.toString();
+		
+		Connection conn = JDBCUtil.getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			conn.setAutoCommit(false);
+
+			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			
+			// 添加房屋文件信息记录
+			Iterator<LohFileInfo> lohFileInfoIterator = lohFileInfoList.iterator();
+			
+			while (lohFileInfoIterator.hasNext()) {
+				
+				LohFileInfo lohFileInfo = lohFileInfoIterator.next();
+				
+				// 设置房屋文件信息记录所属的房屋信息
+				lohFileInfo.setLohHouseInfoId(lohHouseInfo.getLohHouseInfoId());
+				
+				ps.setTimestamp(1, new Timestamp(lohFileInfo.getGmtCreate().getTime()));
+				ps.setTimestamp(2, new Timestamp(lohFileInfo.getGmtModified().getTime()));
+				ps.setInt(3, lohFileInfo.getLohHouseInfoId());
+				ps.setInt(4, lohFileInfo.getLohFileTypeId());
+				ps.setString(5, lohFileInfo.getFileTitle());
+				ps.setString(6, lohFileInfo.getFileLink());
+
+				// 添加到批待执行的队列中
+				ps.addBatch();
+			}
+			
+			// 批量执行所有的 SQL 语句，获取所有执行结果的影响行数
+			int[] addLohFileInfoCount = ps.executeBatch();
+
+			// 判断所有 SQL 是否都执行成功
+			for (int count : addLohFileInfoCount) {
+				if (count <= 0) {
+					conn.rollback();
+					return addFileInfoListResult;
+				}
+			}
+
+			// 获取自动增长列
+			rs = ps.getGeneratedKeys();
+			int count = 0;
+			while (rs.next()) {
+				lohFileInfoList.get(count).setLohFileInfoId(rs.getInt(1));
+				count++;
+			}
+			
+			// 提交事务
+			conn.commit();
+
+			addFileInfoListResult = true;
+
+		} catch (SQLException e) {
+
+			try {
+
+				conn.rollback();
+
+			} catch (SQLException e1) {
+
+				e1.printStackTrace();
+			}
+
+			e.printStackTrace();
+
+		} finally {
+
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+
+		return addFileInfoListResult;
 	}
 
 }

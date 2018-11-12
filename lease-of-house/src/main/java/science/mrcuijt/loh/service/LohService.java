@@ -151,4 +151,24 @@ public interface LohService {
 	 */
 	public abstract List<LohFileInfo> findLohFileInfoByLohHouseInfoId(Integer lohHouseInfoId);
 
+	/**
+	 * 根据房屋信息 Id 更新房屋信息的业务逻辑接口
+	 * 
+	 * @param lohHouseInfo
+	 * @return
+	 */
+	public abstract boolean updateHouseInfoResult(LohHouseInfo lohHouseInfo);
+
+	/**
+	 * 根据房屋信息更新房屋文件信息的接口
+	 * 
+	 * @param lohHouseInfo
+	 * @param imageIdList
+	 * @param lohFileInfoList
+	 * @param webRootPath 
+	 * @return
+	 */
+	public abstract boolean updateLohFileInfo(LohHouseInfo lohHouseInfo, List<Integer> imageIdList,
+			List<LohFileInfo> lohFileInfoList, String webRootPath);
+
 }

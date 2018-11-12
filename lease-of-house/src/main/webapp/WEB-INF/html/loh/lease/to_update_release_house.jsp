@@ -25,53 +25,89 @@
 	
 	<div class="container">
 		<div class="row">
-			<form name="loginForm" class="login-form" method="post" action="#">
-				<div class="col-sm-5">
-						<table>
-							<tr>
-								<td>
-									<label for="username">房屋类型：</label> 
-									<input name="username" type="text" placeholder="请输入用户名"  value="zhangsan"/>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<label for="username">所在地址：</label> 
-									<input name="username" type="text" placeholder="请输入用户名"  value="zhangsan"/>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<label for="username">联系人：</label> 
-									<input name="username" type="text" placeholder="请输入用户名"  value="zhangsan"/>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<label for="username">联系方式：</label> 
-									<input name="username" type="text" placeholder="请输入用户名"  value="zhangsan"/>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									
-								</td>
-							</tr>
-						</table>
-				</div>
+			<form name="loginForm" class="login-form" enctype="multipart/form-data"
+				method="post" action="<%=request.getContextPath()%>/loh/lease/updateReleaseHouse.do">
+				<input name="lohHouseInfoId" value="${lohHouseInfo.lohHouseInfoId }" style="display:none"/>
 				<div class="col-sm-7">
 					<table>
 						<tr>
 							<td>
-								<label for="username">房屋预览图：</label> 
-								<input name="username" type="file" placeholder="请选择图片" />
+								<label for="houseTitle">房屋标题：</label> 
+								<input name="houseTitle" type="text" placeholder="请输入房屋标题"  value="房屋出租"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="houseType">房屋类型：</label> 
+								<select name="houseType">
+									<c:forEach items="${LohHouseTypeList }" var="lohHouseType" varStatus="">
+										<c:choose>
+											<c:when test="${lohHouseType.lohHouseTypeId == lohHouseInfo.lohHouseTypeId}">
+												<option selected="selected" value="${lohHouseType.lohHouseTypeId}">${lohHouseType.houseType}</option>
+											</c:when>
+											<c:otherwise>
+												<option value="${lohHouseType.lohHouseTypeId}">${lohHouseType.houseType}</option>
+											</c:otherwise>
+										</c:choose>
+									</c:forEach>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="housePrice">房屋价格：</label> 
+								<input name="housePrice" type="text" placeholder="请输入出租金额"  value="${lohHouseInfo.price }"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="houseAddress">所在地址：</label> 
+								<select id="province" name="regionInfo">
+									<c:forEach items="${regionInfoList }" var="regionInfo" varStatus="vs">
+										<option value="${regionInfo.regionInfoId }">${regionInfo.regionName }</option>
+									</c:forEach>
+								</select>
+								<select id="city" name="regionInfo"></select>
+								<select id="county" name="regionInfo"></select>
+								<input name="houseAddress" type="text" placeholder="请输入所在地址"  value="${lohHouseInfo.houseAddress }"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="contacts">联系人：</label> 
+								<input name="contacts" type="text" placeholder="请输入联系人"  value="${lohHouseInfo.contacts }"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label for="cellPhone">联系方式：</label> 
+								<input name="cellPhone" type="text" placeholder="请输入联系方式"  value="${lohHouseInfo.cellPhone }"/>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="col-sm-5">
+					<table>
+						<tr>
+							<td>
+								<label for="image">房屋预览图：</label> <button id="addFile" type="button">添加</button>
+								<input name="image" type="file" placeholder="请选择图片" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<c:forEach items="${lohFileInfos}" var="lohFileInfo"  varStatus="vs">
+									<img src="<%=request.getContextPath()%>/${lohFileInfo.fileLink}" />
+									<input name="imageId" value="${lohFileInfo.lohFileInfoId }" style="display:none"/>
+								</c:forEach>
 							</td>
 						</tr>
 					</table>
 				</div>
 				<div class="col-sm-12">
 					<a role="button" class="btn btn-default" href="#">保存</a>
-					<button class="btn btn-default" type="submit">发布</button>
+					<button class="btn btn-default" type="submit">更新</button>
+					<p>${message }</p>
 				</div>
 			</form>
 		</div>
@@ -84,5 +120,21 @@
 	<script src="<%=request.getContextPath()%>/js/require/jquery/jquery-1.12.4.min.js"></script>
 	<!-- 引入 Bootstrap -->
 	<script src="<%=request.getContextPath()%>/js/require/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			// 绑定添加图片按钮的单击事件
+			$("#addFile").bind("click",addUploadFile);
+		});
+		
+		function addUploadFile(e){
+			
+			var $input = $("<input/>");
+			$input.attr("name","image");
+			$input.attr("type","file");
+			$input.attr("placeholder","请选择图片");
+			
+			$(e.target).parent().append($input);
+		}
+	</script>
 </body>
 </html>

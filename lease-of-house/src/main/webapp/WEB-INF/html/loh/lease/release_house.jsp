@@ -39,7 +39,7 @@
 						<tr>
 							<td>
 								<label for="houseTitle">房屋标题：</label> 
-								<input name="houseTitle" type="text" placeholder="请输入房屋标题"  value="房屋出租"/>
+								<input name="houseTitle" type="text" placeholder="请输入房屋标题"  value=""/>
 							</td>
 						</tr>
 						<tr>
@@ -55,7 +55,7 @@
 						<tr>
 							<td>
 								<label for="housePrice">房屋价格：</label> 
-								<input name="housePrice" type="text" placeholder="请输入出租金额"  value="100"/>
+								<input name="housePrice" type="text" placeholder="请输入出租金额"  value=""/>
 							</td>
 						</tr>
 						<tr>
@@ -68,19 +68,19 @@
 								</select>
 								<select id="city" name="regionInfo"></select>
 								<select id="county" name="regionInfo"></select>
-								<input name="houseAddress" type="text" placeholder="请输入所在地址"  value="北京海淀"/>
+								<input name="houseAddress" type="text" placeholder="请输入所在地址"  value=""/>
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<label for="contacts">联系人：</label> 
-								<input name="contacts" type="text" placeholder="请输入联系人"  value="zhangsan"/>
+								<input name="contacts" type="text" placeholder="请输入联系人"  value=""/>
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<label for="cellPhone">联系方式：</label> 
-								<input name="cellPhone" type="text" placeholder="请输入联系方式"  value="18612496104"/>
+								<input name="cellPhone" type="text" placeholder="请输入联系方式"  value=""/>
 							</td>
 						</tr>
 					</table>
