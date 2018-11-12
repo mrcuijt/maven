@@ -19,6 +19,7 @@ import com.alibaba.fastjson.JSON;
 import science.mrcuijt.loh.entity.LoginInfo;
 import science.mrcuijt.loh.service.LohService;
 import science.mrcuijt.loh.service.impl.LohServiceImpl;
+import science.mrcuijt.loh.util.AppMD5Util;
 import science.mrcuijt.loh.util.RequestUtil;
 
 /**
@@ -51,6 +52,9 @@ public class LoginServlet extends HttpServlet {
 		// 获取登录密码
 		String password = request.getParameter("password");
 		
+		// 获取验证码
+		String verifyCode = request.getParameter("verifyCode");
+		
 		// 消息
 		String message = null;
 		
@@ -64,10 +68,17 @@ public class LoginServlet extends HttpServlet {
 		} else if (password == null || password.trim().length() == 0) {
 			message = "密码不能为空";
 			verifyResult = false;
+		}else if (verifyCode == null || verifyCode.trim().length() == 0) {
+			message = "验证码不能为空";
+			verifyResult = false;
 		}
 		
-		if(verifyResult) {
+		if (verifyResult) {
 			// TODO 密码复杂度校验、密码 MD5 加密操作
+			if (!verifyCode.trim().equals(request.getSession().getAttribute("verifyCode"))) {
+				message = "验证码输入有误";
+				verifyResult = false;
+			}
 		}
 		
 		// 查询用户是否存在
@@ -83,7 +94,7 @@ public class LoginServlet extends HttpServlet {
 			// 验证密码是否正确
 			if(verifyResult) {
 				// 比对输入密码与用户密码是否相同
-				if(!password.trim().equals(loginInfo.getLoginPassword())) {
+				if(!AppMD5Util.getMD5(password.trim()).equals(loginInfo.getLoginPassword())) {
 					message = "用户名或密码错误请重试";
 					verifyResult = false;
 				}

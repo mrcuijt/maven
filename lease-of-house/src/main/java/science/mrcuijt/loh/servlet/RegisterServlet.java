@@ -17,6 +17,7 @@ import science.mrcuijt.loh.entity.LoginInfo;
 import science.mrcuijt.loh.entity.UserInfo;
 import science.mrcuijt.loh.service.LohService;
 import science.mrcuijt.loh.service.impl.LohServiceImpl;
+import science.mrcuijt.loh.util.AppMD5Util;
 import science.mrcuijt.loh.util.RequestUtil;
 
 /**
@@ -49,6 +50,9 @@ public class RegisterServlet extends HttpServlet {
 		// 获取密码
 		String password = request.getParameter("password");
 		
+		// 获取验证码
+		String verifyCode = request.getParameter("verifyCode");
+				
 		String message = null;
 		
 		boolean verifyResult = true;
@@ -60,6 +64,17 @@ public class RegisterServlet extends HttpServlet {
 		}else if(password == null || password.trim().length() == 0) {
 			message = "密码不能为空";
 			verifyResult = false;
+		}else if (verifyCode == null || verifyCode.trim().length() == 0) {
+			message = "验证码不能为空";
+			verifyResult = false;
+		}
+		
+		if (verifyResult) {
+			// TODO 密码复杂度校验、密码 MD5 加密操作
+			if (!verifyCode.trim().equals(request.getSession().getAttribute("verifyCode"))) {
+				message = "验证码输入有误";
+				verifyResult = false;
+			}
 		}
 		
 		// 查询是否有同名的用户
@@ -88,7 +103,7 @@ public class RegisterServlet extends HttpServlet {
 		loginInfo.setGmtCreate(new Date());
 		loginInfo.setGmtModified(new Date());
 		loginInfo.setLoginAccount(userName);
-		loginInfo.setLoginPassword(password);
+		loginInfo.setLoginPassword(AppMD5Util.getMD5(password.trim()));
 		
 		// 调用用户注册的业务逻辑
 		boolean registerResult = lohService.userRegister(userInfo, loginInfo);

@@ -53,7 +53,8 @@ public class LoginFilter implements Filter {
 		// 判断用户是否是要去登录、登出还是注册
 		if (url.endsWith(httpServletRequest.getContextPath() + "/login.do")
 				|| url.endsWith(httpServletRequest.getContextPath() + "/logout.do")
-				|| url.endsWith(httpServletRequest.getContextPath() + "/register.do")) {
+				|| url.endsWith(httpServletRequest.getContextPath() + "/register.do")
+				|| url.endsWith(httpServletRequest.getContextPath() + "/verifyCode.do")) {
 			fc.doFilter(request, response);
 			return;
 		}

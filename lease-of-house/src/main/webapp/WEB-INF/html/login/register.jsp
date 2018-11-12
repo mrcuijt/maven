@@ -32,21 +32,29 @@
 					action="<%=request.getContextPath()%>/register.do">
 					<table>
 						<tr>
-							<td><label for="username">用户名：</label> <input
-								name="username" type="text" placeholder="请输入用户名"
-								value="${userName}" /></td>
+							<td>
+								<label for="username">用户名：</label> 
+								<input name="username" type="text" placeholder="请输入用户名" value="${userName}" />
+							</td>
 						</tr>
 						<tr>
-							<td><label for="password">密码：</label> <input name="password"
-								type="password" placeholder="请输入密码" value="" /></td>
+							<td>
+								<label for="password">密码：</label> 
+								<input name="password" type="password" placeholder="请输入密码" value="" />
+							</td>
 						</tr>
 						<tr>
-							<td><label for="repassword">再次密码：</label> <input name="repassword"
-								type="password" placeholder="请再次输入密码" value="" /></td>
+							<td>
+								<label for="repassword">再次密码：</label> 
+								<input name="repassword" type="password" placeholder="请再次输入密码" value="" />
+							</td>
 						</tr>
 						<tr>
-							<td><label for="password">验证码：</label> <input
-								name="verifyCode" type="text" placeholder="请输入验证码" value="12344" /></td>
+							<td>
+								<label for="verifyCode">验证码：</label> 
+								<img src="<%=request.getContextPath()%>/verifyCode.do?t=<%=System.currentTimeMillis()%>" />
+								<input name="verifyCode" type="text" placeholder="请输入验证码" value="" />
+							</td>
 						</tr>
 						<tr>
 							<td>
