@@ -44,9 +44,9 @@ public class AddThreadTest {
 
 		String URL = "jdbc:mysql://localhost:3306/region?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull";
 
-		String USER = "root";
+		String USER = "";
 
-		String PASSWORD = "root12";
+		String PASSWORD = "";
 
 		DB_SOURCE_1.setUsername(USER);
 		DB_SOURCE_1.setPassword(PASSWORD);

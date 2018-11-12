@@ -132,9 +132,9 @@ public class LohAdminDaoTest {
 
 		String URL = "jdbc:mysql://localhost:3306/region?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull";
 
-		String USER = "root";
+		String USER = "";
 
-		String PASSWORD = "root12";
+		String PASSWORD = "";
 
 		dataSource.setUsername(USER);
 		dataSource.setPassword(PASSWORD);
@@ -209,9 +209,9 @@ public class LohAdminDaoTest {
 
 		String URL = "jdbc:mysql://localhost:3306/region?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull";
 
-		String USER = "root";
+		String USER = "";
 
-		String PASSWORD = "root12";
+		String PASSWORD = "";
 
 		dataSource.setUsername(USER);
 		dataSource.setPassword(PASSWORD);
