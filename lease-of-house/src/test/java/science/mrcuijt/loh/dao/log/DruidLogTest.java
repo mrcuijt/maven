@@ -1,55 +1,78 @@
-/**
- * 
- */
-package science.mrcuijt.loh.dbmgr;
+package science.mrcuijt.loh.dao.log;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 
+import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.logging.Log4jFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledPreparedStatement;
-import com.alibaba.fastjson.JSON;
 
 import science.mrcuijt.loh.entity.LoginInfo;
+import science.mrcuijt.loh.util.JDBCUtil;
 
-/**
- * @author Administrator
- *
- */
-public class DruidDataSourceTest {
+public class DruidLogTest {
 
-	public DruidDataSource createDruidDataSource() {
+	private static final Logger LOG = Logger.getLogger(JDBCUtil.class);
 
-		DruidDataSource dataSource = new DruidDataSource();
-		dataSource.setUsername("loh");
-		dataSource.setPassword("loh");
-		dataSource.setUrl("jdbc:mysql://localhost:3306/loh?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull");
-		
-		return dataSource;
+	private static final DruidDataSource DRUID_DATA_SOURCE = new DruidDataSource();
+
+	private static final String DRVIER = "com.mysql.jdbc.Driver";
+
+	private static final String URL = "jdbc:mysql://localhost:3306/loh?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull";
+
+	private static final String USER = "loh";
+
+	private static final String PASSWORD = "loh";
+
+	static {
+		LOG.info("加载 MySQL JDBC 驱动");
+		try {
+			// Class.forName(DRVIER);
+			DRUID_DATA_SOURCE.setUsername(USER);
+			DRUID_DATA_SOURCE.setPassword(PASSWORD);
+			DRUID_DATA_SOURCE.setUrl(URL);
+		} catch (Exception e) {
+			LOG.info("加载 MySQL JDBC 驱动出现异常", e);
+			e.printStackTrace();
+		}
 	}
-	
-	public Connection TestConnection() throws SQLException {
-		
-		DruidDataSource dataSource = createDruidDataSource();
-		
-		return dataSource.getConnection();
+
+	@Test
+	public void log4jTest() {
+
+		// -Ddruid.log.stmt.executableSql=true
+		Log4jFilter log4jFilter = new Log4jFilter();
+		log4jFilter.setStatementExecutableSqlLogEnable(true);
+		List<Filter> filterList = new ArrayList<>();
+		filterList.add(log4jFilter);
+		try {
+			DRUID_DATA_SOURCE.setFilters("stat,log4j");
+//			DRUID_DATA_SOURCE.setProxyFilters(filterList);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	@Test
 	public void testDruidPooledPreparedStatement() {
-		
+
 		try {
-			findLoginInfoByLoginName("%\'"+"' or 1 = 1");
+			log4jTest();
+			findLoginInfoByLoginName("%\'");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	public LoginInfo findLoginInfoByLoginName(String loginName) throws SQLException {
 
 		LoginInfo loginInfo = null;
@@ -70,7 +93,7 @@ public class DruidDataSourceTest {
 
 		String findLoginInfoSQL = strbFindLoginInfo.toString();
 
-		Connection conn = TestConnection();
+		Connection conn = DRUID_DATA_SOURCE.getConnection();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
@@ -87,7 +110,7 @@ public class DruidDataSourceTest {
 				System.out.println(dpps);
 				System.out.println(ps);
 			}
-			
+
 			while (rs.next()) {
 
 				loginInfo = new LoginInfo();
@@ -113,13 +136,4 @@ public class DruidDataSourceTest {
 		return loginInfo;
 	}
 
-	@Test
-	public void test() throws SQLException {
-		
-		DruidDataSourceTest test = new DruidDataSourceTest();
-		
-		LoginInfo loginInfo = test.findLoginInfoByLoginName("1");
-		
-		System.out.println(JSON.toJSONString(loginInfo));
-	}
 }
