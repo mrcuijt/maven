@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 60099
 File Encoding         : 65001
 
-Date: 2018-11-13 11:16:49
+Date: 2018-11-13 12:26:51
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -36,7 +36,7 @@ INDEX `FK_fk_login_info_user_info` (`user_info_id`) USING BTREE
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
 COMMENT='登录信息表; InnoDB free: 21504 kB; (`user_info_id`) REFER `loh/user_info`(`user_info_'
-AUTO_INCREMENT=105
+AUTO_INCREMENT=113
 
 ;
 
@@ -61,7 +61,7 @@ INDEX `FK_loh_file_type_loh_house_file_info` (`loh_file_type_id`) USING BTREE
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
 COMMENT='房屋租赁文件信息表; InnoDB free: 21504 kB; (`loh_file_type_id`) REFER `loh/loh_file_type`'
-AUTO_INCREMENT=1437
+AUTO_INCREMENT=1443
 
 ;
 
@@ -118,7 +118,7 @@ INDEX `FK_fk_region_info_loh_house_info_2` (`region_info_city_id`) USING BTREE
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
 COMMENT='租赁房屋信息表; InnoDB free: 21504 kB; (`region_info_city_id`) REFER `loh/region_info`('
-AUTO_INCREMENT=409
+AUTO_INCREMENT=415
 
 ;
 
@@ -136,7 +136,7 @@ PRIMARY KEY (`loh_house_type_id`)
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
 COMMENT='房屋租赁类型表'
-AUTO_INCREMENT=120
+AUTO_INCREMENT=125
 
 ;
 
@@ -194,29 +194,35 @@ CREATE TABLE `user_info` (
 `gmt_modified`  datetime NOT NULL COMMENT '记录修改时间' ,
 `user_name`  varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户名' ,
 `born_date`  date NULL DEFAULT NULL COMMENT '出生日期' ,
-`region_info_id`  int(11) NULL DEFAULT NULL COMMENT '地区信息' ,
+`region_info_province_id`  int(11) NULL DEFAULT NULL COMMENT '省市级地区信息ID（与地区信息表的外键）' ,
+`region_info_city_id`  int(11) NULL DEFAULT NULL COMMENT '市市辖区级地区信息ID（与地区信息表的外键）' ,
+`region_info_county_id`  int(11) NULL DEFAULT NULL COMMENT '区县级地区信息ID（与地区信息表的外键）' ,
 `cell_phone`  varchar(11) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '联系电话' ,
 `detailed_information`  varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '详细信息' ,
 PRIMARY KEY (`user_info_id`),
-FOREIGN KEY (`region_info_id`) REFERENCES `region_info` (`region_info_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-INDEX `FK_fk_user_info_region_info` (`region_info_id`) USING BTREE 
+FOREIGN KEY (`region_info_province_id`) REFERENCES `region_info` (`region_info_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+FOREIGN KEY (`region_info_city_id`) REFERENCES `region_info` (`region_info_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+FOREIGN KEY (`region_info_county_id`) REFERENCES `region_info` (`region_info_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+INDEX `FK_fk_user_info_region_info_3` (`region_info_county_id`) USING BTREE ,
+INDEX `FK_fk_user_info_region_info_1` (`region_info_province_id`) USING BTREE ,
+INDEX `FK_fk_user_info_region_info_2` (`region_info_city_id`) USING BTREE 
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
-COMMENT='用户信息表; InnoDB free: 21504 kB; (`region_info_id`) REFER `loh/region_info`(`region'
-AUTO_INCREMENT=107
+COMMENT='用户信息表; InnoDB free: 21504 kB; (`region_info_province_id`) REFER `loh/region_info'
+AUTO_INCREMENT=115
 
 ;
 
 -- ----------------------------
 -- Auto increment value for `login_info`
 -- ----------------------------
-ALTER TABLE `login_info` AUTO_INCREMENT=105;
+ALTER TABLE `login_info` AUTO_INCREMENT=113;
 
 -- ----------------------------
 -- Auto increment value for `loh_file_info`
 -- ----------------------------
-ALTER TABLE `loh_file_info` AUTO_INCREMENT=1437;
+ALTER TABLE `loh_file_info` AUTO_INCREMENT=1443;
 
 -- ----------------------------
 -- Auto increment value for `loh_file_type`
@@ -226,12 +232,12 @@ ALTER TABLE `loh_file_type` AUTO_INCREMENT=2;
 -- ----------------------------
 -- Auto increment value for `loh_house_info`
 -- ----------------------------
-ALTER TABLE `loh_house_info` AUTO_INCREMENT=409;
+ALTER TABLE `loh_house_info` AUTO_INCREMENT=415;
 
 -- ----------------------------
 -- Auto increment value for `loh_house_type`
 -- ----------------------------
-ALTER TABLE `loh_house_type` AUTO_INCREMENT=120;
+ALTER TABLE `loh_house_type` AUTO_INCREMENT=125;
 
 -- ----------------------------
 -- Auto increment value for `loh_house_view_history`
@@ -246,4 +252,4 @@ ALTER TABLE `region_info` AUTO_INCREMENT=539137;
 -- ----------------------------
 -- Auto increment value for `user_info`
 -- ----------------------------
-ALTER TABLE `user_info` AUTO_INCREMENT=107;
+ALTER TABLE `user_info` AUTO_INCREMENT=115;

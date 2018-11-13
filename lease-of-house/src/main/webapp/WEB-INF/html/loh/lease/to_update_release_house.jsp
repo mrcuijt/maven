@@ -33,7 +33,7 @@
 						<tr>
 							<td>
 								<label for="houseTitle">房屋标题：</label> 
-								<input name="houseTitle" type="text" placeholder="请输入房屋标题"  value="房屋出租"/>
+								<input name="houseTitle" type="text" placeholder="请输入房屋标题"  value="${lohHouseInfo.houseTitle }"/>
 							</td>
 						</tr>
 						<tr>

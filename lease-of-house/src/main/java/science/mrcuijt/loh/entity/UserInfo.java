@@ -31,7 +31,17 @@ public class UserInfo {
 	/**
 	 *
 	 */
-	private Integer regionInfoId;
+	private Integer regionInfoProvinceId;
+
+	/**
+	 *
+	 */
+	private Integer regionInfoCityId;
+	
+	/**
+	 *
+	 */
+	private Integer regionInfoCountyId;
 
 	/**
 	 *
@@ -114,17 +124,45 @@ public class UserInfo {
 	}
 
 	/**
-	 * 
+	 *
 	 */
-	public Integer getRegionInfoId() {
-		return regionInfoId;
+	public Integer getRegionInfoProvinceId() {
+		return regionInfoProvinceId;
 	}
 
 	/**
-	 * 
+	 *
 	 */
-	public void setRegionInfoId(Integer regionInfoId) {
-		this.regionInfoId = regionInfoId;
+	public void setRegionInfoProvinceId(Integer regionInfoProvinceId) {
+		this.regionInfoProvinceId = regionInfoProvinceId;
+	}
+
+	/**
+	 *
+	 */
+	public Integer getRegionInfoCityId() {
+		return regionInfoCityId;
+	}
+
+	/**
+	 *
+	 */
+	public void setRegionInfoCityId(Integer regionInfoCityId) {
+		this.regionInfoCityId = regionInfoCityId;
+	}
+
+	/**
+	 *
+	 */
+	public Integer getRegionInfoCountyId() {
+		return regionInfoCountyId;
+	}
+
+	/**
+	 *
+	 */
+	public void setRegionInfoCountyId(Integer regionInfoCountyId) {
+		this.regionInfoCountyId = regionInfoCountyId;
 	}
 
 	/**

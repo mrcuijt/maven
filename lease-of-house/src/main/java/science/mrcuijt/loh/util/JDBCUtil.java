@@ -18,6 +18,7 @@ import science.mrcuijt.loh.entity.LohFileInfo;
 import science.mrcuijt.loh.entity.LohHouseInfo;
 import science.mrcuijt.loh.entity.LohHouseType;
 import science.mrcuijt.loh.entity.RegionInfo;
+import science.mrcuijt.loh.entity.UserInfo;
 
 /**
  * @author Administrator
@@ -286,5 +287,30 @@ public class JDBCUtil {
 		lohFileInfo.setFileLink(rs.getString("file_link"));
 		
 		return lohFileInfo;
+	}
+	
+	/**
+	 * 转换 ResultSet 为 UserInfo 的方法
+	 * 
+	 * @param rs
+	 * @return
+	 * @throws SQLException
+	 */
+	public static UserInfo convertResultSetToUserInfo(ResultSet rs) throws SQLException {
+		
+		UserInfo userInfo = new UserInfo();
+		
+		userInfo.setUserInfoId(rs.getInt("user_info_id"));
+		userInfo.setGmtCreate(rs.getTimestamp("gmt_create"));
+		userInfo.setGmtModified(rs.getTimestamp("gmt_modified"));
+		userInfo.setUserName(rs.getString("user_name"));
+		userInfo.setBornDate(rs.getDate("born_date"));
+		userInfo.setRegionInfoProvinceId(rs.getInt("region_info_province_id"));
+		userInfo.setRegionInfoCityId(rs.getInt("region_info_city_id"));
+		userInfo.setRegionInfoCountyId(rs.getInt("region_info_county_id"));
+		userInfo.setCellPhone(rs.getString("cell_phone"));
+		userInfo.setDetailedInformation(rs.getString("detailed_information"));
+		
+		return userInfo;
 	}
 }

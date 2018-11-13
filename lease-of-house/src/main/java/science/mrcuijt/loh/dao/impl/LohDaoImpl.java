@@ -57,11 +57,13 @@ public class LohDaoImpl implements LohDao {
 		strbAddUserInfoSQL.append(" gmt_modified, ");
 		strbAddUserInfoSQL.append(" user_name, ");
 		strbAddUserInfoSQL.append(" born_date, ");
-		strbAddUserInfoSQL.append(" region_info_id, ");
+		strbAddUserInfoSQL.append(" region_info_province_id , ");
+		strbAddUserInfoSQL.append(" region_info_city_id , ");
+		strbAddUserInfoSQL.append(" region_info_county_id , ");
 		strbAddUserInfoSQL.append(" cell_phone, ");
 		strbAddUserInfoSQL.append(" detailed_information ");
 		strbAddUserInfoSQL.append(" ) ");
-		strbAddUserInfoSQL.append(" VALUES ( ? , ? , ? , ? , ? , ? , ? ) ");
+		strbAddUserInfoSQL.append(" VALUES ( ?, ?, ?, ?, ?,  ?, ?, ?, ? ) ");
 
 		String addUserInfoSQL = strbAddUserInfoSQL.toString();
 
@@ -92,19 +94,27 @@ public class LohDaoImpl implements LohDao {
 			// PreparedStatement.RETURN_GENERATED_KEYS 参数
 			ps = conn.prepareStatement(addUserInfoSQL, PreparedStatement.RETURN_GENERATED_KEYS);
 
-			ps.setTimestamp(1,
-					userInfo.getGmtCreate() != null ? new Timestamp(userInfo.getGmtCreate().getTime()) : null);
-			ps.setTimestamp(2,
-					userInfo.getGmtModified() != null ? new Timestamp(userInfo.getGmtModified().getTime()) : null);
+			ps.setTimestamp(1, userInfo.getGmtCreate() != null ? new Timestamp(userInfo.getGmtCreate().getTime()) : null);
+			ps.setTimestamp(2, userInfo.getGmtModified() != null ? new Timestamp(userInfo.getGmtModified().getTime()) : null);
 			ps.setString(3, userInfo.getUserName());
 			ps.setDate(4, userInfo.getBornDate() != null ? new java.sql.Date(userInfo.getBornDate().getTime()) : null);
-			if (userInfo.getRegionInfoId() == null || userInfo.getRegionInfoId() <= 0) {
-				ps.setNull(5, Types.NULL);
+			if (userInfo.getRegionInfoProvinceId() == null) {
+				ps.setNull(5, Types.INTEGER);
 			} else {
-				ps.setInt(5, userInfo.getRegionInfoId());
+				ps.setInt(5, userInfo.getRegionInfoProvinceId());
 			}
-			ps.setString(6, userInfo.getCellPhone());
-			ps.setString(7, userInfo.getDetailedInformation());
+			if (userInfo.getRegionInfoCityId() == null) {
+				ps.setNull(6, Types.INTEGER);
+			} else {
+				ps.setInt(6, userInfo.getRegionInfoCityId());
+			}
+			if (userInfo.getRegionInfoCountyId() == null) {
+				ps.setNull(7, Types.INTEGER);
+			} else {
+				ps.setInt(7, userInfo.getRegionInfoCountyId());
+			}
+			ps.setString(8, userInfo.getCellPhone());
+			ps.setString(9, userInfo.getDetailedInformation());
 
 			Integer addUserInfoResult = ps.executeUpdate();
 
@@ -124,22 +134,13 @@ public class LohDaoImpl implements LohDao {
 
 					ps = conn.prepareStatement(addLoginInfoSQL, PreparedStatement.RETURN_GENERATED_KEYS);
 
-					ps.setTimestamp(1,
-							loginInfo.getGmtCreate() != null ? new Timestamp(loginInfo.getGmtCreate().getTime())
-									: null);
-					ps.setTimestamp(2,
-							loginInfo.getGmtModified() != null ? new Timestamp(loginInfo.getGmtModified().getTime())
-									: null);
+					ps.setTimestamp(1, loginInfo.getGmtCreate() != null ? new Timestamp(loginInfo.getGmtCreate().getTime()) : null);
+					ps.setTimestamp(2, loginInfo.getGmtModified() != null ? new Timestamp(loginInfo.getGmtModified().getTime()) : null);
 					ps.setString(3, loginInfo.getLoginAccount());
 					ps.setString(4, loginInfo.getLoginPassword());
 					ps.setInt(5, loginInfo.getUserInfoId());
-					ps.setTimestamp(6,
-							loginInfo.getCurrentLoginTime() != null
-									? new Timestamp(loginInfo.getCurrentLoginTime().getTime())
-									: null);
-					ps.setTimestamp(7,
-							loginInfo.getLastLoginTime() != null ? new Timestamp(loginInfo.getLastLoginTime().getTime())
-									: null);
+					ps.setTimestamp(6, loginInfo.getCurrentLoginTime() != null ? new Timestamp(loginInfo.getCurrentLoginTime().getTime()) : null);
+					ps.setTimestamp(7, loginInfo.getLastLoginTime() != null ? new Timestamp(loginInfo.getLastLoginTime().getTime()) : null);
 					ps.setString(8, loginInfo.getLoginIp());
 
 					Integer addLoginInfoResult = ps.executeUpdate();
@@ -285,7 +286,9 @@ public class LohDaoImpl implements LohDao {
 		strbFindUserInfo.append(" gmt_modified, ");
 		strbFindUserInfo.append(" user_name, ");
 		strbFindUserInfo.append(" born_date, ");
-		strbFindUserInfo.append(" region_info_id, ");
+		strbFindUserInfo.append(" region_info_province_id , ");
+		strbFindUserInfo.append(" region_info_city_id , ");
+		strbFindUserInfo.append(" region_info_county_id , ");
 		strbFindUserInfo.append(" cell_phone, ");
 		strbFindUserInfo.append(" detailed_information ");
 		strbFindUserInfo.append(" FROM user_info ");
@@ -306,16 +309,8 @@ public class LohDaoImpl implements LohDao {
 
 			while (rs.next()) {
 
-				userInfo = new UserInfo();
+				userInfo = JDBCUtil.convertResultSetToUserInfo(rs);
 
-				userInfo.setUserInfoId(rs.getInt("user_info_id"));
-				userInfo.setGmtCreate(rs.getTimestamp("gmt_create"));
-				userInfo.setGmtModified(rs.getTimestamp("gmt_modified"));
-				userInfo.setUserName(rs.getString("user_name"));
-				userInfo.setBornDate(rs.getDate("born_date"));
-				userInfo.setRegionInfoId(rs.getInt("region_info_id"));
-				userInfo.setCellPhone(rs.getString("cell_phone"));
-				userInfo.setDetailedInformation(rs.getString("detailed_information"));
 			}
 
 		} catch (SQLException e) {
@@ -425,8 +420,7 @@ public class LohDaoImpl implements LohDao {
 			if (loginInfo.getLastLoginTime() == null) {
 				ps.setNull(6, Types.TIMESTAMP);
 			} else {
-				ps.setTimestamp(6, loginInfo.getLastLoginTime() == null ? null
-						: new Timestamp(loginInfo.getLastLoginTime().getTime()));
+				ps.setTimestamp(6, loginInfo.getLastLoginTime() == null ? null : new Timestamp(loginInfo.getLastLoginTime().getTime()));
 			}
 			ps.setString(7, loginInfo.getLoginIp());
 			ps.setInt(8, loginInfo.getLoginInfoId());
@@ -483,7 +477,7 @@ public class LohDaoImpl implements LohDao {
 		strbAddLohHouseInfo.append(" cell_phone , ");
 		strbAddLohHouseInfo.append(" qrcode_link ");
 		strbAddLohHouseInfo.append(" ) ");
-		strbAddLohHouseInfo.append(" VALUES ( ?, ?, ?, ?, ?,  ?, ?, ?, ?, ?,  ?, ?, ? )");
+		strbAddLohHouseInfo.append(" VALUES ( ?, ?, ?, ?, ?,  ?, ?, ?, ?, ?,  ?, ?, ?, ? )");
 
 		String sql = strbAddLohHouseInfo.toString();
 
@@ -505,17 +499,17 @@ public class LohDaoImpl implements LohDao {
 			ps.setInt(4, lohHouseInfo.getUserInfoId());
 			ps.setInt(5, lohHouseInfo.getLohHouseTypeId());
 			if (lohHouseInfo.getRegionInfoProvinceId() == null) {
-				ps.setNull(6, Types.INTEGER);
+				ps.setNull(6, Types.NULL);
 			} else {
 				ps.setInt(6, lohHouseInfo.getRegionInfoProvinceId());
 			}
 			if (lohHouseInfo.getRegionInfoCityId() == null) {
-				ps.setNull(7, Types.INTEGER);
+				ps.setNull(7, Types.NULL);
 			} else {
 				ps.setInt(7, lohHouseInfo.getRegionInfoCityId());
 			}
 			if (lohHouseInfo.getRegionInfoCountyId() == null) {
-				ps.setNull(8, Types.INTEGER);
+				ps.setNull(8, Types.NULL);
 			} else {
 				ps.setInt(8, lohHouseInfo.getRegionInfoCountyId());
 			}
@@ -597,7 +591,7 @@ public class LohDaoImpl implements LohDao {
 		strbAddLohHouseInfo.append(" cell_phone , ");
 		strbAddLohHouseInfo.append(" qrcode_link ");
 		strbAddLohHouseInfo.append(" ) ");
-		strbAddLohHouseInfo.append(" VALUES ( ?, ?, ?, ?, ?,  ?, ?, ?, ?, ?,  ?, ? )");
+		strbAddLohHouseInfo.append(" VALUES ( ?, ?, ?, ?, ?,  ?, ?, ?, ?, ?,  ?, ?, ?, ? )");
 
 		StringBuffer strbAddLohFileInfo = new StringBuffer();
 		strbAddLohFileInfo.append(" INSERT INTO loh_file_info ");
@@ -635,17 +629,17 @@ public class LohDaoImpl implements LohDao {
 			ps.setInt(4, lohHouseInfo.getUserInfoId());
 			ps.setInt(5, lohHouseInfo.getLohHouseTypeId());
 			if (lohHouseInfo.getRegionInfoProvinceId() == null) {
-				ps.setNull(6, Types.INTEGER);
+				ps.setNull(6, Types.NULL);
 			} else {
 				ps.setInt(6, lohHouseInfo.getRegionInfoProvinceId());
 			}
 			if (lohHouseInfo.getRegionInfoCityId() == null) {
-				ps.setNull(7, Types.INTEGER);
+				ps.setNull(7, Types.NULL);
 			} else {
 				ps.setInt(7, lohHouseInfo.getRegionInfoCityId());
 			}
 			if (lohHouseInfo.getRegionInfoCountyId() == null) {
-				ps.setNull(8, Types.INTEGER);
+				ps.setNull(8, Types.NULL);
 			} else {
 				ps.setInt(8, lohHouseInfo.getRegionInfoCountyId());
 			}
@@ -756,9 +750,9 @@ public class LohDaoImpl implements LohDao {
 		strbAddLohHouseInfo.append(" house_title = ? , ");
 		strbAddLohHouseInfo.append(" user_info_id = ? , ");
 		strbAddLohHouseInfo.append(" loh_house_type_id = ? , ");
-		strbAddLohHouseInfo.append(" region_info_province_id , ");
-		strbAddLohHouseInfo.append(" region_info_city_id , ");
-		strbAddLohHouseInfo.append(" region_info_county_id , ");
+		strbAddLohHouseInfo.append(" region_info_province_id = ? , ");
+		strbAddLohHouseInfo.append(" region_info_city_id = ? , ");
+		strbAddLohHouseInfo.append(" region_info_county_id = ? , ");
 		strbAddLohHouseInfo.append(" house_address = ? , ");
 		strbAddLohHouseInfo.append(" price = ? , ");
 		strbAddLohHouseInfo.append(" push_date = ? , ");
@@ -787,17 +781,17 @@ public class LohDaoImpl implements LohDao {
 			ps.setInt(4, lohHouseInfo.getUserInfoId());
 			ps.setInt(5, lohHouseInfo.getLohHouseTypeId());
 			if (lohHouseInfo.getRegionInfoProvinceId() == null) {
-				ps.setNull(6, Types.INTEGER);
+				ps.setNull(6, Types.NULL);
 			} else {
 				ps.setInt(6, lohHouseInfo.getRegionInfoProvinceId());
 			}
 			if (lohHouseInfo.getRegionInfoCityId() == null) {
-				ps.setNull(7, Types.INTEGER);
+				ps.setNull(7, Types.NULL);
 			} else {
 				ps.setInt(7, lohHouseInfo.getRegionInfoCityId());
 			}
 			if (lohHouseInfo.getRegionInfoCountyId() == null) {
-				ps.setNull(8, Types.INTEGER);
+				ps.setNull(8, Types.NULL);
 			} else {
 				ps.setInt(8, lohHouseInfo.getRegionInfoCountyId());
 			}
@@ -807,7 +801,8 @@ public class LohDaoImpl implements LohDao {
 			ps.setString(12, lohHouseInfo.getContacts());
 			ps.setString(13, lohHouseInfo.getCellPhone());
 			ps.setString(14, lohHouseInfo.getQrcodeLink());
-
+			ps.setInt(15, lohHouseInfo.getLohHouseInfoId());
+			
 			int updateLohHouseInfoCount = ps.executeUpdate();
 
 			if (updateLohHouseInfoCount <= 0) {
