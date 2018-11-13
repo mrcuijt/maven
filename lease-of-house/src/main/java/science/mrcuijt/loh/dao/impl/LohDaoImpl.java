@@ -473,7 +473,9 @@ public class LohDaoImpl implements LohDao {
 		strbAddLohHouseInfo.append(" house_title , ");
 		strbAddLohHouseInfo.append(" user_info_id , ");
 		strbAddLohHouseInfo.append(" loh_house_type_id , ");
-		strbAddLohHouseInfo.append(" region_info_id , ");
+		strbAddLohHouseInfo.append(" region_info_province_id , ");
+		strbAddLohHouseInfo.append(" region_info_city_id , ");
+		strbAddLohHouseInfo.append(" region_info_county_id , ");
 		strbAddLohHouseInfo.append(" house_address , ");
 		strbAddLohHouseInfo.append(" price , ");
 		strbAddLohHouseInfo.append(" push_date , ");
@@ -481,7 +483,7 @@ public class LohDaoImpl implements LohDao {
 		strbAddLohHouseInfo.append(" cell_phone , ");
 		strbAddLohHouseInfo.append(" qrcode_link ");
 		strbAddLohHouseInfo.append(" ) ");
-		strbAddLohHouseInfo.append(" VALUES ( ?, ?, ?, ?, ?,  ?, ?, ?, ?, ?,  ?, ? )");
+		strbAddLohHouseInfo.append(" VALUES ( ?, ?, ?, ?, ?,  ?, ?, ?, ?, ?,  ?, ?, ? )");
 
 		String sql = strbAddLohHouseInfo.toString();
 
@@ -502,17 +504,27 @@ public class LohDaoImpl implements LohDao {
 			ps.setString(3, lohHouseInfo.getHouseTitle());
 			ps.setInt(4, lohHouseInfo.getUserInfoId());
 			ps.setInt(5, lohHouseInfo.getLohHouseTypeId());
-			if (lohHouseInfo.getRegionInfoId() == null) {
+			if (lohHouseInfo.getRegionInfoProvinceId() == null) {
 				ps.setNull(6, Types.INTEGER);
 			} else {
-				ps.setInt(6, lohHouseInfo.getRegionInfoId());
+				ps.setInt(6, lohHouseInfo.getRegionInfoProvinceId());
 			}
-			ps.setString(7, lohHouseInfo.getHouseAddress());
-			ps.setBigDecimal(8, lohHouseInfo.getPrice());
-			ps.setDate(9, new Date(lohHouseInfo.getPushDate().getTime()));
-			ps.setString(10, lohHouseInfo.getContacts());
-			ps.setString(11, lohHouseInfo.getCellPhone());
-			ps.setString(12, lohHouseInfo.getQrcodeLink());
+			if (lohHouseInfo.getRegionInfoCityId() == null) {
+				ps.setNull(7, Types.INTEGER);
+			} else {
+				ps.setInt(7, lohHouseInfo.getRegionInfoCityId());
+			}
+			if (lohHouseInfo.getRegionInfoCountyId() == null) {
+				ps.setNull(8, Types.INTEGER);
+			} else {
+				ps.setInt(8, lohHouseInfo.getRegionInfoCountyId());
+			}
+			ps.setString(9, lohHouseInfo.getHouseAddress());
+			ps.setBigDecimal(10, lohHouseInfo.getPrice());
+			ps.setDate(11, new Date(lohHouseInfo.getPushDate().getTime()));
+			ps.setString(12, lohHouseInfo.getContacts());
+			ps.setString(13, lohHouseInfo.getCellPhone());
+			ps.setString(14, lohHouseInfo.getQrcodeLink());
 
 			int addLohHouseInfoCount = ps.executeUpdate();
 
@@ -575,7 +587,9 @@ public class LohDaoImpl implements LohDao {
 		strbAddLohHouseInfo.append(" house_title , ");
 		strbAddLohHouseInfo.append(" user_info_id , ");
 		strbAddLohHouseInfo.append(" loh_house_type_id , ");
-		strbAddLohHouseInfo.append(" region_info_id , ");
+		strbAddLohHouseInfo.append(" region_info_province_id , ");
+		strbAddLohHouseInfo.append(" region_info_city_id , ");
+		strbAddLohHouseInfo.append(" region_info_county_id , ");
 		strbAddLohHouseInfo.append(" house_address , ");
 		strbAddLohHouseInfo.append(" price , ");
 		strbAddLohHouseInfo.append(" push_date , ");
@@ -620,17 +634,27 @@ public class LohDaoImpl implements LohDao {
 			ps.setString(3, lohHouseInfo.getHouseTitle());
 			ps.setInt(4, lohHouseInfo.getUserInfoId());
 			ps.setInt(5, lohHouseInfo.getLohHouseTypeId());
-			if (lohHouseInfo.getRegionInfoId() == null) {
+			if (lohHouseInfo.getRegionInfoProvinceId() == null) {
 				ps.setNull(6, Types.INTEGER);
 			} else {
-				ps.setInt(6, lohHouseInfo.getRegionInfoId());
+				ps.setInt(6, lohHouseInfo.getRegionInfoProvinceId());
 			}
-			ps.setString(7, lohHouseInfo.getHouseAddress());
-			ps.setBigDecimal(8, lohHouseInfo.getPrice());
-			ps.setDate(9, new Date(lohHouseInfo.getPushDate().getTime()));
-			ps.setString(10, lohHouseInfo.getContacts());
-			ps.setString(11, lohHouseInfo.getCellPhone());
-			ps.setString(12, lohHouseInfo.getQrcodeLink());
+			if (lohHouseInfo.getRegionInfoCityId() == null) {
+				ps.setNull(7, Types.INTEGER);
+			} else {
+				ps.setInt(7, lohHouseInfo.getRegionInfoCityId());
+			}
+			if (lohHouseInfo.getRegionInfoCountyId() == null) {
+				ps.setNull(8, Types.INTEGER);
+			} else {
+				ps.setInt(8, lohHouseInfo.getRegionInfoCountyId());
+			}
+			ps.setString(9, lohHouseInfo.getHouseAddress());
+			ps.setBigDecimal(10, lohHouseInfo.getPrice());
+			ps.setDate(11, new Date(lohHouseInfo.getPushDate().getTime()));
+			ps.setString(12, lohHouseInfo.getContacts());
+			ps.setString(13, lohHouseInfo.getCellPhone());
+			ps.setString(14, lohHouseInfo.getQrcodeLink());
 
 			int addLohHouseInfoCount = ps.executeUpdate();
 
@@ -732,7 +756,9 @@ public class LohDaoImpl implements LohDao {
 		strbAddLohHouseInfo.append(" house_title = ? , ");
 		strbAddLohHouseInfo.append(" user_info_id = ? , ");
 		strbAddLohHouseInfo.append(" loh_house_type_id = ? , ");
-		strbAddLohHouseInfo.append(" region_info_id = ? , ");
+		strbAddLohHouseInfo.append(" region_info_province_id , ");
+		strbAddLohHouseInfo.append(" region_info_city_id , ");
+		strbAddLohHouseInfo.append(" region_info_county_id , ");
 		strbAddLohHouseInfo.append(" house_address = ? , ");
 		strbAddLohHouseInfo.append(" price = ? , ");
 		strbAddLohHouseInfo.append(" push_date = ? , ");
@@ -760,18 +786,27 @@ public class LohDaoImpl implements LohDao {
 			ps.setString(3, lohHouseInfo.getHouseTitle());
 			ps.setInt(4, lohHouseInfo.getUserInfoId());
 			ps.setInt(5, lohHouseInfo.getLohHouseTypeId());
-			if (lohHouseInfo.getRegionInfoId() == null) {
-				ps.setNull(6, Types.NULL);
+			if (lohHouseInfo.getRegionInfoProvinceId() == null) {
+				ps.setNull(6, Types.INTEGER);
 			} else {
-				ps.setInt(6, lohHouseInfo.getRegionInfoId());
+				ps.setInt(6, lohHouseInfo.getRegionInfoProvinceId());
 			}
-			ps.setString(7, lohHouseInfo.getHouseAddress());
-			ps.setBigDecimal(8, lohHouseInfo.getPrice());
-			ps.setDate(9, new Date(lohHouseInfo.getPushDate().getTime()));
-			ps.setString(10, lohHouseInfo.getContacts());
-			ps.setString(11, lohHouseInfo.getCellPhone());
-			ps.setString(12, lohHouseInfo.getQrcodeLink());
-			ps.setInt(13, lohHouseInfo.getLohHouseInfoId());
+			if (lohHouseInfo.getRegionInfoCityId() == null) {
+				ps.setNull(7, Types.INTEGER);
+			} else {
+				ps.setInt(7, lohHouseInfo.getRegionInfoCityId());
+			}
+			if (lohHouseInfo.getRegionInfoCountyId() == null) {
+				ps.setNull(8, Types.INTEGER);
+			} else {
+				ps.setInt(8, lohHouseInfo.getRegionInfoCountyId());
+			}
+			ps.setString(9, lohHouseInfo.getHouseAddress());
+			ps.setBigDecimal(10, lohHouseInfo.getPrice());
+			ps.setDate(11, new Date(lohHouseInfo.getPushDate().getTime()));
+			ps.setString(12, lohHouseInfo.getContacts());
+			ps.setString(13, lohHouseInfo.getCellPhone());
+			ps.setString(14, lohHouseInfo.getQrcodeLink());
 
 			int updateLohHouseInfoCount = ps.executeUpdate();
 
@@ -973,7 +1008,9 @@ public class LohDaoImpl implements LohDao {
 		strbQueryPagination.append(" house_title , ");
 		strbQueryPagination.append(" user_info_id , ");
 		strbQueryPagination.append(" loh_house_type_id , ");
-		strbQueryPagination.append(" region_info_id , ");
+		strbQueryPagination.append(" region_info_province_id , ");
+		strbQueryPagination.append(" region_info_city_id , ");
+		strbQueryPagination.append(" region_info_county_id , ");
 		strbQueryPagination.append(" house_address , ");
 		strbQueryPagination.append(" price , ");
 		strbQueryPagination.append(" push_date , ");
@@ -1266,7 +1303,9 @@ public class LohDaoImpl implements LohDao {
 		strbFindLohHouseInfoByLohHouseTypeId.append(" house_title , ");
 		strbFindLohHouseInfoByLohHouseTypeId.append(" user_info_id , ");
 		strbFindLohHouseInfoByLohHouseTypeId.append(" loh_house_type_id , ");
-		strbFindLohHouseInfoByLohHouseTypeId.append(" region_info_id , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" region_info_province_id , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" region_info_city_id , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" region_info_county_id , ");
 		strbFindLohHouseInfoByLohHouseTypeId.append(" house_address , ");
 		strbFindLohHouseInfoByLohHouseTypeId.append(" price , ");
 		strbFindLohHouseInfoByLohHouseTypeId.append(" push_date , ");

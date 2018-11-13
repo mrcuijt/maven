@@ -207,7 +207,9 @@ public class JDBCUtil {
 		lohHouseInfo.setHouseTitle(rs.getString("house_title"));
 		lohHouseInfo.setUserInfoId(rs.getInt("user_info_id"));
 		lohHouseInfo.setLohHouseTypeId(rs.getInt("loh_house_type_id"));
-		lohHouseInfo.setRegionInfoId(rs.getInt("region_info_id"));
+		lohHouseInfo.setRegionInfoProvinceId(rs.getInt("region_info_province_id"));
+		lohHouseInfo.setRegionInfoCityId(rs.getInt("region_info_city_id"));
+		lohHouseInfo.setRegionInfoCountyId(rs.getInt("region_info_county_id"));
 		lohHouseInfo.setHouseAddress(rs.getString("house_address"));
 		lohHouseInfo.setPrice(rs.getBigDecimal("price"));
 		lohHouseInfo.setPushDate(rs.getDate("push_date"));

@@ -274,7 +274,9 @@ public class LohAdminDaoImpl implements LohAdminDao {
 		strbFindLohHouseInfoByLohHouseTypeId.append(" house_title , ");
 		strbFindLohHouseInfoByLohHouseTypeId.append(" user_info_id , ");
 		strbFindLohHouseInfoByLohHouseTypeId.append(" loh_house_type_id , ");
-		strbFindLohHouseInfoByLohHouseTypeId.append(" region_info_id , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" region_info_province_id , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" region_info_city_id , ");
+		strbFindLohHouseInfoByLohHouseTypeId.append(" region_info_county_id , ");
 		strbFindLohHouseInfoByLohHouseTypeId.append(" house_address , ");
 		strbFindLohHouseInfoByLohHouseTypeId.append(" price , ");
 		strbFindLohHouseInfoByLohHouseTypeId.append(" push_date , ");

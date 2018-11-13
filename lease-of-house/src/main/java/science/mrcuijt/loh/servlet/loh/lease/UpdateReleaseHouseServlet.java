@@ -314,7 +314,9 @@ public class UpdateReleaseHouseServlet extends HttpServlet {
 		// 设置新的房屋地址
 		lohHouseInfo.setHouseAddress(houseAddress);
 		// 设置新的地区信息
-		lohHouseInfo.setRegionInfoId(null);
+		lohHouseInfo.setRegionInfoProvinceId(null);
+		lohHouseInfo.setRegionInfoCityId(null);
+		lohHouseInfo.setRegionInfoCountyId(null);
 		// 设置新的房屋联系人
 		lohHouseInfo.setContacts(contacts);
 		// 设置新的房屋联系电话

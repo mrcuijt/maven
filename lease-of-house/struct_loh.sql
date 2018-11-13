@@ -7,10 +7,10 @@ Source Host           : localhost:3306
 Source Database       : loh
 
 Target Server Type    : MYSQL
-Target Server Version : 50089
+Target Server Version : 60099
 File Encoding         : 65001
 
-Date: 2018-11-13 10:13:07
+Date: 2018-11-13 11:16:49
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -31,12 +31,12 @@ CREATE TABLE `login_info` (
 `login_ip`  varchar(15) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '登录IP' ,
 PRIMARY KEY (`login_info_id`),
 FOREIGN KEY (`user_info_id`) REFERENCES `user_info` (`user_info_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-INDEX `FK_fk_login_info_user_info` USING BTREE (`user_info_id`)
+INDEX `FK_fk_login_info_user_info` (`user_info_id`) USING BTREE 
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
 COMMENT='登录信息表; InnoDB free: 21504 kB; (`user_info_id`) REFER `loh/user_info`(`user_info_'
-/*!50003 AUTO_INCREMENT=101 */
+AUTO_INCREMENT=105
 
 ;
 
@@ -55,13 +55,13 @@ CREATE TABLE `loh_file_info` (
 PRIMARY KEY (`loh_file_info_id`),
 FOREIGN KEY (`loh_file_type_id`) REFERENCES `loh_file_type` (`loh_file_type_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
 FOREIGN KEY (`loh_house_info_id`) REFERENCES `loh_house_info` (`loh_house_info_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-INDEX `FK_loh_house_info_loh_house_file_info` USING BTREE (`loh_house_info_id`),
-INDEX `FK_loh_file_type_loh_house_file_info` USING BTREE (`loh_file_type_id`)
+INDEX `FK_loh_house_info_loh_house_file_info` (`loh_house_info_id`) USING BTREE ,
+INDEX `FK_loh_file_type_loh_house_file_info` (`loh_file_type_id`) USING BTREE 
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
 COMMENT='房屋租赁文件信息表; InnoDB free: 21504 kB; (`loh_file_type_id`) REFER `loh/loh_file_type`'
-/*!50003 AUTO_INCREMENT=1437 */
+AUTO_INCREMENT=1437
 
 ;
 
@@ -79,7 +79,7 @@ PRIMARY KEY (`loh_file_type_id`)
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
 COMMENT='文件类型表'
-/*!50003 AUTO_INCREMENT=2 */
+AUTO_INCREMENT=2
 
 ;
 
@@ -94,9 +94,9 @@ CREATE TABLE `loh_house_info` (
 `house_title`  varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '房屋信息标题' ,
 `user_info_id`  int(11) NULL DEFAULT NULL COMMENT '用户ID（与用户表的外键关联关系）' ,
 `loh_house_type_id`  int(11) NULL DEFAULT NULL COMMENT '房屋类型ID（与房屋类型表的外键关联关系）' ,
-`region_info_id`  int(11) NULL DEFAULT NULL COMMENT '地区信息ID（与地区信息表的外键）' ,
-`region_info_city_id`  int(11) NULL DEFAULT NULL ,
-`region_info_county_id`  int(11) NULL DEFAULT NULL ,
+`region_info_province_id`  int(11) NULL DEFAULT NULL COMMENT '省市级地区信息ID（与地区信息表的外键）' ,
+`region_info_city_id`  int(11) NULL DEFAULT NULL COMMENT '市市辖区级地区信息ID（与地区信息表的外键）' ,
+`region_info_county_id`  int(11) NULL DEFAULT NULL COMMENT '区县级地区信息ID（与地区信息表的外键）' ,
 `house_address`  varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '房屋地址' ,
 `price`  decimal(10,0) NULL DEFAULT NULL COMMENT '房屋租赁价格' ,
 `push_date`  date NULL DEFAULT NULL COMMENT '发布日期' ,
@@ -104,17 +104,21 @@ CREATE TABLE `loh_house_info` (
 `cell_phone`  varchar(11) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '联系电话' ,
 `qrcode_link`  varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '二维码链接地址' ,
 PRIMARY KEY (`loh_house_info_id`),
+FOREIGN KEY (`region_info_city_id`) REFERENCES `region_info` (`region_info_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
 FOREIGN KEY (`loh_house_type_id`) REFERENCES `loh_house_type` (`loh_house_type_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
 FOREIGN KEY (`user_info_id`) REFERENCES `user_info` (`user_info_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-FOREIGN KEY (`region_info_id`) REFERENCES `region_info` (`region_info_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-INDEX `FK_fk_loh_house_info_loh_house_type` USING BTREE (`loh_house_type_id`),
-INDEX `FK_fk_loh_house_info_user_info` USING BTREE (`user_info_id`),
-INDEX `FK_fk_region_info_loh_house_info` USING BTREE (`region_info_id`)
+FOREIGN KEY (`region_info_province_id`) REFERENCES `region_info` (`region_info_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+FOREIGN KEY (`region_info_county_id`) REFERENCES `region_info` (`region_info_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+INDEX `FK_fk_loh_house_info_loh_house_type` (`loh_house_type_id`) USING BTREE ,
+INDEX `FK_fk_loh_house_info_user_info` (`user_info_id`) USING BTREE ,
+INDEX `FK_fk_region_info_loh_house_info` (`region_info_province_id`) USING BTREE ,
+INDEX `FK_fk_region_info_loh_house_info_3` (`region_info_county_id`) USING BTREE ,
+INDEX `FK_fk_region_info_loh_house_info_2` (`region_info_city_id`) USING BTREE 
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
-COMMENT='租赁房屋信息表; InnoDB free: 21504 kB; (`loh_house_type_id`) REFER `loh/loh_house_type`'
-/*!50003 AUTO_INCREMENT=409 */
+COMMENT='租赁房屋信息表; InnoDB free: 21504 kB; (`region_info_city_id`) REFER `loh/region_info`('
+AUTO_INCREMENT=409
 
 ;
 
@@ -132,7 +136,7 @@ PRIMARY KEY (`loh_house_type_id`)
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
 COMMENT='房屋租赁类型表'
-/*!50003 AUTO_INCREMENT=116 */
+AUTO_INCREMENT=120
 
 ;
 
@@ -148,12 +152,12 @@ CREATE TABLE `loh_house_view_history` (
 `user_info_id`  int(11) NULL DEFAULT NULL COMMENT '用户ID（与用户信息表的外键关联关系）' ,
 PRIMARY KEY (`loh_house_view_history_id`),
 FOREIGN KEY (`user_info_id`) REFERENCES `user_info` (`user_info_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-INDEX `FK_fk_loh_house_view_history_user_info` USING BTREE (`user_info_id`)
+INDEX `FK_fk_loh_house_view_history_user_info` (`user_info_id`) USING BTREE 
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
 COMMENT='租赁房屋浏览记录表; InnoDB free: 21504 kB; (`user_info_id`) REFER `loh/user_info`(`user_i'
-/*!50003 AUTO_INCREMENT=1 */
+AUTO_INCREMENT=1
 
 ;
 
@@ -171,12 +175,12 @@ CREATE TABLE `region_info` (
 `parent_region_id`  int(11) NULL DEFAULT NULL COMMENT '地区信息表ID（与地区信息表的外键关联关系）' ,
 PRIMARY KEY (`region_info_id`),
 FOREIGN KEY (`parent_region_id`) REFERENCES `region_info` (`region_info_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-INDEX `FK_fk_region_info_region_info` USING BTREE (`parent_region_id`)
+INDEX `FK_fk_region_info_region_info` (`parent_region_id`) USING BTREE 
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
 COMMENT='地区信息表; InnoDB free: 21504 kB; (`parent_region_id`) REFER `loh/region_info`(`regi'
-/*!50003 AUTO_INCREMENT=539137 */
+AUTO_INCREMENT=539137
 
 ;
 
@@ -195,19 +199,19 @@ CREATE TABLE `user_info` (
 `detailed_information`  varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '详细信息' ,
 PRIMARY KEY (`user_info_id`),
 FOREIGN KEY (`region_info_id`) REFERENCES `region_info` (`region_info_id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-INDEX `FK_fk_user_info_region_info` USING BTREE (`region_info_id`)
+INDEX `FK_fk_user_info_region_info` (`region_info_id`) USING BTREE 
 )
 ENGINE=InnoDB
 DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci
 COMMENT='用户信息表; InnoDB free: 21504 kB; (`region_info_id`) REFER `loh/region_info`(`region'
-/*!50003 AUTO_INCREMENT=103 */
+AUTO_INCREMENT=107
 
 ;
 
 -- ----------------------------
 -- Auto increment value for `login_info`
 -- ----------------------------
-ALTER TABLE `login_info` AUTO_INCREMENT=101;
+ALTER TABLE `login_info` AUTO_INCREMENT=105;
 
 -- ----------------------------
 -- Auto increment value for `loh_file_info`
@@ -227,7 +231,7 @@ ALTER TABLE `loh_house_info` AUTO_INCREMENT=409;
 -- ----------------------------
 -- Auto increment value for `loh_house_type`
 -- ----------------------------
-ALTER TABLE `loh_house_type` AUTO_INCREMENT=116;
+ALTER TABLE `loh_house_type` AUTO_INCREMENT=120;
 
 -- ----------------------------
 -- Auto increment value for `loh_house_view_history`
@@ -242,4 +246,4 @@ ALTER TABLE `region_info` AUTO_INCREMENT=539137;
 -- ----------------------------
 -- Auto increment value for `user_info`
 -- ----------------------------
-ALTER TABLE `user_info` AUTO_INCREMENT=103;
+ALTER TABLE `user_info` AUTO_INCREMENT=107;
