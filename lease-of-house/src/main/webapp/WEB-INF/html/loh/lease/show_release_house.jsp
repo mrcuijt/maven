@@ -82,5 +82,17 @@
 	<script src="<%=request.getContextPath()%>/js/require/jquery/jquery-1.12.4.min.js"></script>
 	<!-- 引入 Bootstrap -->
 	<script src="<%=request.getContextPath()%>/js/require/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			if (window.history && window.history.pushState) {
+				$(window).on('popstate', function() {
+					window.history.pushState('forward', null, '#');
+					window.history.forward(1);
+				});
+			}
+			window.history.pushState('forward', null, '#'); // 在IE中必须得有这两行
+			window.history.forward(1);
+		});
+	</script>
 </body>
 </html>

@@ -81,6 +81,12 @@ public class ReleaseHouseServlet extends HttpServlet {
 		String housePrice = null;
 		// 房屋地址
 		String houseAddress = null;
+		// 房屋所在省
+		String province = null;
+		// 房屋所在市
+		String city = null;
+		// 房屋所在县
+		String county = null;
 		// 联系人
 		String contacts = null;
 		// 联系电话
@@ -156,6 +162,15 @@ public class ReleaseHouseServlet extends HttpServlet {
 					case "houseAddress": // 房屋地址
 						houseAddress = item.getString("UTF-8");
 						break;
+					case "province": // 房屋所在省
+						province = item.getString();
+						break;
+					case "city": // 房屋所在市
+						city = item.getString();
+						break;
+					case "county": // 房屋所在县
+						county = item.getString();
+						break;
 					case "contacts": // 联系人
 						contacts = item.getString("UTF-8");
 						break;
@@ -183,6 +198,12 @@ public class ReleaseHouseServlet extends HttpServlet {
 		// 2、房屋价格 转换为 BigDecimal
 		Integer lohHouseTypeId = null;
 		BigDecimal pushPrice = null;
+		// 房屋所在省id
+		Integer provinceId = null;
+		// 房屋所在市id
+		Integer cityId = null;
+		// 房屋所在县id
+		Integer countyId = null;
 		try {
 			lohHouseTypeId = Integer.parseInt(houseType);
 			pushPrice = new BigDecimal(housePrice);
@@ -197,6 +218,7 @@ public class ReleaseHouseServlet extends HttpServlet {
 			message = "未选择房屋类型，请刷新后重试。";
 		}
 
+		// 验证房屋类型
 		if (verifyResult) {
 
 			// 查询房屋类型是否存在
@@ -208,11 +230,30 @@ public class ReleaseHouseServlet extends HttpServlet {
 			}
 		}
 
+		// 验证输入金额
 		if (verifyResult) {
 
 			if (pushPrice == null) {
 				verifyResult = false;
 				message = "请输入合法的金额。";
+			}
+		}
+		
+		// 验证房屋所在地区信息
+		if(verifyResult) {
+			
+			try {
+				
+				provinceId = Integer.parseInt(province);
+				
+				cityId = Integer.parseInt(city);
+				
+				countyId = Integer.parseInt(county);
+				
+			} catch (NumberFormatException e) {
+				verifyResult = false;
+				message = "请选择房屋地区后重试。";
+				e.printStackTrace();
 			}
 		}
 
@@ -288,6 +329,9 @@ public class ReleaseHouseServlet extends HttpServlet {
 		lohHouseInfo.setLohHouseTypeId(lohHouseTypeId);
 		lohHouseInfo.setPrice(pushPrice);
 		lohHouseInfo.setHouseAddress(houseAddress);
+		lohHouseInfo.setRegionInfoProvinceId(provinceId);
+		lohHouseInfo.setRegionInfoCityId(cityId);
+		lohHouseInfo.setRegionInfoCountyId(countyId);
 		lohHouseInfo.setContacts(contacts);
 		lohHouseInfo.setCellPhone(cellPhone);
 		lohHouseInfo.setUserInfoId(userInfoId);

@@ -17,6 +17,13 @@
 <script src="<%=request.getContextPath()%>/js/require/picturefill/3.0.2/picturefill.min.js" async></script>
 <!-- 引入 Bootstrap 样式 -->
 <link rel="stylesheet" href="<%=request.getContextPath()%>/js/require/bootstrap/3.3.7/css/bootstrap.min.css" />
+<script type="text/javascript">
+	<%
+		String path = request.getContextPath();
+		String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+	%>
+	var basePath = "<%=basePath%>";
+</script>
 </head>
 <body>
 
@@ -62,13 +69,42 @@
 						<tr>
 							<td>
 								<label for="houseAddress">所在地址：</label> 
-								<select id="province" name="regionInfo">
-									<c:forEach items="${regionInfoList }" var="regionInfo" varStatus="vs">
-										<option value="${regionInfo.regionInfoId }">${regionInfo.regionName }</option>
+								<select id="province" name="province">
+									<c:forEach items="${provinceList }" var="regionInfo" varStatus="vs">
+										<c:choose>
+											<c:when test="${regionInfo.regionInfoId == lohHouseInfo.regionInfoProvinceId }">
+												<option value="${regionInfo.regionInfoId }" selected="selected">${regionInfo.regionName }</option>
+											</c:when>
+											<c:otherwise>
+												<option value="${regionInfo.regionInfoId }">${regionInfo.regionName }</option>
+											</c:otherwise>
+										</c:choose>
 									</c:forEach>
 								</select>
-								<select id="city" name="regionInfo"></select>
-								<select id="county" name="regionInfo"></select>
+								<select id="city" name="city">
+									<c:forEach items="${cityList }" var="regionInfo" varStatus="vs">
+										<c:choose>
+											<c:when test="${regionInfo.regionInfoId == lohHouseInfo.regionInfoCityId }">
+												<option value="${regionInfo.regionInfoId }" selected="selected">${regionInfo.regionName }</option>
+											</c:when>
+											<c:otherwise>
+												<option value="${regionInfo.regionInfoId }">${regionInfo.regionName }</option>
+											</c:otherwise>
+										</c:choose>
+									</c:forEach>
+								</select>
+								<select id="county" name="county">
+									<c:forEach items="${countyList }" var="regionInfo" varStatus="vs">
+										<c:choose>
+											<c:when test="${regionInfo.regionInfoId == lohHouseInfo.regionInfoCountyId }">
+												<option value="${regionInfo.regionInfoId }" selected="selected">${regionInfo.regionName }</option>
+											</c:when>
+											<c:otherwise>
+												<option value="${regionInfo.regionInfoId }">${regionInfo.regionName }</option>
+											</c:otherwise>
+										</c:choose>
+									</c:forEach>
+								</select>
 								<input name="houseAddress" type="text" placeholder="请输入所在地址"  value="${lohHouseInfo.houseAddress }"/>
 							</td>
 						</tr>
@@ -97,8 +133,11 @@
 						<tr>
 							<td>
 								<c:forEach items="${lohFileInfos}" var="lohFileInfo"  varStatus="vs">
-									<img src="<%=request.getContextPath()%>/${lohFileInfo.fileLink}" />
-									<input name="imageId" value="${lohFileInfo.lohFileInfoId }" style="display:none"/>
+									<div>
+										<img src="<%=request.getContextPath()%>/${lohFileInfo.fileLink}" />
+										<input name="imageId" value="${lohFileInfo.lohFileInfoId }" style="display:none"/>
+										<button class="btn btn-default img-del-btn" type="button">删除</button>
+									</div>
 								</c:forEach>
 							</td>
 						</tr>
@@ -120,21 +159,7 @@
 	<script src="<%=request.getContextPath()%>/js/require/jquery/jquery-1.12.4.min.js"></script>
 	<!-- 引入 Bootstrap -->
 	<script src="<%=request.getContextPath()%>/js/require/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<script type="text/javascript">
-		$(function(){
-			// 绑定添加图片按钮的单击事件
-			$("#addFile").bind("click",addUploadFile);
-		});
-		
-		function addUploadFile(e){
-			
-			var $input = $("<input/>");
-			$input.attr("name","image");
-			$input.attr("type","file");
-			$input.attr("placeholder","请选择图片");
-			
-			$(e.target).parent().append($input);
-		}
-	</script>
+	<!-- 引入当前页面的 js -->
+	<script src="<%=request.getContextPath()%>/js/loh/lease/to_update_release_house.js"></script>
 </body>
 </html>

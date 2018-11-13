@@ -1178,7 +1178,7 @@ public class LohDaoImpl implements LohDao {
 	 * @return
 	 */
 	@Override
-	public List<RegionInfo> findregionInfoByParentRegionId(Integer parentRegionId) {
+	public List<RegionInfo> findRegionInfoByParentRegionId(Integer parentRegionId) {
 
 		List<RegionInfo> regionInfoList = new ArrayList<>();
 
@@ -1226,6 +1226,62 @@ public class LohDaoImpl implements LohDao {
 		// 返回函数值
 		return regionInfoList;
 
+	}
+	
+	/**
+	 * 根据父级地区Id查询对应的子集地区信息
+	 * 
+	 * @param parentRegionId
+	 * @return
+	 */
+	@Override
+	public RegionInfo findRegionInfoByPrimaryKey(Integer regionInfoId) {
+		
+		RegionInfo regionInfo = null;
+
+		StringBuffer strbFindRegionInfo = new StringBuffer();
+
+		strbFindRegionInfo.append(" SELECT  ");
+		strbFindRegionInfo.append(" region_info_id , ");
+		strbFindRegionInfo.append(" gmt_create , ");
+		strbFindRegionInfo.append(" gmt_modified , ");
+		strbFindRegionInfo.append(" region_code , ");
+		strbFindRegionInfo.append(" region_name , ");
+		strbFindRegionInfo.append(" region_level , ");
+		strbFindRegionInfo.append(" parent_region_id ");
+		strbFindRegionInfo.append(" FROM region_info ");
+		strbFindRegionInfo.append(" WHERE region_info_id = ? ");
+
+		String sql = strbFindRegionInfo.toString();
+
+		Connection conn = JDBCUtil.getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			ps = conn.prepareStatement(sql);
+
+			ps.setInt(1, regionInfoId);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				regionInfo = JDBCUtil.convertResultSetToRegionInfo(rs);
+
+			}
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+
+		// 返回函数值
+		return regionInfo;
 	}
 
 	/**

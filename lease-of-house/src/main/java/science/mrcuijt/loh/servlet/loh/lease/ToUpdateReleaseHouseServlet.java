@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import science.mrcuijt.loh.entity.LohFileInfo;
 import science.mrcuijt.loh.entity.LohHouseInfo;
 import science.mrcuijt.loh.entity.LohHouseType;
+import science.mrcuijt.loh.entity.RegionInfo;
 import science.mrcuijt.loh.service.LohService;
 import science.mrcuijt.loh.service.impl.LohServiceImpl;
 
@@ -78,6 +79,24 @@ public class ToUpdateReleaseHouseServlet extends HttpServlet {
 		// 查询房屋类型列表
 		List<LohHouseType> LohHouseTypeList = lohService.findAllLohHouseType();
 		
+		// 加载地区信息
+		List<RegionInfo> provinceList = null;
+		List<RegionInfo> cityList = null;
+		List<RegionInfo> countyList = null;
+		
+		provinceList = lohService.findRegionInfoByLevel(1);
+		
+		if(lohHouseInfo.getRegionInfoCityId() != null && lohHouseInfo.getRegionInfoCityId() > 0) {
+			RegionInfo regionInfo = lohService.findRegionInfoByPrimaryKey(lohHouseInfo.getRegionInfoCityId());
+			cityList = lohService.findRegionInfoByParentRegionId(regionInfo.getParentRegionId());
+		}
+		
+		if(lohHouseInfo.getRegionInfoCountyId() != null && lohHouseInfo.getRegionInfoCountyId() > 0) {
+			RegionInfo regionInfo = lohService.findRegionInfoByPrimaryKey(lohHouseInfo.getRegionInfoCountyId());
+			countyList = lohService.findRegionInfoByParentRegionId(regionInfo.getParentRegionId());
+		}
+		
+		
 		// 查询房屋信息关联的房屋文件信息
 		List<LohFileInfo> lohFileInfos = lohService.findLohFileInfoByLohHouseInfoId(lohHouseId);
 
@@ -87,6 +106,10 @@ public class ToUpdateReleaseHouseServlet extends HttpServlet {
 		
 		// 添加所有的房屋类型
 		request.setAttribute("LohHouseTypeList", LohHouseTypeList);
+		// 添加地区信息
+		request.setAttribute("provinceList", provinceList);
+		request.setAttribute("cityList", cityList);
+		request.setAttribute("countyList", countyList);
 		// 添加房屋文件信息
 		request.setAttribute("lohFileInfos", lohFileInfos);
 

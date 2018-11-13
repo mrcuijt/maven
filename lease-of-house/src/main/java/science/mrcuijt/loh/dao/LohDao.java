@@ -125,8 +125,16 @@ public interface LohDao {
 	 * @param parentRegionId
 	 * @return
 	 */
-	public abstract List<RegionInfo> findregionInfoByParentRegionId(Integer parentRegionId);
+	public abstract List<RegionInfo> findRegionInfoByParentRegionId(Integer parentRegionId);
 
+	/**
+	 * 根据地区信息表主键查询地区信息表记录
+	 * 
+	 * @param regionInfoId
+	 * @return
+	 */
+	public abstract RegionInfo findRegionInfoByPrimaryKey(Integer regionInfoId);
+	
 	/**
 	 * 根据主键查询查询房屋类型信息
 	 * 

@@ -266,9 +266,21 @@ public class LohServiceImpl implements LohService {
 	 * @return
 	 */
 	@Override
-	public List<RegionInfo> findregionInfoByParentRegionId(Integer parentRegionId) {
+	public List<RegionInfo> findRegionInfoByParentRegionId(Integer parentRegionId) {
 
-		return lohDao.findregionInfoByParentRegionId(parentRegionId);
+		return lohDao.findRegionInfoByParentRegionId(parentRegionId);
+	}
+	
+	/**
+	 * 根据地区信息表主键查询地区信息表记录的业务逻辑接口
+	 * 
+	 * @param regionInfoId
+	 * @return
+	 */
+	@Override
+	public RegionInfo findRegionInfoByPrimaryKey(Integer regionInfoId) {
+		
+		return lohDao.findRegionInfoByPrimaryKey(regionInfoId);
 	}
 
 	/**
