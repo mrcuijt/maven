@@ -1,0 +1,94 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>science.mrcuijt.server</groupId>
+	<artifactId>server-demo</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<!-- 开发项目时 所有用到的项目框架版本号 尽量 统一使用 父项目管理版本号 -->
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+	</properties>
+
+	<dependencies>
+
+		<!-- Attention: Be sure nothing pulls in an old dependency with groupId 
+			"freemarker" (without the "org."), because then you will end up with two 
+			freemarker.jar-s and unpredictable behavior! -->
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<version>2.3.28</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+
+		<!-- 整合 Log4j -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.8.0-alpha2</version>
+		</dependency>
+
+	</dependencies>
+
+	<!-- Maven official repository -->
+	<repositories>
+		<repository>
+			<id>maven</id>
+			<name>Maven Repository Switchboard</name>
+			<layout>default</layout>
+			<url>http://repo1.maven.org/maven2</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>nexus-Atlassian</id>
+			<name>Atlassian 3rd-P Old</name>
+			<url>https://maven.atlassian.com/3rdparty/</url>
+		</repository>
+	</repositories>
+
+	<!-- 配置 Maven 项目的构建环境 -->
+	<build>
+
+		<plugins>
+			<!-- Maven Compiler 插件环境配置 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<!-- 设置详细信息 -->
+				<configuration>
+					<source>1.9</source>
+					<target>1.9</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+
+			<!-- 设置资源文件的编码方式 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.4.3</version>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+
+	</build>
+
+</project>
