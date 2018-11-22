@@ -144,7 +144,7 @@
 					</table>
 				</div>
 				<div class="col-sm-12">
-					<a role="button" class="btn btn-default" href="#">保存</a>
+					<a role="button" class="btn btn-default" href="<%=request.getContextPath()%>/loh/lease/main.do">返回</a>
 					<button class="btn btn-default" type="submit">更新</button>
 					<p>${message }</p>
 				</div>

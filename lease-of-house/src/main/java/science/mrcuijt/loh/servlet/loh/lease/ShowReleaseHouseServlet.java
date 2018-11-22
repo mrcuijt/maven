@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import science.mrcuijt.loh.entity.LohFileInfo;
 import science.mrcuijt.loh.entity.LohHouseInfo;
 import science.mrcuijt.loh.entity.LohHouseType;
+import science.mrcuijt.loh.entity.RegionInfo;
 import science.mrcuijt.loh.service.LohService;
 import science.mrcuijt.loh.service.impl.LohServiceImpl;
 
@@ -58,6 +59,11 @@ public class ShowReleaseHouseServlet extends HttpServlet {
 			// 根据房屋信息 Id 查询，房屋文件信息
 			List<LohFileInfo> lohFileInfoList = lohService.findLohFileInfoByLohHouseInfoId(lohHouseInfoId);
 			
+			// 根据地区 id 查询地区信息
+			RegionInfo provience = lohService.findRegionInfoByPrimaryKey(lohHouseInfo.getRegionInfoProvinceId());
+			RegionInfo city = lohService.findRegionInfoByPrimaryKey(lohHouseInfo.getRegionInfoCityId());
+			RegionInfo country = lohService.findRegionInfoByPrimaryKey(lohHouseInfo.getRegionInfoCountyId());
+			
 			// 添加房屋信息
 			request.setAttribute("lohHouseInfo", lohHouseInfo);
 			
@@ -66,6 +72,11 @@ public class ShowReleaseHouseServlet extends HttpServlet {
 			
 			// 添加房屋文件信息
 			request.setAttribute("lohFileInfoList", lohFileInfoList);
+			
+			// 添加地区信息
+			request.setAttribute("provience", provience);
+			request.setAttribute("city", city);
+			request.setAttribute("country", country);
 		}
 
 

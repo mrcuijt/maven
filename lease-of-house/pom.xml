@@ -176,6 +176,35 @@
 				</configuration>
 			</plugin>
 
+			<!-- 设置资源文件的编码方式 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.4.3</version>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin> 
+
+			<!-- 设置打包时过滤的文件 -->
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<!-- 过滤 resource 资源目录下指定的文件 -->
+					<packagingExcludes></packagingExcludes><!-- packagingExcludes 中指定的文件位于 src/main/resources 目录中 -->
+					<!-- 过滤 webapp 目录下指定的文件 -->
+					<warSourceExcludes><!-- warSourceExcludes 中指定的文件位于 src/main/webapp 目录中 -->
+						upload_file/** ,
+						temp_dir/**
+					</warSourceExcludes>
+				</configuration>
+			</plugin>
+
 			<!-- Maven tomcat7 插件环境配置 -->
 			<plugin>
 				<groupId>org.apache.tomcat.maven</groupId>

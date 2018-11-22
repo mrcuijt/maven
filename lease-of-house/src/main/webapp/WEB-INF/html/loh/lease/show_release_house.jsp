@@ -44,6 +44,13 @@
 					</tr>
 					<tr>
 						<td>
+							<span>房屋所在地区：${provience.regionName }</span>
+							<span>${city.regionName }</span>
+							<span>${country.regionName }</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
 							<span>房屋所在地址：${lohHouseInfo.houseAddress }</span>
 						</td>
 					</tr>
@@ -72,6 +79,9 @@
 				</table>
 			</div>
 			<p>${message }</p>
+			<a class="btn btn-default" href="<%=request.getContextPath()%>/loh/lease/main.do">返回</a>
+			<a class="btn btn-default" href="<%=request.getContextPath()%>/loh/lease/toUpdateReleaseHouse.do?id=${lohHouseInfo.lohHouseInfoId}">更新</a>
+			<a class="btn btn-default" href="<%=request.getContextPath()%>/loh/lease/toDeleteReleaseHouse.do?id=${lohHouseInfo.lohHouseInfoId}">删除</a>
 		</div>
 	</div>
 	

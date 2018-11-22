@@ -61,13 +61,13 @@
 						<tr>
 							<td>
 								<label for="houseAddress">所在地址：</label> 
-								<select id="province" name="regionInfo">
+								<select id="province" name="province">
 									<c:forEach items="${regionInfoList }" var="regionInfo" varStatus="vs">
 										<option value="${regionInfo.regionInfoId }">${regionInfo.regionName }</option>
 									</c:forEach>
 								</select>
-								<select id="city" name="regionInfo"></select>
-								<select id="county" name="regionInfo"></select>
+								<select id="city" name="city"></select>
+								<select id="county" name="county"></select>
 								<input name="houseAddress" type="text" placeholder="请输入所在地址"  value=""/>
 							</td>
 						</tr>
@@ -96,6 +96,7 @@
 					</table>
 				</div>
 				<div class="col-sm-12">
+					<a role="button" class="btn btn-default" href="<%=request.getContextPath()%>/loh/lease/main.do">返回</a>
 					<a role="button" class="btn btn-default" href="#">保存</a>
 					<button class="btn btn-default" type="submit">发布</button>
 					<p>${message }</p>

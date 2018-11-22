@@ -56,7 +56,7 @@ public class GetRegionServlet extends HttpServlet {
 		}
 
 		// 根据 regionId 查询所有子级 Region 信息
-		List<RegionInfo> regionInfo = lohService.findregionInfoByParentRegionId(regionId);
+		List<RegionInfo> regionInfo = lohService.findRegionInfoByParentRegionId(regionId);
 		
 		pw.write(JSON.toJSONString(regionInfo));
 		

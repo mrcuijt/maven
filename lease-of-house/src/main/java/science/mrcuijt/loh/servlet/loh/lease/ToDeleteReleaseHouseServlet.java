@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import science.mrcuijt.loh.entity.LohFileInfo;
 import science.mrcuijt.loh.entity.LohHouseInfo;
+import science.mrcuijt.loh.entity.LohHouseType;
+import science.mrcuijt.loh.entity.RegionInfo;
 import science.mrcuijt.loh.service.LohService;
 import science.mrcuijt.loh.service.impl.LohServiceImpl;
 
@@ -77,14 +79,31 @@ public class ToDeleteReleaseHouseServlet extends HttpServlet {
 			return;
 		}
 
+		// 查询房屋类型信息
+		LohHouseType lohHouseType = lohService.findLohHouseTypeByPrimaryKey(lohHouseInfo.getLohHouseTypeId());
+		
 		// 查询所有的房屋文件信息
 		List<LohFileInfo> lohFileInfoList = lohService
 				.findLohFileInfoByLohHouseInfoId(lohHouseInfo.getLohHouseInfoId());
-
+		
+		// 根据地区 id 查询地区信息
+		RegionInfo provience = lohService.findRegionInfoByPrimaryKey(lohHouseInfo.getRegionInfoProvinceId());
+		RegionInfo city = lohService.findRegionInfoByPrimaryKey(lohHouseInfo.getRegionInfoCityId());
+		RegionInfo country = lohService.findRegionInfoByPrimaryKey(lohHouseInfo.getRegionInfoCountyId());
+		
 		// 添加房屋信息
 		request.setAttribute("lohHouseInfo", lohHouseInfo);
 		// 添加房屋文件信息
 		request.setAttribute("lohFileInfoList", lohFileInfoList);
+		
+		// 添加房屋类型信息
+		request.setAttribute("lohHouseType", lohHouseType);
+		
+		// 添加地区信息
+		request.setAttribute("provience", provience);
+		request.setAttribute("city", city);
+		request.setAttribute("country", country);
+
 		// 将请求转发到 JSP
 		request.getRequestDispatcher("/WEB-INF/html/loh/lease/to_delete_release_house.jsp").forward(request, response);
 	}

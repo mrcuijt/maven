@@ -44,6 +44,13 @@
 					</tr>
 					<tr>
 						<td>
+							<span>房屋所在地区：${provience.regionName }</span>
+							<span>${city.regionName }</span>
+							<span>${country.regionName }</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
 							<span>房屋所在地址：${lohHouseInfo.houseAddress }</span>
 						</td>
 					</tr>
