@@ -918,16 +918,40 @@ public class LohDaoImpl implements LohDao {
 		StringBuffer strbComm = new StringBuffer();
 		strbComm.append(" FROM loh_house_info ");
 		strbComm.append(" WHERE user_info_id = ? ");
+		
 		// 动态拼接查询条件
 		strbComm.append("  ");
+		
+		if (queryParam.get("provinceId") != null) {
+			strbComm.append(" and region_info_province_id = ? ");
+			queryParamValue.add(queryParam.get("provinceId"));
+		}
+		
+		// 房屋所在市id
+		if (queryParam.get("cityId") != null) {
+			strbComm.append(" and region_info_city_id = ? ");
+			queryParamValue.add(queryParam.get("cityId"));
+		}
+		
+		// 房屋所在县id
+		if (queryParam.get("countyId") != null) {
+			strbComm.append(" and region_info_county_id = ? ");
+			queryParamValue.add(queryParam.get("countyId"));
+		}
+		
+		// 房屋类型 id
 		if (queryParam.get("lohHouseTypeId") != null) {
 			strbComm.append(" and loh_house_type_id = ? ");
 			queryParamValue.add(queryParam.get("lohHouseTypeId"));
 		}
+		
+		// 房屋价格
 		if (queryParam.get("lohPrice") != null) {
 			strbComm.append(" and price = ? ");
 			queryParamValue.add(queryParam.get("lohPrice"));
 		}
+		
+		// 房屋地址
 		if (queryParam.get("houseAddress") != null) {
 			strbComm.append(" and house_address like ? ");
 			queryParamValue.add(queryParam.get("houseAddress") + "%");
@@ -1012,10 +1036,14 @@ public class LohDaoImpl implements LohDao {
 		strbQueryPagination.append(" contacts , ");
 		strbQueryPagination.append(" cell_phone , ");
 		strbQueryPagination.append(" qrcode_link ");
+		
+		// 拼接公共的查询条件
 		strbQueryPagination.append(strbComm.toString());
+		// 设置排序
 		strbQueryPagination.append(" ORDER BY push_date desc ");
+		// 设置分页条件
 		strbQueryPagination.append(" LIMIT ");
-		strbQueryPagination.append((pageIndex - 1) * pageSize);
+		strbQueryPagination.append(((pageIndex <= 0) ? 1 : pageIndex - 1) * pageSize);
 		strbQueryPagination.append(" , ");
 		strbQueryPagination.append(pageSize);
 

@@ -47,6 +47,7 @@ public class JDBCUtil {
 			DRUID_DATA_SOURCE.setUsername(USER);
 			DRUID_DATA_SOURCE.setPassword(PASSWORD);
 			DRUID_DATA_SOURCE.setUrl(URL);
+			DRUID_DATA_SOURCE.setFilters("stat,log4j");
 		} catch (Exception e) {
 			LOG.info("加载 MySQL JDBC 驱动出现异常", e);
 			e.printStackTrace();

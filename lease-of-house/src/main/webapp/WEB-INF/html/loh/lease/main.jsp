@@ -2,6 +2,10 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,6 +21,9 @@
 <script src="<%=request.getContextPath()%>/js/require/picturefill/3.0.2/picturefill.min.js" async></script>
 <!-- 引入 Bootstrap 样式 -->
 <link rel="stylesheet" href="<%=request.getContextPath()%>/js/require/bootstrap/3.3.7/css/bootstrap.min.css" />
+<script type="text/javascript">
+	var basePath = "<%=basePath%>";
+</script>
 </head>
 <body>
 
@@ -29,13 +36,64 @@
 				<div class="col-sm-12">
 					<div class="form-group">
 						<label for="lohRegion">地区：</label>
-						<input name="lohRegion" type="text" value="${lohRegion }" class="form-control" placeholder="地区"/>
+						<select id="province" name="province">
+							<c:forEach items="${provinceList }" var="regionInfo" varStatus="vs">
+								<c:choose>
+									<c:when test="${regionInfo.regionInfoId == province }">
+										<option value="${regionInfo.regionInfoId }" selected="selected">${regionInfo.regionName }</option>
+									</c:when>
+									<c:otherwise>
+										<option value="${regionInfo.regionInfoId }">${regionInfo.regionName }</option>
+									</c:otherwise>
+								</c:choose>
+							</c:forEach>
+						</select>
+						<select id="city" name="city">
+							<option value="-1" selected="selected">请选择</option>
+							<c:forEach items="${cityList }" var="regionInfo" varStatus="vs">
+								<c:choose>
+									<c:when test="${regionInfo.regionInfoId == city }">
+										<option value="${regionInfo.regionInfoId }" selected="selected">${regionInfo.regionName }</option>
+									</c:when>
+									<c:otherwise>
+										<option value="${regionInfo.regionInfoId }">${regionInfo.regionName }</option>
+									</c:otherwise>
+								</c:choose>
+							</c:forEach>
+						</select>
+						<select id="county" name="county">
+							<option value="-1" selected="selected">请选择</option>
+							<c:forEach items="${countyList }" var="regionInfo" varStatus="vs">
+								<c:choose>
+									<c:when test="${regionInfo.regionInfoId == county }">
+										<option value="${regionInfo.regionInfoId }" selected="selected">${regionInfo.regionName }</option>
+									</c:when>
+									<c:otherwise>
+										<option value="${regionInfo.regionInfoId }">${regionInfo.regionName }</option>
+									</c:otherwise>
+								</c:choose>
+							</c:forEach>
+						</select>
+						<br />
 						<label for="lohHouseType">房屋类型：</label>
-						<input name="lohHouseType" type="text" value="${lohHouseType }" class="form-control" placeholder="房屋类型"/>
+						<select name="houseType">
+							<option value="-1" selected="selected">请选择</option>
+							<c:forEach items="${lohHouseTypeList }" var="lohHouseType" varStatus="">
+								<c:choose>
+									<c:when test="${lohHouseType.lohHouseTypeId == lohHouseTypeId}">
+										<option selected="selected" value="${lohHouseType.lohHouseTypeId}">${lohHouseType.houseType}</option>
+									</c:when>
+									<c:otherwise>
+										<option value="${lohHouseType.lohHouseTypeId}">${lohHouseType.houseType}</option>
+									</c:otherwise>
+								</c:choose>
+							</c:forEach>
+						</select>
+						<br />
 						<label for="lohPrice">房屋价格</label>
-						<input name="lohPrice" type="text" value="${lohPrice }" class="form-control" placeholder="房屋价格"/>
+						<input name="lohPrice" type="text" value="${lohPrice }" class="form-control" placeholder="请输入房屋价格"/>
 						<label for="houseAddress">房屋地址</label>
-						<input name="houseAddress" type="text" value="${houseAddress }" class="form-control" placeholder="房屋价格"/>
+						<input name="houseAddress" type="text" value="${houseAddress }" class="form-control" placeholder="请输入房屋地址"/>
 						<button type="submit" class="form-control btn btn-default">搜索</button>
 					</div>
 				</div>
@@ -126,5 +184,7 @@
 	<script src="<%=request.getContextPath()%>/js/require/jquery/jquery-1.12.4.min.js"></script>
 	<!-- 引入 Bootstrap -->
 	<script src="<%=request.getContextPath()%>/js/require/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<!-- 引入当前页面的 js -->
+	<script src="<%=request.getContextPath()%>/js/loh/lease/main.js"></script>
 </body>
 </html>
