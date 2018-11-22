@@ -11,6 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import freemarker.template.Configuration;
 import freemarker.template.TemplateExceptionHandler;
 
@@ -20,6 +23,8 @@ import freemarker.template.TemplateExceptionHandler;
  */
 public class ThreadService {
 
+	private static final Logger logger = LoggerFactory.getLogger(Worker.class);
+	
 	private static Integer port = null;
 	private static String host = null;
 	public static Map<String, Object> root = new HashMap<String, Object>();
@@ -71,14 +76,16 @@ public class ThreadService {
 		try {
 
 			serverSocket = new ServerSocket(port); // 创建服务器端的 Socket
-
-			System.out.println("服务器启动成功！");
-
+			
+			logger.info("服务器启动成功！");
+			
+			ThreadService.cfg.getTemplate("form.ftl");
+			
 			while (true) {
 				
 				// 等待返回客户端的信息
 				socket = serverSocket.accept(); // 阻塞制的编程，在服务器启动后会一直等待客户端去连他
-				Worker worker = new Worker(socket);
+				SaveDataWorker worker = new SaveDataWorker(socket);
 				Thread thread = new Thread(worker);
 				thread.start();
 			}
