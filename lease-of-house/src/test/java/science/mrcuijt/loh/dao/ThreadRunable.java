@@ -7,8 +7,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
 
-import org.apache.logging.log4j.message.TimestampMessage;
-
 import science.mrcuijt.loh.entity.RegionInfo;
 import science.mrcuijt.loh.util.JDBCUtil;
 

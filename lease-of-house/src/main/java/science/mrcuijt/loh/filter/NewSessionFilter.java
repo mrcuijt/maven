@@ -19,7 +19,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Administrator
@@ -27,7 +28,7 @@ import org.apache.log4j.Logger;
  */
 public class NewSessionFilter implements Filter {
 
-	private static final Logger LOG = Logger.getLogger(NewSessionFilter.class);
+	private static final Logger LOG = LoggerFactory.getLogger(NewSessionFilter.class);
 	
 	/* (non-Javadoc)
 	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)

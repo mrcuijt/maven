@@ -11,14 +11,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import science.mrcuijt.loh.entity.LoginInfo;
 import science.mrcuijt.loh.entity.UserInfo;
 import science.mrcuijt.loh.service.LohService;
 import science.mrcuijt.loh.service.impl.LohServiceImpl;
 import science.mrcuijt.loh.util.AppMD5Util;
-import science.mrcuijt.loh.util.RequestUtil;
 
 /**
  * @author Administrator
@@ -26,7 +26,7 @@ import science.mrcuijt.loh.util.RequestUtil;
  */
 public class RegisterServlet extends HttpServlet {
 
-	private static final Logger logger = Logger.getLogger(RegisterServlet.class);
+	private static final Logger logger = LoggerFactory.getLogger(RegisterServlet.class);
 	
 	private LohService lohService = new LohServiceImpl();
 	

@@ -7,20 +7,17 @@ import java.io.IOException;
 import java.util.Date;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
-
-import com.alibaba.fastjson.JSON;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import science.mrcuijt.loh.entity.LoginInfo;
 import science.mrcuijt.loh.service.LohService;
 import science.mrcuijt.loh.service.impl.LohServiceImpl;
 import science.mrcuijt.loh.util.AppMD5Util;
-import science.mrcuijt.loh.util.RequestUtil;
 
 /**
  * @author Administrator
@@ -28,7 +25,7 @@ import science.mrcuijt.loh.util.RequestUtil;
  */
 public class LoginServlet extends HttpServlet {
 
-	private static final Logger LOG = Logger.getLogger(LoginServlet.class);
+	private static final Logger LOG = LoggerFactory.getLogger(LoginServlet.class);
 	
 	private LohService lohService = new LohServiceImpl();
 	

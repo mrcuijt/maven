@@ -19,7 +19,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import science.mrcuijt.loh.dao.LohDao;
 import science.mrcuijt.loh.entity.LoginInfo;
@@ -36,7 +37,7 @@ import science.mrcuijt.loh.util.JDBCUtil;
  */
 public class LohDaoImpl implements LohDao {
 
-	private static final Logger LOG = Logger.getLogger(LohDaoImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger(LohDaoImpl.class);
 
 	/**
 	 * 保存用户信息和登录信息的方法

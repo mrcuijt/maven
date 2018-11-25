@@ -8,9 +8,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.alibaba.druid.filter.Filter;
+import com.alibaba.druid.filter.logging.Slf4jLogFilter;
 import com.alibaba.druid.pool.DruidDataSource;
 
 import science.mrcuijt.loh.entity.LoginInfo;
@@ -26,7 +30,7 @@ import science.mrcuijt.loh.entity.UserInfo;
  */
 public class JDBCUtil {
 
-	private static final Logger LOG = Logger.getLogger(JDBCUtil.class);
+	private static final Logger LOG = LoggerFactory.getLogger(JDBCUtil.class);
 
 	private static final DruidDataSource DRUID_DATA_SOURCE = new DruidDataSource();
 
@@ -40,17 +44,72 @@ public class JDBCUtil {
 
 	private static final String PASSWORD = "loh";
 
+	/**
+	 * 
+	 * 通常来说，只需要修改initialSize、minIdle、maxActive。
+	 * 
+	 * 如果用Oracle，则把poolPreparedStatements配置为true，mysql可以配置为false。分库分表较多的数据库，建议配置为false。
+	 * 
+	 */
 	static {
-		LOG.info("加载 MySQL JDBC 驱动");
+		
+		LOG.trace("Load Druid JDBC DataSource");
+
 		try {
+			// 基本属性 url、user、password
 			// Class.forName(DRVIER);
 			DRUID_DATA_SOURCE.setUsername(USER);
 			DRUID_DATA_SOURCE.setPassword(PASSWORD);
 			DRUID_DATA_SOURCE.setUrl(URL);
-			DRUID_DATA_SOURCE.setFilters("stat,log4j");
-		} catch (Exception e) {
-			LOG.info("加载 MySQL JDBC 驱动出现异常", e);
+
+			// 配置初始化大小、最小、最大
+			DRUID_DATA_SOURCE.setInitialSize(5);
+			DRUID_DATA_SOURCE.setMinIdle(10);
+			DRUID_DATA_SOURCE.setMaxActive(20);
+
+			// 配置获取连接等待超时时间
+			DRUID_DATA_SOURCE.setMaxWait(60000);
+
+			// 配置间隔多久才进行一次检测
+			DRUID_DATA_SOURCE.setTimeBetweenEvictionRunsMillis(60000);
+
+			// 配置一个连接在池中最小生存的时间，单位是毫秒
+			DRUID_DATA_SOURCE.setMinEvictableIdleTimeMillis(300000);
+
+			DRUID_DATA_SOURCE.setValidationQuery("SELECT 'x'");
+			DRUID_DATA_SOURCE.setTestWhileIdle(true);
+			DRUID_DATA_SOURCE.setTestOnBorrow(false);
+			DRUID_DATA_SOURCE.setTestOnReturn(false);
+
+			// 打开 PSCache ，并且指定每个连接上 PSCache 的大小
+			DRUID_DATA_SOURCE.setPoolPreparedStatements(false); // MySQL 可以设置为 false
+			DRUID_DATA_SOURCE.setMaxPoolPreparedStatementPerConnectionSize(20);
+
+			// 连接泄露处理。Druid 提供了 RemoveAbandanded 相关配置，用来关闭长时间不使用的连接（例如忘记关闭时间）
+			DRUID_DATA_SOURCE.setRemoveAbandoned(true);
+
+			// 1800 秒，也就是 30 分钟
+			DRUID_DATA_SOURCE.setRemoveAbandonedTimeout(1800);
+
+			// 关闭 abanded 连接时输出的错误日志
+			DRUID_DATA_SOURCE.setLogAbandoned(true);
+
+			// 配置监控统计拦截的 filters ，监控统计 “stat”，防 SQL 注入：“wall”组合使用“stat,wall”
+			DRUID_DATA_SOURCE.setFilters("stat,wall,slf4j");
+
+			// 配置 SLF4J 日志输出
+			List<Filter> filterList = DRUID_DATA_SOURCE.getProxyFilters();
+			for (Filter filter : filterList) {
+				if (filter instanceof Slf4jLogFilter) {
+					Slf4jLogFilter slf4jLogFilter = (Slf4jLogFilter) filter;
+					// 关闭返回结果集输出
+					slf4jLogFilter.setResultSetLogEnabled(false);
+				}
+			}
+			
+		} catch (SQLException e) {
 			e.printStackTrace();
+			LOG.error("Setting Druid DataSource Filters Error Stack", e);
 		}
 	}
 
@@ -64,14 +123,16 @@ public class JDBCUtil {
 	 * @return
 	 */
 	public static Connection getConnection() {
-		LOG.info("获取数据库 Connection 连接");
+		
+		LOG.trace("Get DataBase Connection");
+		
 		try {
 
 			// 返回函数值
 			return DRUID_DATA_SOURCE.getConnection();
 
 		} catch (SQLException e) {
-			LOG.info("获取数据库 Connection 连接异常", e);
+			LOG.error("Get DataBase Connection Error Stack", e);
 			e.printStackTrace();
 		}
 
@@ -93,6 +154,7 @@ public class JDBCUtil {
 			try {
 				rs.close();
 			} catch (SQLException e) {
+				LOG.error("close ResultSet SQLException",e);
 				e.printStackTrace();
 			}
 		}
@@ -101,6 +163,7 @@ public class JDBCUtil {
 			try {
 				ps.close();
 			} catch (SQLException e) {
+				LOG.error("close PreparedStatement SQLException",e);
 				e.printStackTrace();
 			}
 		}
@@ -109,6 +172,7 @@ public class JDBCUtil {
 			try {
 				conn.close();
 			} catch (SQLException e) {
+				LOG.error("close Connection SQLException",e);
 				e.printStackTrace();
 			}
 		}
@@ -128,6 +192,7 @@ public class JDBCUtil {
 			try {
 				rs.close();
 			} catch (SQLException e) {
+				LOG.error("close ResultSet SQLException",e);
 				e.printStackTrace();
 			}
 		}
@@ -136,6 +201,7 @@ public class JDBCUtil {
 			try {
 				stmt.close();
 			} catch (SQLException e) {
+				LOG.error("close Statement SQLException",e);
 				e.printStackTrace();
 			}
 		}
@@ -144,6 +210,7 @@ public class JDBCUtil {
 			try {
 				conn.close();
 			} catch (SQLException e) {
+				LOG.error("close Connection SQLException",e);
 				e.printStackTrace();
 			}
 		}

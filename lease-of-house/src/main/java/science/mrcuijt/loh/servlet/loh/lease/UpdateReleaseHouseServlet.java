@@ -21,7 +21,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import science.mrcuijt.loh.comm.LohFileType;
 import science.mrcuijt.loh.entity.LohFileInfo;
@@ -37,7 +38,7 @@ import science.mrcuijt.loh.util.Constants;
  */
 public class UpdateReleaseHouseServlet extends HttpServlet {
 
-	private static final Logger LOG = Logger.getLogger(UpdateReleaseHouseServlet.class);
+	private static final Logger LOG = LoggerFactory.getLogger(UpdateReleaseHouseServlet.class);
 	
 	private LohService lohService = new LohServiceImpl();
 	

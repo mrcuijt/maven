@@ -14,7 +14,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Administrator
@@ -22,7 +23,7 @@ import org.apache.log4j.Logger;
  */
 public class LoginFilter implements Filter {
 
-	private static final Logger LOG = Logger.getLogger(LoginFilter.class);
+	private static final Logger LOG = LoggerFactory.getLogger(LoginFilter.class);
 
 	/*
 	 * (non-Javadoc)
