@@ -1,52 +1,219 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration scan="true" scanPeriod="30 seconds">
+<configuration scan="true" scanPeriod="3 seconds">
 
 	<!-- <configuration debug="true"> -->
 	<!-- 配置 configuration 元素 debug 属性为 true 完全等于添加 -->
 	<!-- <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" /> -->
 
+	<!-- 设置标准控制台日志输出 Appender -->
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<param name="Encoding" value="UTF-8" />
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<pattern>
-				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger line %line - [%msg]%n
+				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger.%method line %line - [%msg]%n
 			</pattern>
 		</encoder>
 	</appender>
 
-	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-	
+	<!-- 设置 DEBUG 级别文件日志输出 Appender -->
+	<appender name="DRUID_DEBUG_FILE" class="ch.qos.logback.core.FileAppender">
+		<!-- 设置字符集编码格式 -->
 		<param name="Encoding" value="UTF-8" />
-	
-		<file>./logs/druid_info.log</file>
-		
+		<!-- 设置输出到日志文件 -->
+		<file>./logs/druid/druid_debug.log</file>
+		<!-- 设置日志布局格式编码 -->
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<pattern>
-				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger line %line - [%msg]%n
+				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger.%method line %line - [%msg]%n
 			</pattern>
 		</encoder>
-		
-		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+		<!-- 设置日志级别过滤器 -->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
 			<level>DEBUG</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
 		</filter>
-		
 	</appender>
 
+	<!-- 设置 INFO 级别文件日志输出 Appender -->
+	<appender name="DRUID_INFO_FILE" class="ch.qos.logback.core.FileAppender">
+		<!-- 设置字符集编码格式 -->
+		<param name="Encoding" value="UTF-8" />
+		<!-- 设置输出到日志文件 -->
+		<file>./logs/druid/druid_info.log</file>
+		<!-- 设置日志布局格式编码 -->
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger.%method line %line - [%msg]%n
+			</pattern>
+		</encoder>
+		<!-- 设置日志级别过滤器 -->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+
+	<!-- 设置 WARN 级别文件日志输出 Appender -->
+	<appender name="DRUID_WARN_FILE" class="ch.qos.logback.core.FileAppender">
+		<!-- 设置字符集编码格式 -->
+		<param name="Encoding" value="UTF-8" />
+		<!-- 设置输出到日志文件 -->
+		<file>./logs/druid/druid_warn.log</file>
+		<!-- 设置日志布局格式编码 -->
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger.%method line %line - [%msg]%n
+			</pattern>
+		</encoder>
+		<!-- 设置日志级别过滤器 -->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>WARN</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+
+	<!-- 设置 ERROR 级别文件日志输出 Appender -->
+	<appender name="DRUID_ERROR_FILE" class="ch.qos.logback.core.FileAppender">
+		<!-- 设置字符集编码格式 -->
+		<param name="Encoding" value="UTF-8" />
+		<!-- 设置输出到日志文件 -->
+		<file>./logs/druid/druid_error.log</file>
+		<!-- 设置日志布局格式编码 -->
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger.%method line %line - [%msg]%n
+			</pattern>
+		</encoder>
+		<!-- 设置日志级别过滤器 -->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+
+	<!-- 设置 DEBUG 级别文件日志输出 Appender -->
+	<appender name="PROJECT_DEBUG_FILE" class="ch.qos.logback.core.FileAppender">
+		<!-- 设置字符集编码格式 -->
+		<param name="Encoding" value="UTF-8" />
+		<!-- 设置输出到日志文件 -->
+		<file>./logs/dev/project_debug.log</file>
+		<!-- 设置日志布局格式编码 -->
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger.%method line %line - [%msg]%n
+			</pattern>
+		</encoder>
+		<!-- 设置日志级别过滤器 -->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>DEBUG</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+
+	<!-- 设置 INFO 级别文件日志输出 Appender -->
+	<appender name="PROJECT_INFO_FILE" class="ch.qos.logback.core.FileAppender">
+		<!-- 设置字符集编码格式 -->
+		<param name="Encoding" value="UTF-8" />
+		<!-- 设置输出到日志文件 -->
+		<file>./logs/dev/project_info.log</file>
+		<!-- 设置日志布局格式编码 -->
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger.%method line %line - [%msg]%n
+			</pattern>
+		</encoder>
+		<!-- 设置日志级别过滤器 -->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+
+	<!-- 设置 WARN 级别文件日志输出 Appender -->
+	<appender name="PROJECT_WARN_FILE" class="ch.qos.logback.core.FileAppender">
+		<!-- 设置字符集编码格式 -->
+		<param name="Encoding" value="UTF-8" />
+		<!-- 设置输出到日志文件 -->
+		<file>./logs/dev/project_warn.log</file>
+		<!-- 设置日志布局格式编码 -->
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger.%method line %line - [%msg]%n
+			</pattern>
+		</encoder>
+		<!-- 设置日志级别过滤器 -->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>WARN</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+
+	<!-- 设置 ERROR 级别文件日志输出 Appender -->
+	<appender name="PROJECT_ERROR_FILE" class="ch.qos.logback.core.FileAppender">
+		<!-- 设置字符集编码格式 -->
+		<param name="Encoding" value="UTF-8" />
+		<!-- 设置输出到日志文件 -->
+		<file>./logs/dev/project_error.log</file>
+		<!-- 设置日志布局格式编码 -->
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger.%method line %line - [%msg]%n
+			</pattern>
+		</encoder>
+		<!-- 设置日志级别过滤器 -->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+	</appender>
+
+	<!-- 设置指定日志对象 Logger 的日志输出级别 -->
 	<logger name="druid.sql.Connection">
 		<level value="INFO" />
 	</logger>
+	
+	<!-- 设置指定日志对象 Logger 的日志输出级别 -->
+	<logger name="druid.sql" additivity="false">
+		<level value="DEBUG" />
+		<!-- 配置日志输出的目的地 -->
+		<appender-ref ref="DRUID_DEBUG_FILE" />
+		<appender-ref ref="DRUID_INFO_FILE" />
+		<appender-ref ref="DRUID_WARN_FILE" />
+		<appender-ref ref="DRUID_ERROR_FILE" />
+	</logger>
 
+	<!-- 设置指定日志对象 Logger 的日志输出级别 -->
 	<logger name="java.sql">
 		<level value="INFO" />
 	</logger>
 
+	<!-- 设置指定日志对象 Logger 的日志输出级别 -->
 	<logger name="org.apache.ibatis">
 		<level value="INFO" />
 	</logger>
-	 
+	
+	<!-- 设置指定日志对象 Logger 的日志输出级别 -->
+	<logger name="science.mrcuijt.loh">
+		<level value="DEBUG" />
+		<!-- 配置日志输出的目的地 -->
+		<appender-ref ref="PROJECT_DEBUG_FILE" />
+		<appender-ref ref="PROJECT_INFO_FILE" />
+		<appender-ref ref="PROJECT_WARN_FILE" />
+		<appender-ref ref="PROJECT_ERROR_FILE" />
+	</logger>
+
+	<!-- 设置 ROOT Logger 日志 -->
 	<root level="DEBUG">
+		<!-- 配置日志输出的目的地 -->
 		<appender-ref ref="STDOUT" />
-		<appender-ref ref="FILE" />
 	</root>
 
 </configuration>
