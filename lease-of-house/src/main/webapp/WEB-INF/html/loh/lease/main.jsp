@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%
 	String path = request.getContextPath();
 	String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -93,7 +94,7 @@
 						<label for="lohPrice">房屋价格</label>
 						<input name="lohPrice" type="text" value="${lohPrice }" class="form-control" placeholder="请输入房屋价格"/>
 						<label for="houseAddress">房屋地址</label>
-						<input name="houseAddress" type="text" value="${houseAddress }" class="form-control" placeholder="请输入房屋地址"/>
+						<input name="houseAddress" type="text" value="${fn:escapeXml(houseAddress) }" class="form-control" placeholder="请输入房屋地址"/>
 						<button type="submit" class="form-control btn btn-default">搜索</button>
 					</div>
 				</div>
@@ -160,15 +161,15 @@
 								<button type="submit">GO</button>
 							</td>
 							<td>
-								<a href="<%=request.getContextPath()%>/loh/lease/main.do?pageIndex=1&pageSize=${pageSize}${queryParam}">首页</a>
+								<a href="<%=request.getContextPath()%>/loh/lease/main.do?pageIndex=1&pageSize=${pageSize}${fn:escapeXml(queryParam)}">首页</a>
 								<c:if test="${pageIndex > 1 }">
-									<a href="<%=request.getContextPath()%>/loh/lease/main.do?pageIndex=${pageIndex - 1}&pageSize=${pageSize}${queryParam}">上一页</a></td>
+									<a href="<%=request.getContextPath()%>/loh/lease/main.do?pageIndex=${pageIndex - 1}&pageSize=${pageSize}${fn:escapeXml(queryParam)}">上一页</a></td>
 								</c:if>
 							<td>
 								<c:if test="${pageIndex < totalPage}">
-									<a href="<%=request.getContextPath()%>/loh/lease/main.do?pageIndex=${pageIndex + 1}&pageSize=${pageSize}${queryParam}">下一页</a>
+									<a href="<%=request.getContextPath()%>/loh/lease/main.do?pageIndex=${pageIndex + 1}&pageSize=${pageSize}${fn:escapeXml(queryParam)}">下一页</a>
 								</c:if>
-								<a href="<%=request.getContextPath()%>/loh/lease/main.do?pageIndex=${totalPage}&pageSize=${pageSize}${queryParam}">最后一页</a>
+								<a href="<%=request.getContextPath()%>/loh/lease/main.do?pageIndex=${totalPage}&pageSize=${pageSize}${fn:escapeXml(queryParam)}">最后一页</a>
 							</td>
 						</tr>
 					</table>

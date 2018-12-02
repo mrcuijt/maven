@@ -99,7 +99,11 @@ public class MainServlet extends HttpServlet {
 		if (lohPrice == null || lohPrice.trim().length() == 0) {
 			price = null;
 		} else {
-			price = new BigDecimal(lohPrice);
+			try {
+				price = new BigDecimal(lohPrice);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		if (houseAddress == null || houseAddress.trim().length() == 0) {
@@ -120,8 +124,18 @@ public class MainServlet extends HttpServlet {
 			strPageSize = "0";
 		}
 
-		Integer pageIndex = Integer.parseInt(strPageIndex);
-		Integer pageSize = Integer.parseInt(strPageSize);
+		Integer pageIndex = null;
+		try {
+			pageIndex = Integer.parseInt(strPageIndex);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		}
+		Integer pageSize = null;
+		try {
+			pageSize = Integer.parseInt(strPageSize);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		}
 
 		if (pageIndex == null || pageIndex <= 0) {
 			pageIndex = 1;

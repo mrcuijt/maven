@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,7 +35,7 @@
 						<tr>
 							<td>
 								<label for="username">用户名：</label> 
-								<input name="userName" type="text" placeholder="请输入用户名"  value="${userName }"/>
+								<input name="userName" type="text" placeholder="请输入用户名"  value="${fn:escapeXml(userName) }"/>
 							</td>
 						</tr>
 						<tr>
