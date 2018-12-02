@@ -27,29 +27,31 @@ public class DruidDataSourceTest {
 		DruidDataSource dataSource = new DruidDataSource();
 		dataSource.setUsername("loh");
 		dataSource.setPassword("loh");
-		dataSource.setUrl("jdbc:mysql://localhost:3306/loh?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull");
-		
+//		dataSource.setUrl("jdbc:mysql://localhost:3306/loh?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull");
+		dataSource.setUrl(
+				"jdbc:mysql://localhost:3306/loh?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&serverTimezone=CTT");
+
 		return dataSource;
 	}
-	
+
 	public Connection TestConnection() throws SQLException {
-		
+
 		DruidDataSource dataSource = createDruidDataSource();
-		
+
 		return dataSource.getConnection();
 	}
-	
+
 	@Test
 	public void testDruidPooledPreparedStatement() {
-		
+
 		try {
-			findLoginInfoByLoginName("%\'"+"' or 1 = 1");
+			findLoginInfoByLoginName("%\'" + "' or 1 = 1");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	public LoginInfo findLoginInfoByLoginName(String loginName) throws SQLException {
 
 		LoginInfo loginInfo = null;
@@ -87,7 +89,7 @@ public class DruidDataSourceTest {
 				System.out.println(dpps);
 				System.out.println(ps);
 			}
-			
+
 			while (rs.next()) {
 
 				loginInfo = new LoginInfo();
@@ -115,11 +117,11 @@ public class DruidDataSourceTest {
 
 	@Test
 	public void test() throws SQLException {
-		
+
 		DruidDataSourceTest test = new DruidDataSourceTest();
-		
+
 		LoginInfo loginInfo = test.findLoginInfoByLoginName("1");
-		
+
 		System.out.println(JSON.toJSONString(loginInfo));
 	}
 }

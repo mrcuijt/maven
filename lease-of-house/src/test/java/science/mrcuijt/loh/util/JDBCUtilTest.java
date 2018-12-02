@@ -3,6 +3,7 @@
  */
 package science.mrcuijt.loh.util;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -77,7 +78,7 @@ public class JDBCUtilTest {
 	}
 
 	@Test
-	public void updateLoginInfo() {
+	public void updateLoginInfo() throws SQLException {
 
 		LohDao lohDao = new LohDaoImpl();
 
