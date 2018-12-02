@@ -100,6 +100,17 @@
 					<a role="button" class="btn btn-default" href="#">保存</a>
 					<button class="btn btn-default" type="submit">发布</button>
 					<p>${message }</p>
+					<p>
+						<%
+							String message = request.getParameter("message");
+							if (message != null) {
+								message = new String(message.getBytes("iso-8859-1"), "UTF-8");
+						%>
+						<%=message%>
+						<%
+							}
+						%>
+					</p>
 				</div>
 			</form>
 		</div>
