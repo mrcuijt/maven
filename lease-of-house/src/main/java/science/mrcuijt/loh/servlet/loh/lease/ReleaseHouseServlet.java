@@ -21,6 +21,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import science.mrcuijt.loh.comm.LohFileType;
 import science.mrcuijt.loh.entity.LohFileInfo;
@@ -37,6 +39,8 @@ import science.mrcuijt.loh.util.Constants;
  *
  */
 public class ReleaseHouseServlet extends HttpServlet {
+
+	private static final Logger LOG = LoggerFactory.getLogger(ReleaseHouseServlet.class);
 
 	private LohService lohService = new LohServiceImpl();
 
@@ -62,6 +66,8 @@ public class ReleaseHouseServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
+		boolean debug = LOG.isErrorEnabled();
 
 		// 解决 POST 请求中文参数乱码问题
 		request.setCharacterEncoding("UTF-8");
@@ -145,8 +151,11 @@ public class ReleaseHouseServlet extends HttpServlet {
 				if (item.isFormField()) {
 
 					String name = item.getFieldName();
-					String value = item.getString();
-					System.out.println("name:" + name + "\t value:" + value);
+
+					if (debug) {
+						String value = item.getString("UTF-8");
+						LOG.debug("name: {} \t value: {}", name, value);
+					}
 
 					switch (name) {
 
@@ -185,9 +194,9 @@ public class ReleaseHouseServlet extends HttpServlet {
 				}
 			}
 		} catch (FileUploadException e) {
-			e.printStackTrace();
+			LOG.error("Process Form FieldItem Error FileUploadException", e);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.error("Exception", e);
 		}
 
 		// 数据校验处理
@@ -208,8 +217,10 @@ public class ReleaseHouseServlet extends HttpServlet {
 			lohHouseTypeId = Integer.parseInt(houseType);
 			pushPrice = new BigDecimal(housePrice);
 		} catch (NumberFormatException e) {
+			LOG.warn("NumberFormatException", e);
 			e.printStackTrace();
 		} catch (Exception e) {
+			LOG.warn("Exception", e);
 			e.printStackTrace();
 		}
 
@@ -238,19 +249,20 @@ public class ReleaseHouseServlet extends HttpServlet {
 				message = "请输入合法的金额。";
 			}
 		}
-		
+
 		// 验证房屋所在地区信息
-		if(verifyResult) {
-			
+		if (verifyResult) {
+
 			try {
-				
+
 				provinceId = Integer.parseInt(province);
-				
+
 				cityId = Integer.parseInt(city);
-				
+
 				countyId = Integer.parseInt(county);
-				
+
 			} catch (NumberFormatException e) {
+				LOG.warn("NumberFormatException", e);
 				verifyResult = false;
 				message = "请选择房屋地区后重试。";
 				e.printStackTrace();
@@ -258,7 +270,7 @@ public class ReleaseHouseServlet extends HttpServlet {
 		}
 
 		if (!verifyResult) {
-
+			message = URLEncoder.encode(message, "UTF-8");
 			response.sendRedirect(request.getContextPath() + "/loh/lease/releaseHouse.do?message=" + message);
 			return;
 		}
@@ -273,50 +285,53 @@ public class ReleaseHouseServlet extends HttpServlet {
 			FileItem item = fileItemIterator.next();
 
 			String filename = item.getName();
-			System.out.println("完整文件名：" + filename);
+			LOG.warn("完整文件名：{}", filename);
 			int index = filename.indexOf("\\");
 			filename = filename.substring(index + 1);
 			// 获取文件的大小
 			long filesize = item.getSize();
 
 			if (filename == null || filename.equals("")) {
-				System.out.println("文件名为空。");
+				LOG.warn("完整文件名：{}", filename);
 				continue;
 			}
 
 			String encodeFileName = URLEncoder.encode(filename, "UTF-8");
-			
+
 			encodeFileName = AppMD5Util.getMD5(filename) + filename.substring(filename.lastIndexOf("."));
-			
+
 			String timeznoe = System.currentTimeMillis() + "";
-			
+
 			// 为文件加上当前时间戳路径
 			String relFilePath = filepath + "/" + timeznoe + "/";
-			
-			if(!new File(relFilePath).exists()) {
+
+			if (!new File(relFilePath).exists()) {
 				new File(relFilePath).mkdirs();
 			}
-			
+
 			File uploadFile = new File(relFilePath + encodeFileName);
 
 			// 将文件写入到服务器中
 			try {
 
 				item.write(uploadFile);
-				System.out.println(filename + "文件保存完毕。");
-				System.out.println("文件大小为:" + filesize);
+
+				if (debug) {
+					LOG.debug("{} 文件保存完毕。", filename);
+					LOG.debug("文件大小为: {}", filesize);
+				}
 
 				// 添加 LohFileInfo 信息记录
 				LohFileInfo lohFileInfo = new LohFileInfo();
 				lohFileInfo.setFileLink(Constants.UPLOAD_DIR + "/" + timeznoe + "/" + encodeFileName);
 				lohFileInfo.setLohFileTypeId(LohFileType.LohHousePicture);
 				lohFileInfo.setFileTitle(filename);
-				
 
 				// 添加到文件列表中
 				lohFileInfoList.add(lohFileInfo);
 
 			} catch (Exception e) {
+				LOG.error("FileUpload Fail Exception", e);
 				e.printStackTrace();
 			}
 		}
@@ -340,12 +355,11 @@ public class ReleaseHouseServlet extends HttpServlet {
 		// boolean addLohHouseInfoResult = lohService.addLohHouseInfo(lohHouseInfo);
 
 		boolean addLohHouseInfoResult = lohService.addLohHouseInfo(lohHouseInfo, lohFileInfoList);
-		
 
 		if (!addLohHouseInfoResult) {
 			message = "添加失败，请重试";
 			request.setAttribute("message", message);
-			request.getRequestDispatcher("/WEB-INF/html/loh/lease/release_house.jsp").forward(request, response);
+			request.getRequestDispatcher("/loh/lease/releaseHouse.do").forward(request, response);
 			return;
 		}
 
