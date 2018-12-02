@@ -15,6 +15,33 @@
 		<filter-name>requestFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping> -->
+	
+	<!-- XSS 处理的 Filter -->
+	<filter>
+		<filter-name>xssFilter</filter-name>
+		<filter-class>science.mrcuijt.loh.filter.XssFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>xssFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+
+	<!-- A filter that sets character encoding that is used to decode -->
+	<!-- parameters in a POST request -->
+	<filter>
+		<filter-name>setCharacterEncodingFilter</filter-name>
+		<filter-class>org.apache.catalina.filters.SetCharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	
+	<!-- The mapping for the Set Character Encoding Filter -->
+	<filter-mapping>
+        <filter-name>setCharacterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
 	<!-- 配置 StatViewServlet -->
 	<!-- （1）提供监控信息展示的 html 页面 -->
@@ -274,6 +301,20 @@
 		<servlet-name>loh.getRegionServlet</servlet-name>
 		<url-pattern>/loh/getRegion.do</url-pattern>
 	</servlet-mapping>
+	
+	<!-- 禁用不安全的 HTTP 方法 -->
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>restricted methods</web-resource-name>
+			<url-pattern>/*</url-pattern>
+			<http-method>PUT</http-method>
+			<http-method>DELETE</http-method>
+			<http-method>HEAD</http-method>
+			<http-method>OPTIONS</http-method>
+			<http-method>TRACE</http-method>
+		</web-resource-collection>
+		<auth-constraint />
+	</security-constraint>
 
 	<welcome-file-list>
 		<!-- <welcome-file>index.html</welcome-file> <welcome-file>index.htm</welcome-file> 
