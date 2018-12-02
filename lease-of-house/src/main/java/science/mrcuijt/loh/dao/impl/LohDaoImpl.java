@@ -381,11 +381,18 @@ public class LohDaoImpl implements LohDao {
 	 * 
 	 * @param loginInfo
 	 * @return
+	 * @throws SQLException 
 	 */
 	@Override
-	public boolean updateLoginInfo(LoginInfo loginInfo) {
+	public boolean updateLoginInfo(LoginInfo loginInfo) throws SQLException {
+
+		boolean debug = LOG.isDebugEnabled();
 
 		boolean updateResult = false;
+
+		if (debug) {
+			LOG.debug("Updage LoginInfo begin");
+		}
 
 		StringBuffer strbUpdateLoginInfo = new StringBuffer();
 
@@ -431,6 +438,9 @@ public class LohDaoImpl implements LohDao {
 			if (updageResultCount > 0) {
 				conn.commit();
 				updateResult = true;
+				if (debug) {
+					LOG.debug("Updage LoginInfo Success");
+				}
 			}
 
 		} catch (SQLException e) {
@@ -438,10 +448,16 @@ public class LohDaoImpl implements LohDao {
 				conn.rollback();
 			} catch (SQLException e1) {
 				e1.printStackTrace();
+				LOG.error("Update LoginInfo RollBack Error ", e);
 			}
-			e.printStackTrace();
+			LOG.error("Update LoginInfo Error", e);
+			throw e;
 		} finally {
 			JDBCUtil.closeAll(null, ps, conn);
+		}
+
+		if (debug) {
+			LOG.debug("Updage LoginInfo end");
 		}
 
 		// 返回函数值
@@ -456,6 +472,8 @@ public class LohDaoImpl implements LohDao {
 	 */
 	@Override
 	public boolean addLohHouseInfo(LohHouseInfo lohHouseInfo) {
+
+		boolean debug = LOG.isDebugEnabled();
 
 		boolean addLohHouseInfoResult = false;
 
@@ -535,6 +553,9 @@ public class LohDaoImpl implements LohDao {
 				}
 
 			} else {
+				if(debug) {
+					LOG.debug("Add LohHouseInfo Error Execute SQL Row Count = 0");
+				}
 				conn.rollback();
 				return addLohHouseInfoResult;
 			}
@@ -547,13 +568,15 @@ public class LohDaoImpl implements LohDao {
 		} catch (SQLException e) {
 
 			try {
-
+				if (debug) {
+					LOG.debug("Add LohHouseInfo Fail RollBack data = {}", lohHouseInfo);
+				}
 				conn.rollback();
-
 			} catch (SQLException e1) {
-
+				LOG.error("SQLException", e1);
 				e1.printStackTrace();
 			}
+			LOG.error("SQLException", e);
 			e.printStackTrace();
 		} finally {
 			JDBCUtil.closeAll(rs, ps, conn);
@@ -570,6 +593,8 @@ public class LohDaoImpl implements LohDao {
 	 */
 	@Override
 	public boolean addLohHouseInfo(LohHouseInfo lohHouseInfo, List<LohFileInfo> lohFileInfoList) {
+
+		boolean debug = LOG.isDebugEnabled();
 
 		boolean addLohHouseInfoResult = false;
 
@@ -665,6 +690,9 @@ public class LohDaoImpl implements LohDao {
 				}
 
 			} else {
+				if (debug) {
+					LOG.debug("Add LohHouseInfo Error Execute SQL Row Count = 0");
+				}
 				conn.rollback();
 				return addLohHouseInfoResult;
 			}
@@ -700,6 +728,9 @@ public class LohDaoImpl implements LohDao {
 						}
 
 					} else {
+						if (debug) {
+							LOG.debug("Add LohHouseInfo Error Execute SQL Row Count = 0");
+						}
 						conn.rollback();
 						return addLohHouseInfoResult;
 					}
@@ -720,9 +751,10 @@ public class LohDaoImpl implements LohDao {
 				conn.rollback();
 
 			} catch (SQLException e1) {
-
+				LOG.error("SQLException", e);
 				e1.printStackTrace();
 			}
+			LOG.error("SQLException", e);
 			e.printStackTrace();
 		} finally {
 			JDBCUtil.closeAll(rs, ps, conn);

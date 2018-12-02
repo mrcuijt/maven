@@ -4,6 +4,7 @@
 package science.mrcuijt.loh.servlet;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Date;
 
 import javax.servlet.ServletException;
@@ -39,6 +40,8 @@ public class LoginServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
+		boolean debug = LOG.isDebugEnabled();
 
 		// 解决 POST 请求中文参数乱码问题
 		request.setCharacterEncoding("UTF-8");
@@ -100,6 +103,9 @@ public class LoginServlet extends HttpServlet {
 		
 		// 验证不通过，登录失败
 		if(!verifyResult) {
+			if (debug) {
+				LOG.debug("Login Fail LoginUser={}", userName);
+			}
 			request.setAttribute("message", message);
 			request.setAttribute("userName", userName);
 			request.getRequestDispatcher("/WEB-INF/html/login/login.jsp").forward(request, response);
@@ -111,12 +117,19 @@ public class LoginServlet extends HttpServlet {
 		request.getSession().setAttribute("login_info_id", loginInfo.getLoginInfoId());
 		request.getSession().setAttribute("user_info_id", loginInfo.getUserInfoId());
 		
+		LOG.info("Login Success LoginUser={}", userName);
+		
 		// 更新用户登录状态（1、记录用户登录时间 2、记录用户登录IP）
 		loginInfo.setLastLoginTime(loginInfo.getCurrentLoginTime());
 		loginInfo.setCurrentLoginTime(new Date());
 		loginInfo.setLoginIp(request.getRemoteHost());
 		
-		boolean updateResult = lohService.updateLoginInfo(loginInfo);
+		try {
+			boolean updateResult = lohService.updateLoginInfo(loginInfo);
+		} catch (SQLException e) {
+			LOG.error("Login Success , Update LoginInfo Error userid = {}", loginInfo.getUserInfoId(), e);
+			e.printStackTrace();
+		}
 
 		//request.getRequestDispatcher("/WEB-INF/html/loh/main/main.jsp").forward(request, response);
 		response.sendRedirect(request.getContextPath()+"/loh/main.do");

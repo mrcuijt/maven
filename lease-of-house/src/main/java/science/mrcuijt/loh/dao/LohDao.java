@@ -3,6 +3,7 @@
  */
 package science.mrcuijt.loh.dao;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -58,8 +59,9 @@ public interface LohDao {
 	 * 
 	 * @param loginInfo
 	 * @return
+	 * @throws SQLException 
 	 */
-	public abstract boolean updateLoginInfo(LoginInfo loginInfo);
+	public abstract boolean updateLoginInfo(LoginInfo loginInfo) throws SQLException;
 
 	/**
 	 * 添加 LohHouseInfo 的方法

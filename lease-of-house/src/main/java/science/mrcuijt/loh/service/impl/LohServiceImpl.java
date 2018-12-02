@@ -4,6 +4,7 @@
 package science.mrcuijt.loh.service.impl;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -108,9 +109,10 @@ public class LohServiceImpl implements LohService {
 	 * 
 	 * @param loginInfo
 	 * @return
+	 * @throws SQLException 
 	 */
 	@Override
-	public boolean updateLoginInfo(LoginInfo loginInfo) {
+	public boolean updateLoginInfo(LoginInfo loginInfo) throws SQLException {
 
 		return lohDao.updateLoginInfo(loginInfo);
 	}

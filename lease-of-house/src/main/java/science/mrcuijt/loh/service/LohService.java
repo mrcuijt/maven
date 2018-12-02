@@ -3,6 +3,7 @@
  */
 package science.mrcuijt.loh.service;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -58,8 +59,9 @@ public interface LohService {
 	 * 
 	 * @param loginInfo
 	 * @return
+	 * @throws SQLException 
 	 */
-	public abstract boolean updateLoginInfo(LoginInfo loginInfo);
+	public abstract boolean updateLoginInfo(LoginInfo loginInfo) throws SQLException;
 
 	/**
 	 * 添加房屋信息的业务逻辑接口
