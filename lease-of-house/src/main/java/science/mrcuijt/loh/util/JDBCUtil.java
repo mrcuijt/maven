@@ -83,7 +83,10 @@ public class JDBCUtil {
 
 			// 打开 PSCache ，并且指定每个连接上 PSCache 的大小
 			DRUID_DATA_SOURCE.setPoolPreparedStatements(false); // MySQL 可以设置为 false
-			DRUID_DATA_SOURCE.setMaxPoolPreparedStatementPerConnectionSize(20);
+			// 由于设置缓存 PreparedStatement 导致执行 executeBatch() 时，再次执行相同的 SQL 语句时 getGeneratedKeys() 会被缓存
+			// 即使当前 SQL 未能成功执行仍然能得到上一次执行成功后缓存在 PrepareStatement 中的 GeneratedKeys
+			// 导致项目程序存在 BUG
+			// DRUID_DATA_SOURCE.setMaxPoolPreparedStatementPerConnectionSize(20);
 
 			// 连接泄露处理。Druid 提供了 RemoveAbandanded 相关配置，用来关闭长时间不使用的连接（例如忘记关闭时间）
 			DRUID_DATA_SOURCE.setRemoveAbandoned(true);
@@ -281,7 +284,7 @@ public class JDBCUtil {
 		lohHouseInfo.setRegionInfoCountyId(rs.getInt("region_info_county_id"));
 		lohHouseInfo.setHouseAddress(rs.getString("house_address"));
 		lohHouseInfo.setPrice(rs.getBigDecimal("price"));
-		lohHouseInfo.setPushDate(rs.getDate("push_date"));
+		lohHouseInfo.setPushDate(rs.getTimestamp("push_date"));
 		lohHouseInfo.setContacts(rs.getString("contacts"));
 		lohHouseInfo.setCellPhone(rs.getString("cell_phone"));
 		lohHouseInfo.setQrcodeLink(rs.getString("qrcode_link"));
