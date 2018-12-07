@@ -12,6 +12,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import science.mrcuijt.loh.comm.LohConstants;
 import science.mrcuijt.loh.dao.LohDao;
 import science.mrcuijt.loh.dao.impl.LohDaoImpl;
 import science.mrcuijt.loh.entity.LoginInfo;
@@ -258,6 +259,10 @@ public class LohServiceImpl implements LohService {
 	 */
 	@Override
 	public List<RegionInfo> findRegionInfoByLevel(Integer regionLevel) {
+
+		if (regionLevel == 1) {
+			return lohDao.findRegionInfoByLevel(regionLevel, LohConstants.getRegionLimit());
+		}
 
 		return lohDao.findRegionInfoByLevel(regionLevel);
 	}

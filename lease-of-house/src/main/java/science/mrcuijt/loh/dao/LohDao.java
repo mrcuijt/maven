@@ -122,6 +122,15 @@ public interface LohDao {
 	public abstract List<RegionInfo> findRegionInfoByLevel(Integer regionLevel);
 
 	/**
+	 * 根据地区级别查询地区信息
+	 *
+	 * @param regionLevel
+	 * @param limit
+	 * @return
+	 */
+	public abstract List<RegionInfo> findRegionInfoByLevel(Integer regionLevel,Integer limit);
+
+	/**
 	 * 根据父级地区Id查询对应的子集地区信息
 	 * 
 	 * @param parentRegionId

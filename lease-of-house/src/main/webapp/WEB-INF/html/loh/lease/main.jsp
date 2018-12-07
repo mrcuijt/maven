@@ -105,7 +105,7 @@
 							<th width="100px;">房屋类型</th>
 							<th width="100px;">房屋价格</th>
 							<th width="100px;">房屋地址</th>
-							<th width="100px;">发布日期</th>
+							<th width="150px;">发布日期</th>
 							<th width="100px;">联系人</th>
 							<th width="100px;">联系方式</th>
 							<th width="150px;">预览图</th>
@@ -118,7 +118,9 @@
 								<td>${houseInfo.lohHouseTypeId }</td>
 								<td>${houseInfo.price }</td>
 								<td>${houseInfo.houseAddress }</td>
-								<td>${houseInfo.pushDate }</td>
+								<td>
+									<fmt:formatDate value="${houseInfo.pushDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
+								</td>
 								<td>${houseInfo.contacts }</td>
 								<td>${houseInfo.cellPhone }</td>
 								<td>${houseInfo.cellPhone }</td>

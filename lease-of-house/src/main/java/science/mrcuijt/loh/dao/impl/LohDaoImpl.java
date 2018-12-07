@@ -534,7 +534,7 @@ public class LohDaoImpl implements LohDao {
 			}
 			ps.setString(9, lohHouseInfo.getHouseAddress());
 			ps.setBigDecimal(10, lohHouseInfo.getPrice());
-			ps.setDate(11, new Date(lohHouseInfo.getPushDate().getTime()));
+			ps.setTimestamp(11, new Timestamp(lohHouseInfo.getPushDate().getTime()));
 			ps.setString(12, lohHouseInfo.getContacts());
 			ps.setString(13, lohHouseInfo.getCellPhone());
 			ps.setString(14, lohHouseInfo.getQrcodeLink());
@@ -671,7 +671,7 @@ public class LohDaoImpl implements LohDao {
 			}
 			ps.setString(9, lohHouseInfo.getHouseAddress());
 			ps.setBigDecimal(10, lohHouseInfo.getPrice());
-			ps.setDate(11, new Date(lohHouseInfo.getPushDate().getTime()));
+			ps.setTimestamp(11, new Timestamp(lohHouseInfo.getPushDate().getTime()));
 			ps.setString(12, lohHouseInfo.getContacts());
 			ps.setString(13, lohHouseInfo.getCellPhone());
 			ps.setString(14, lohHouseInfo.getQrcodeLink());
@@ -830,7 +830,7 @@ public class LohDaoImpl implements LohDao {
 			}
 			ps.setString(9, lohHouseInfo.getHouseAddress());
 			ps.setBigDecimal(10, lohHouseInfo.getPrice());
-			ps.setDate(11, new Date(lohHouseInfo.getPushDate().getTime()));
+			ps.setTimestamp(11, new Timestamp(lohHouseInfo.getPushDate().getTime()));
 			ps.setString(12, lohHouseInfo.getContacts());
 			ps.setString(13, lohHouseInfo.getCellPhone());
 			ps.setString(14, lohHouseInfo.getQrcodeLink());
@@ -1230,6 +1230,65 @@ public class LohDaoImpl implements LohDao {
 		// 返回函数值
 		return regionInfoList;
 
+	}
+
+	/**
+	 * 根据地区级别查询地区信息
+	 *
+	 * @param regionLevel
+	 * @param limit
+	 * @return
+	 */
+	@Override
+	public List<RegionInfo> findRegionInfoByLevel(Integer regionLevel, Integer limit) {
+
+		List<RegionInfo> regionInfoList = new ArrayList<>();
+
+		StringBuffer strbFindRegionInfo = new StringBuffer();
+
+		strbFindRegionInfo.append(" SELECT  ");
+		strbFindRegionInfo.append(" region_info_id , ");
+		strbFindRegionInfo.append(" gmt_create , ");
+		strbFindRegionInfo.append(" gmt_modified , ");
+		strbFindRegionInfo.append(" region_code , ");
+		strbFindRegionInfo.append(" region_name , ");
+		strbFindRegionInfo.append(" region_level , ");
+		strbFindRegionInfo.append(" parent_region_id ");
+		strbFindRegionInfo.append(" FROM region_info ");
+		strbFindRegionInfo.append(" WHERE region_level = ? ");
+		strbFindRegionInfo.append(" LIMIT ");
+		strbFindRegionInfo.append(limit);
+
+		String sql = strbFindRegionInfo.toString();
+
+		Connection conn = JDBCUtil.getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			ps = conn.prepareStatement(sql);
+
+			ps.setInt(1, regionLevel);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				regionInfoList.add(JDBCUtil.convertResultSetToRegionInfo(rs));
+
+			}
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+
+		// 返回函数值
+		return regionInfoList;
 	}
 
 	/**

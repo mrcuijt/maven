@@ -6,6 +6,10 @@
 	version="3.1" metadata-complete="true">
 	<display-name>lease-of-house</display-name>
 
+	<listener>
+		<listener-class>science.mrcuijt.loh.listener.LohListener</listener-class>
+	</listener>
+
 	<!-- 请求处理的 Filter -->
 	<!-- <filter>
 		<filter-name>requestFilter</filter-name>
