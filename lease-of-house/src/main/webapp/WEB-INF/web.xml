@@ -314,6 +314,27 @@
 		<servlet-name>loh.getRegionServlet</servlet-name>
 		<url-pattern>/loh/getRegion.do</url-pattern>
 	</servlet-mapping>
+
+	<!-- 首页 -->
+	<servlet>
+		<servlet-name>main.mainServlet</servlet-name>
+		<servlet-class>science.mrcuijt.loh.servlet.main.MainServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>main.mainServlet</servlet-name>
+		<url-pattern>/main/main.do</url-pattern>
+	</servlet-mapping>
+
+	<!-- 首页 查询地区信息的 Servlet -->
+	<servlet>
+		<servlet-name>main.getRegionServlet</servlet-name>
+		<servlet-class>science.mrcuijt.loh.servlet.main.GetRegionServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>main.getRegionServlet</servlet-name>
+		<url-pattern>/main/getRegion.do</url-pattern>
+	</servlet-mapping>
 	
 	<!-- 禁用不安全的 HTTP 方法 -->
 	<security-constraint>
@@ -353,7 +374,7 @@
 		<!-- <welcome-file>index.html</welcome-file> <welcome-file>index.htm</welcome-file> 
 			<welcome-file>index.jsp</welcome-file> <welcome-file>default.html</welcome-file> 
 			<welcome-file>default.htm</welcome-file> <welcome-file>default.jsp</welcome-file> -->
-		<welcome-file>/WEB-INF/html/index.jsp</welcome-file>
+		<welcome-file>/WEB-INF/html/default.html</welcome-file>
 	</welcome-file-list>
 
 </web-app>

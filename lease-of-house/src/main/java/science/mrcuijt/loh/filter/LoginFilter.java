@@ -55,7 +55,9 @@ public class LoginFilter implements Filter {
 		if (url.endsWith(httpServletRequest.getContextPath() + "/login.do")
 				|| url.endsWith(httpServletRequest.getContextPath() + "/logout.do")
 				|| url.endsWith(httpServletRequest.getContextPath() + "/register.do")
-				|| url.endsWith(httpServletRequest.getContextPath() + "/verifyCode.do")) {
+				|| url.endsWith(httpServletRequest.getContextPath() + "/verifyCode.do")
+				|| url.endsWith(httpServletRequest.getContextPath() + "/main/main.do")
+				|| url.endsWith(httpServletRequest.getContextPath() + "/main/getRegion.do")) {
 			fc.doFilter(request, response);
 			return;
 		}
