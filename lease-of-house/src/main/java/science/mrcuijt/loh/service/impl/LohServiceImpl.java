@@ -260,7 +260,7 @@ public class LohServiceImpl implements LohService {
 	@Override
 	public List<RegionInfo> findRegionInfoByLevel(Integer regionLevel) {
 
-		if (regionLevel == 1) {
+		if (regionLevel == LohConstants.getTopRegionLevel().intValue() && LohConstants.getRegionLimit() > 0) {
 			return lohDao.findRegionInfoByLevel(regionLevel, LohConstants.getRegionLimit());
 		}
 
