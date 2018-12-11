@@ -175,7 +175,7 @@
 	</servlet-mapping>
 
 
-	<!--  -->
+	<!-- 用户平台主页 -->
 	<servlet>
 		<servlet-name>loh.mainServlet</servlet-name>
 		<servlet-class>science.mrcuijt.loh.servlet.loh.MainServlet</servlet-class>
@@ -191,10 +191,19 @@
 		<servlet-name>loh.lease.mainServlet</servlet-name>
 		<servlet-class>science.mrcuijt.loh.servlet.loh.lease.MainServlet</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>loh.lease.mainServlet</servlet-name>
 		<url-pattern>/loh/lease/main.do</url-pattern>
+	</servlet-mapping>
+
+	<!-- 查看发布房屋信息的 Servlet -->
+	<servlet>
+		<servlet-name>loh.showReleaseHouseServlet</servlet-name>
+		<servlet-class>science.mrcuijt.loh.servlet.loh.ShowReleaseHouseServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>loh.showReleaseHouseServlet</servlet-name>
+		<url-pattern>/loh/showReleaseHouse.do</url-pattern>
 	</servlet-mapping>
 
 	<!-- 发布房屋租赁信息的 Servlet -->
