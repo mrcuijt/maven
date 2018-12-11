@@ -950,11 +950,16 @@ public class LohDaoImpl implements LohDao {
 		// 拼接公共查询语句
 		StringBuffer strbComm = new StringBuffer();
 		strbComm.append(" FROM loh_house_info ");
-		strbComm.append(" WHERE user_info_id = ? ");
+		strbComm.append(" WHERE 1 = 1 ");
 		
 		// 动态拼接查询条件
 		strbComm.append("  ");
 		
+		if(queryParam.get("userInfoId") != null) {
+			strbComm.append(" and user_info_id = ? ");
+			queryParamValue.add(queryParam.get("userInfoId"));
+		}
+
 		if (queryParam.get("provinceId") != null) {
 			strbComm.append(" and region_info_province_id = ? ");
 			queryParamValue.add(queryParam.get("provinceId"));
@@ -1002,9 +1007,7 @@ public class LohDaoImpl implements LohDao {
 
 			ps = conn.prepareStatement(strbCount.toString());
 
-			ps.setInt(1, (int) queryParam.get("userInfoId"));
-
-			int paramStart = 2;
+			int paramStart = 1;
 
 			// 动态添加查询条件参数
 			for (Object object : queryParamValue) {
@@ -1084,10 +1087,9 @@ public class LohDaoImpl implements LohDao {
 
 			ps = conn.prepareStatement(strbQueryPagination.toString());
 
-			ps.setInt(1, (int) queryParam.get("userInfoId"));
 			// 动态添加查询条件参数
 
-			int paramStart = 2;
+			int paramStart = 1;
 
 			for (Object object : queryParamValue) {
 
