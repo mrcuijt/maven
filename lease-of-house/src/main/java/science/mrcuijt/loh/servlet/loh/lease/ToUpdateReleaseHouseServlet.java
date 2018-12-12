@@ -51,7 +51,7 @@ public class ToUpdateReleaseHouseServlet extends HttpServlet {
 		if (lohHouseId == null) {
 
 			message = "房屋信息不存在";
-			response.sendRedirect(request.getContextPath() + "loh/lease/main.do");
+			response.sendRedirect(request.getContextPath() + "/loh/lease/main.do");
 			return;
 		}
 
@@ -61,7 +61,7 @@ public class ToUpdateReleaseHouseServlet extends HttpServlet {
 		if (lohHouseInfo == null) {
 
 			message = "房屋信息不存在";
-			response.sendRedirect(request.getContextPath() + "loh/lease/main.do");
+			response.sendRedirect(request.getContextPath() + "/loh/lease/main.do");
 			return;
 		}
 
@@ -69,7 +69,7 @@ public class ToUpdateReleaseHouseServlet extends HttpServlet {
 		if (userInfoId.intValue() != lohHouseInfo.getUserInfoId().intValue()) {
 
 			message = "当前用户没有权限修改该房屋信息。";
-			response.sendRedirect(request.getContextPath() + "loh/lease/main.do");
+			response.sendRedirect(request.getContextPath() + "/loh/lease/main.do");
 			return;
 		}
 
