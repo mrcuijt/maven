@@ -212,7 +212,7 @@ function queryLohHousePagination(){
 	
 
 	function seeHouseInfo(e) {
-		window.location.href = basePath + "loh/lease/showReleaseHouse.do?id="
+		window.location.href = basePath + "loh/showReleaseHouse.do?id="
 				+ $(e.target).attr("lohHouseInfoId");
 	}
 }

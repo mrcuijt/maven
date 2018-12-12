@@ -5,7 +5,6 @@ package science.mrcuijt.loh.dao.impl;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,6 +26,7 @@ import science.mrcuijt.loh.entity.LoginInfo;
 import science.mrcuijt.loh.entity.LohFileInfo;
 import science.mrcuijt.loh.entity.LohHouseInfo;
 import science.mrcuijt.loh.entity.LohHouseType;
+import science.mrcuijt.loh.entity.LohHouseViewHistory;
 import science.mrcuijt.loh.entity.RegionInfo;
 import science.mrcuijt.loh.entity.UserInfo;
 import science.mrcuijt.loh.util.JDBCUtil;
@@ -1734,6 +1734,526 @@ public class LohDaoImpl implements LohDao {
 		}
 
 		return addFileInfoListResult;
+	}
+
+	/**
+	 * 分页查询房屋信息浏览记录
+	 *
+	 * @param pageIndex
+	 * @param pageSize
+	 * @param queryParam
+	 * @return
+	 */
+	@Override
+	public Map<String, Object> queryLohHouseViewHistoryPagination(Integer pageIndex, Integer pageSize,
+			Map<String, Object> queryParam) {
+
+		Map<String, Object> queryPagination = new HashMap<String, Object>();
+
+		List<LohHouseViewHistory> lohHouseViewHistoryList = new ArrayList<LohHouseViewHistory>();
+
+		Integer totalRecord = 0;
+		Integer totalPage = 0;
+
+		// 拼接公共查询语句
+		StringBuffer strbComm = new StringBuffer();
+		strbComm.append(" FROM loh_house_view_history ");
+		strbComm.append(" WHERE user_info_id = ? ");
+
+		// 查询总记录数
+		StringBuffer strbCount = new StringBuffer();
+		strbCount.append(" SELECT count(distinct loh_house_view_history_id) ");
+		strbCount.append(strbComm.toString());
+
+		Connection conn = JDBCUtil.getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			ps = conn.prepareStatement(strbCount.toString());
+
+			ps.setInt(1, (int) queryParam.get("userInfoId"));
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				totalRecord = rs.getInt(1);
+
+			}
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+
+		} finally {
+
+			JDBCUtil.closeAll(rs, ps, null);
+
+		}
+
+		if (totalRecord < 0) {
+			totalRecord = 0;
+		}
+
+		totalPage = totalRecord / pageSize;
+		if (totalRecord % pageSize > 0) {
+			totalPage++;
+		}
+
+		if (totalPage < pageIndex) {
+			pageIndex = totalPage;
+		}
+
+		// 分页查询
+		StringBuffer strbQueryPagination = new StringBuffer();
+		strbQueryPagination.append(" SELECT ");
+		strbQueryPagination.append(" loh_house_view_history_id , ");
+		strbQueryPagination.append(" gmt_create , ");
+		strbQueryPagination.append(" gmt_modified , ");
+		strbQueryPagination.append(" loh_house_id , ");
+		strbQueryPagination.append(" user_info_id  ");
+
+		// 拼接公共的查询条件
+		strbQueryPagination.append(strbComm.toString());
+		// 设置排序
+		strbQueryPagination.append(" ORDER BY gmt_modified desc ");
+		// 设置分页条件
+		strbQueryPagination.append(" LIMIT ");
+		strbQueryPagination.append(((pageIndex <= 0) ? 1 : pageIndex - 1) * pageSize);
+		strbQueryPagination.append(" , ");
+		strbQueryPagination.append(pageSize);
+
+		try {
+
+			ps = conn.prepareStatement(strbQueryPagination.toString());
+
+			ps.setInt(1, (int) queryParam.get("userInfoId"));
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				LohHouseViewHistory lohHouseViewHistory = JDBCUtil.convertResultSetToLohHouseViewHistory(rs);
+				lohHouseViewHistoryList.add(lohHouseViewHistory);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+
+		queryPagination.put("totalPage", totalPage);
+		queryPagination.put("totalRecord", totalRecord);
+		queryPagination.put("pageIndex", pageIndex);
+		queryPagination.put("pageSize", pageSize);
+		queryPagination.put("pagination", lohHouseViewHistoryList);
+
+		return queryPagination;
+	}
+
+	/**
+	 * 查询指定 id 集合的房屋信息列表
+	 *
+	 * @param strIds
+	 * @return
+	 */
+	@Override
+	public List<LohHouseInfo> queryHouseInfoListByIds(String strIds) {
+
+		List<LohHouseInfo> lohHouseInfoList = new ArrayList<>();
+
+		StringBuffer strbFindLohHouseInfoByIds = new StringBuffer();
+
+		strbFindLohHouseInfoByIds.append(" SELECT ");
+		strbFindLohHouseInfoByIds.append(" loh_house_info_id , ");
+		strbFindLohHouseInfoByIds.append(" gmt_create , ");
+		strbFindLohHouseInfoByIds.append(" gmt_modified , ");
+		strbFindLohHouseInfoByIds.append(" house_title , ");
+		strbFindLohHouseInfoByIds.append(" user_info_id , ");
+		strbFindLohHouseInfoByIds.append(" loh_house_type_id , ");
+		strbFindLohHouseInfoByIds.append(" region_info_province_id , ");
+		strbFindLohHouseInfoByIds.append(" region_info_city_id , ");
+		strbFindLohHouseInfoByIds.append(" region_info_county_id , ");
+		strbFindLohHouseInfoByIds.append(" house_address , ");
+		strbFindLohHouseInfoByIds.append(" price , ");
+		strbFindLohHouseInfoByIds.append(" push_date , ");
+		strbFindLohHouseInfoByIds.append(" contacts , ");
+		strbFindLohHouseInfoByIds.append(" cell_phone , ");
+		strbFindLohHouseInfoByIds.append(" qrcode_link  ");
+		strbFindLohHouseInfoByIds.append(" FROM loh_house_info ");
+		strbFindLohHouseInfoByIds.append(" WHERE loh_house_info_id in ( ");
+		strbFindLohHouseInfoByIds.append(strIds);
+		strbFindLohHouseInfoByIds.append(" ) ");
+
+		String sql = strbFindLohHouseInfoByIds.toString();
+
+		Connection conn = JDBCUtil.getConnection();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			ps = conn.prepareStatement(sql);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				LohHouseInfo lohHouseInfo = new LohHouseInfo();
+
+				lohHouseInfo = JDBCUtil.convertResultSetToLohHouseInfo(rs);
+
+				lohHouseInfoList.add(lohHouseInfo);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+
+		// 返回函数值
+		return lohHouseInfoList;
+	}
+
+	/**
+	 * 根据房屋信息id与用户id查询房屋信息浏览记录
+	 *
+	 * @param lohHouseInfoId
+	 * @param userInfoId
+	 * @return
+	 */
+	@Override
+	public LohHouseViewHistory findLohHouseViewHistoryByLohHouseInfoIdAndUserInfoId(Integer lohHouseInfoId,
+			Integer userInfoId) {
+
+		LohHouseViewHistory lohHouseViewHistory = null;
+
+		StringBuffer strbFindLohHouseViewHistory = new StringBuffer();
+		strbFindLohHouseViewHistory.append(" SELECT ");
+		strbFindLohHouseViewHistory.append(" loh_house_view_history_id , ");
+		strbFindLohHouseViewHistory.append(" gmt_create , ");
+		strbFindLohHouseViewHistory.append(" gmt_modified , ");
+		strbFindLohHouseViewHistory.append(" loh_house_id , ");
+		strbFindLohHouseViewHistory.append(" user_info_id ");
+		strbFindLohHouseViewHistory.append(" FROM loh_house_view_history ");
+		strbFindLohHouseViewHistory.append(" WHERE loh_house_id = ? ");
+		strbFindLohHouseViewHistory.append(" AND user_info_id = ? ");
+
+		String sql = strbFindLohHouseViewHistory.toString();
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			conn = JDBCUtil.getConnection();
+
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, lohHouseInfoId);
+			ps.setInt(2, userInfoId);
+
+			rs = ps.executeQuery();
+
+			if (rs.next()) {
+				lohHouseViewHistory = JDBCUtil.convertResultSetToLohHouseViewHistory(rs);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+
+		return lohHouseViewHistory;
+	}
+
+	/**
+	 * 添加房屋信息浏览记录
+	 *
+	 * @param lohHouseViewHistory
+	 * @return
+	 */
+	@Override
+	public boolean addLohHouseViewHistory(LohHouseViewHistory lohHouseViewHistory) {
+
+		boolean result = false;
+
+		StringBuffer strbAddLohHouseViewHistory = new StringBuffer();
+		strbAddLohHouseViewHistory.append(" INSERT INTO loh_house_view_history ( ");
+		strbAddLohHouseViewHistory.append(" gmt_create , ");
+		strbAddLohHouseViewHistory.append(" gmt_modified , ");
+		strbAddLohHouseViewHistory.append(" loh_house_id , ");
+		strbAddLohHouseViewHistory.append(" user_info_id ");
+		strbAddLohHouseViewHistory.append(" ) VALUES ( ?, ?, ?, ? )");
+
+		String sql = strbAddLohHouseViewHistory.toString();
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			conn = JDBCUtil.getConnection();
+			conn.setAutoCommit(false);
+
+			ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			ps.setTimestamp(1, new Timestamp(lohHouseViewHistory.getGmtCreate().getTime()));
+			ps.setTimestamp(2, new Timestamp(lohHouseViewHistory.getGmtModified().getTime()));
+			ps.setInt(3, lohHouseViewHistory.getLohHouseId());
+			ps.setInt(4, lohHouseViewHistory.getUserInfoId());
+
+			int count = ps.executeUpdate();
+
+			if (count > 0) {
+				rs = ps.getGeneratedKeys();
+				while (rs.next()) {
+					lohHouseViewHistory.setLohHouseViewHistoryId(rs.getInt(1));
+				}
+			} else {
+				conn.rollback();
+				return result;
+			}
+
+			conn.commit();
+
+			result = true;
+
+		} catch (SQLException e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+
+		return result;
+	}
+
+	/**
+	 * 更新房屋信息浏览记录
+	 *
+	 * @param lohHouseViewHistory
+	 * @return
+	 */
+	@Override
+	public boolean updateLohHouseViewHistoryByPrimaryKey(LohHouseViewHistory lohHouseViewHistory) {
+
+		boolean result = false;
+
+		StringBuffer strbAddLohHouseViewHistory = new StringBuffer();
+		strbAddLohHouseViewHistory.append(" UPDATE loh_house_view_history ");
+		strbAddLohHouseViewHistory.append(" SET gmt_create = ? , ");
+		strbAddLohHouseViewHistory.append(" gmt_modified = ? , ");
+		strbAddLohHouseViewHistory.append(" loh_house_id = ?, ");
+		strbAddLohHouseViewHistory.append(" user_info_id = ? ");
+		strbAddLohHouseViewHistory.append(" WHERE loh_house_view_history_id = ? ");
+
+		String sql = strbAddLohHouseViewHistory.toString();
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			conn = JDBCUtil.getConnection();
+			conn.setAutoCommit(false);
+
+			ps = conn.prepareStatement(sql);
+			ps.setTimestamp(1, new Timestamp(lohHouseViewHistory.getGmtCreate().getTime()));
+			ps.setTimestamp(2, new Timestamp(lohHouseViewHistory.getGmtModified().getTime()));
+			ps.setInt(3, lohHouseViewHistory.getLohHouseId());
+			ps.setInt(4, lohHouseViewHistory.getUserInfoId());
+			ps.setInt(5, lohHouseViewHistory.getLohHouseViewHistoryId());
+
+			int count = ps.executeUpdate();
+
+			if (count <= 0) {
+				conn.rollback();
+				return result;
+			}
+
+			conn.commit();
+
+			result = true;
+
+		} catch (SQLException e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+
+		return result;
+	}
+
+	/**
+	 * 查询房屋信息浏览记录
+	 *
+	 * @param lohHoueseViewHistoryId
+	 * @return
+	 */
+	@Override
+	public LohHouseViewHistory findLohHouseViewHistoryByPrimaryKey(Integer lohHoueseViewHistoryId) {
+
+		LohHouseViewHistory lohHouseViewHistory = null;
+
+		StringBuffer strbFindLohHouseViewHistory = new StringBuffer();
+		strbFindLohHouseViewHistory.append(" SELECT ");
+		strbFindLohHouseViewHistory.append(" loh_house_view_history_id , ");
+		strbFindLohHouseViewHistory.append(" gmt_create , ");
+		strbFindLohHouseViewHistory.append(" gmt_modified , ");
+		strbFindLohHouseViewHistory.append(" loh_house_id , ");
+		strbFindLohHouseViewHistory.append(" user_info_id ");
+		strbFindLohHouseViewHistory.append(" FROM loh_house_view_history ");
+		strbFindLohHouseViewHistory.append(" WHERE loh_house_view_history_id = ? ");
+
+		String sql = strbFindLohHouseViewHistory.toString();
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			conn = JDBCUtil.getConnection();
+
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, lohHoueseViewHistoryId);
+
+			rs = ps.executeQuery();
+
+			if (rs.next()) {
+				lohHouseViewHistory = JDBCUtil.convertResultSetToLohHouseViewHistory(rs);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+
+		return lohHouseViewHistory;
+	}
+
+	/**
+	 * 根据房屋信息浏览记录id与用户id查询房屋信息浏览记录
+	 *
+	 * @param lohHouseInfoId
+	 * @param userInfoId
+	 * @return
+	 */
+	@Override
+	public LohHouseViewHistory findLohHouseViewHistoryByLohHouseViewHistoryIdAndUserInfoId(
+			Integer lohHoueseViewHistoryId, Integer userInfoId) {
+
+		LohHouseViewHistory lohHouseViewHistory = null;
+
+		StringBuffer strbFindLohHouseViewHistory = new StringBuffer();
+		strbFindLohHouseViewHistory.append(" SELECT ");
+		strbFindLohHouseViewHistory.append(" loh_house_view_history_id , ");
+		strbFindLohHouseViewHistory.append(" gmt_create , ");
+		strbFindLohHouseViewHistory.append(" gmt_modified , ");
+		strbFindLohHouseViewHistory.append(" loh_house_id , ");
+		strbFindLohHouseViewHistory.append(" user_info_id ");
+		strbFindLohHouseViewHistory.append(" FROM loh_house_view_history ");
+		strbFindLohHouseViewHistory.append(" WHERE loh_house_view_history_id = ? ");
+		strbFindLohHouseViewHistory.append(" AND user_info_id = ? ");
+
+		String sql = strbFindLohHouseViewHistory.toString();
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+
+			conn = JDBCUtil.getConnection();
+
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, lohHoueseViewHistoryId);
+			ps.setInt(2, userInfoId);
+
+			rs = ps.executeQuery();
+
+			if (rs.next()) {
+				lohHouseViewHistory = JDBCUtil.convertResultSetToLohHouseViewHistory(rs);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeAll(rs, ps, conn);
+		}
+
+		return lohHouseViewHistory;
+	}
+
+	/**
+	 * 根据主键删除房屋信息浏览记录
+	 *
+	 * @param lohHouseViewHistoryId
+	 * @return
+	 */
+	@Override
+	public boolean deleteLohHouseViewHistoryByPrimaryKey(Integer lohHouseViewHistoryId) {
+
+		boolean deleteLohHoueseViewHistoryResult = false;
+
+		StringBuffer strbDeleteLohHouseViewHistory = new StringBuffer();
+
+		strbDeleteLohHouseViewHistory.append(" DELETE FROM loh_house_view_history ");
+		strbDeleteLohHouseViewHistory.append(" WHERE loh_house_view_history_id = ? ");
+
+		String sql = strbDeleteLohHouseViewHistory.toString();
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+
+		try {
+
+			conn = JDBCUtil.getConnection();
+
+			conn.setAutoCommit(false);
+
+			ps = conn.prepareStatement(sql);
+
+			ps.setInt(1, lohHouseViewHistoryId);
+
+			int count = ps.executeUpdate();
+
+			if (count > 0) {
+				conn.commit();
+				deleteLohHoueseViewHistoryResult = true;
+			} else {
+				conn.rollback();
+			}
+
+		} catch (SQLException e) {
+			try {
+				conn.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeAll(null, ps, conn);
+		}
+
+		return deleteLohHoueseViewHistoryResult;
 	}
 
 }

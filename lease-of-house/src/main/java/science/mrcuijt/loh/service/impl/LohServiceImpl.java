@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +20,7 @@ import science.mrcuijt.loh.entity.LoginInfo;
 import science.mrcuijt.loh.entity.LohFileInfo;
 import science.mrcuijt.loh.entity.LohHouseInfo;
 import science.mrcuijt.loh.entity.LohHouseType;
+import science.mrcuijt.loh.entity.LohHouseViewHistory;
 import science.mrcuijt.loh.entity.RegionInfo;
 import science.mrcuijt.loh.entity.UserInfo;
 import science.mrcuijt.loh.service.LohService;
@@ -414,6 +416,139 @@ public class LohServiceImpl implements LohService {
 		// 原有的现在删除了的当前提交的列表中数据库中对比后，提交列表中不存在的就是删除的列表
 
 		return res;
+	}
+
+	/**
+	 * 分页查询房屋信息浏览记录的业务逻辑接口
+	 *
+	 * @param pageIndex
+	 * @param pageSize
+	 * @param queryParam
+	 * @return
+	 */
+	@Override
+	public Map<String, Object> queryLohHouseViewHistoryPagination(Integer pageIndex, Integer pageSize,
+			Map<String, Object> queryParam) {
+
+		// 分页查询历史记录浏览信息表
+		Map<String, Object> queryPagination = lohDao.queryLohHouseViewHistoryPagination(pageIndex, pageSize,
+				queryParam);
+
+		List<LohHouseInfo> lohHouseInfoList = null;
+
+		// 获取分页查询结果
+		List<LohHouseViewHistory> lohHouseViewHistoryList = (List<LohHouseViewHistory>) queryPagination.get("pagination");
+
+		// 获取房屋信息列表 id
+		int[] ids = new int[lohHouseViewHistoryList.size()];
+
+		int index = 0;
+		for (LohHouseViewHistory lohHouseViewHistory : lohHouseViewHistoryList) {
+			ids[index] = lohHouseViewHistory.getLohHouseId();
+			index++;
+		}
+
+		// 格式化查询参数
+		String strIds = StringUtils.join(ids, ',');
+
+		// 查询房屋信息
+		lohHouseInfoList = lohDao.queryHouseInfoListByIds(strIds);
+
+		List<LohHouseInfo> sortList = new ArrayList<>();
+
+		// 查询结果集如何排序问题
+		int j = 0;
+		while (j < ids.length) {
+			for (LohHouseInfo lohHouseInfo : lohHouseInfoList) {
+				for (int i = 0; i < ids.length; i++) {
+					if (lohHouseInfo.getLohHouseInfoId().intValue() == ids[j]) {
+						sortList.add(lohHouseInfo);
+						j++;
+						break;
+					}
+				}
+				if (lohHouseInfoList.size() == j) {
+					break;
+				}
+			}
+		}
+
+		queryPagination.put("lohHouseInfoList", sortList);
+
+		return queryPagination;
+	}
+
+	/**
+	 * 根据房屋信息id与用户id查询房屋信息浏览记录的业务逻辑接口
+	 *
+	 * @param lohHouseInfoId
+	 * @param userInfoId
+	 * @return
+	 */
+	@Override
+	public LohHouseViewHistory findLohHouseViewHistoryByLohHouseInfoIdAndUserInfoId(Integer lohHouseInfoId,
+			Integer userInfoId) {
+		return lohDao.findLohHouseViewHistoryByLohHouseInfoIdAndUserInfoId(lohHouseInfoId, userInfoId);
+	}
+
+	/**
+	 * 添加房屋信息浏览记录的业务逻辑接口
+	 *
+	 * @param lohHouseViewHistory
+	 * @return
+	 */
+	@Override
+	public boolean addLohHouseViewHistory(LohHouseViewHistory lohHouseViewHistory) {
+		return lohDao.addLohHouseViewHistory(lohHouseViewHistory);
+	}
+
+	/**
+	 * 更新房屋信息浏览记录的业务逻辑接口
+	 *
+	 * @param lohHouseViewHistory
+	 * @return
+	 */
+	@Override
+	public boolean updateLohHouseViewHistoryByPrimaryKey(LohHouseViewHistory lohHouseViewHistory) {
+		return lohDao.updateLohHouseViewHistoryByPrimaryKey(lohHouseViewHistory);
+	}
+
+	/**
+	 * 查询房屋信息浏览记录的业务逻辑接口
+	 *
+	 * @param lohHoueseViewHistoryId
+	 * @return
+	 */
+	@Override
+	public LohHouseViewHistory findLohHouseViewHistoryByPrimaryKey(Integer lohHoueseViewHistoryId) {
+
+		return lohDao.findLohHouseViewHistoryByPrimaryKey(lohHoueseViewHistoryId);
+	}
+
+	/**
+	 * 根据房屋信息浏览记录id与用户id查询房屋信息浏览记录的业务逻辑接口
+	 *
+	 * @param lohHouseInfoId
+	 * @param userInfoId
+	 * @return
+	 */
+	@Override
+	public LohHouseViewHistory findLohHouseViewHistoryByLohHouseViewHistoryIdAndUserInfoId(
+			Integer lohHoueseViewHistoryId, Integer userInfoId) {
+
+		return lohDao.findLohHouseViewHistoryByLohHouseViewHistoryIdAndUserInfoId(lohHoueseViewHistoryId, userInfoId);
+	}
+
+	/**
+	 * 根据主键删除房屋信息浏览记录的业务逻辑接口
+	 *
+	 * @param lohHouseViewHistoryId
+	 * @return
+	 */
+	@Override
+	public boolean deleteLohHouseViewHistoryByPrimaryKey(Integer lohHouseViewHistoryId) {
+
+		return lohDao.deleteLohHouseViewHistoryByPrimaryKey(lohHouseViewHistoryId);
 	}
 
 }

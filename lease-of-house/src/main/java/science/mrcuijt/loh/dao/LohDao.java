@@ -11,6 +11,7 @@ import science.mrcuijt.loh.entity.LoginInfo;
 import science.mrcuijt.loh.entity.LohFileInfo;
 import science.mrcuijt.loh.entity.LohHouseInfo;
 import science.mrcuijt.loh.entity.LohHouseType;
+import science.mrcuijt.loh.entity.LohHouseViewHistory;
 import science.mrcuijt.loh.entity.RegionInfo;
 import science.mrcuijt.loh.entity.UserInfo;
 
@@ -59,7 +60,7 @@ public interface LohDao {
 	 * 
 	 * @param loginInfo
 	 * @return
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	public abstract boolean updateLoginInfo(LoginInfo loginInfo) throws SQLException;
 
@@ -78,7 +79,7 @@ public interface LohDao {
 	 * @param lohFileInfoList
 	 */
 	public abstract boolean addLohHouseInfo(LohHouseInfo lohHouseInfo, List<LohFileInfo> lohFileInfoList);
-	
+
 	/**
 	 * 根据房屋信息 Id 更新房屋信息
 	 * 
@@ -86,7 +87,7 @@ public interface LohDao {
 	 * @return
 	 */
 	public abstract boolean updateHouseInfoResult(LohHouseInfo lohHouseInfo);
-	
+
 	/**
 	 * 删除房屋信息
 	 * 
@@ -94,7 +95,7 @@ public interface LohDao {
 	 * @return
 	 */
 	public abstract boolean deleteLohHouseInfoByPrimaryKey(Integer lohHouseInfoId);
-	
+
 	/**
 	 * 用户发布房屋信息（LohHouseInfo）的分页查询方法
 	 * 
@@ -128,7 +129,7 @@ public interface LohDao {
 	 * @param limit
 	 * @return
 	 */
-	public abstract List<RegionInfo> findRegionInfoByLevel(Integer regionLevel,Integer limit);
+	public abstract List<RegionInfo> findRegionInfoByLevel(Integer regionLevel, Integer limit);
 
 	/**
 	 * 根据父级地区Id查询对应的子集地区信息
@@ -145,7 +146,7 @@ public interface LohDao {
 	 * @return
 	 */
 	public abstract RegionInfo findRegionInfoByPrimaryKey(Integer regionInfoId);
-	
+
 	/**
 	 * 根据主键查询查询房屋类型信息
 	 * 
@@ -181,10 +182,81 @@ public interface LohDao {
 	/**
 	 * 添加房屋文件信息列表
 	 * 
-	 * @param lohHouseInfo 
+	 * @param lohHouseInfo
 	 * @param lohFileInfoList
 	 * @return
 	 */
 	public abstract boolean addFileInfoList(LohHouseInfo lohHouseInfo, List<LohFileInfo> lohFileInfoList);
+
+	/**
+	 * 分页查询房屋信息浏览记录
+	 *
+	 * @param pageIndex
+	 * @param pageSize
+	 * @param queryParam
+	 * @return
+	 */
+	public abstract Map<String, Object> queryLohHouseViewHistoryPagination(Integer pageIndex, Integer pageSize,
+			Map<String, Object> queryParam);
+
+	/**
+	 * 查询指定 id 集合的房屋信息列表
+	 *
+	 * @param strIds
+	 * @return
+	 */
+	public abstract List<LohHouseInfo> queryHouseInfoListByIds(String strIds);
+
+	/**
+	 * 根据房屋信息id与用户id查询房屋信息浏览记录
+	 *
+	 * @param lohHouseInfoId
+	 * @param userInfoId
+	 * @return
+	 */
+	public abstract LohHouseViewHistory findLohHouseViewHistoryByLohHouseInfoIdAndUserInfoId(Integer lohHouseInfoId,
+			Integer userInfoId);
+
+	/**
+	 * 添加房屋信息浏览记录
+	 *
+	 * @param lohHouseViewHistory
+	 * @return
+	 */
+	public abstract boolean addLohHouseViewHistory(LohHouseViewHistory lohHouseViewHistory);
+
+	/**
+	 * 更新房屋信息浏览记录
+	 *
+	 * @param lohHouseViewHistory
+	 * @return
+	 */
+	public abstract boolean updateLohHouseViewHistoryByPrimaryKey(LohHouseViewHistory lohHouseViewHistory);
+
+	/**
+	 * 查询房屋信息浏览记录
+	 *
+	 * @param lohHoueseViewHistoryId
+	 * @return
+	 */
+	public abstract LohHouseViewHistory findLohHouseViewHistoryByPrimaryKey(Integer lohHoueseViewHistoryId);
+
+	/**
+	 * 根据房屋信息浏览记录id与用户id查询房屋信息浏览记录
+	 *
+	 * @param lohHouseInfoId
+	 * @param userInfoId
+	 * @return
+	 */
+	public abstract LohHouseViewHistory findLohHouseViewHistoryByLohHouseViewHistoryIdAndUserInfoId(
+			Integer lohHoueseViewHistoryId, Integer userInfoId);
+
+	/**
+	 * 根据主键删除房屋信息浏览记录
+	 *
+	 * @param lohHouseViewHistoryId
+	 * @return
+	 */
+	public abstract boolean deleteLohHouseViewHistoryByPrimaryKey(Integer lohHouseViewHistoryId);
 
 }

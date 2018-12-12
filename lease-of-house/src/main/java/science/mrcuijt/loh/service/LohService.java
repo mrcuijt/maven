@@ -11,6 +11,7 @@ import science.mrcuijt.loh.entity.LoginInfo;
 import science.mrcuijt.loh.entity.LohFileInfo;
 import science.mrcuijt.loh.entity.LohHouseInfo;
 import science.mrcuijt.loh.entity.LohHouseType;
+import science.mrcuijt.loh.entity.LohHouseViewHistory;
 import science.mrcuijt.loh.entity.RegionInfo;
 import science.mrcuijt.loh.entity.UserInfo;
 
@@ -59,7 +60,7 @@ public interface LohService {
 	 * 
 	 * @param loginInfo
 	 * @return
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	public abstract boolean updateLoginInfo(LoginInfo loginInfo) throws SQLException;
 
@@ -95,7 +96,7 @@ public interface LohService {
 	 * @return
 	 */
 	public abstract boolean deleteLohHouseInfo(LohHouseInfo lohHouseInfo, String webRoot);
-	
+
 	/**
 	 * 查询用户信息的业务逻辑接口
 	 * 
@@ -137,7 +138,7 @@ public interface LohService {
 	 * @return
 	 */
 	public abstract List<RegionInfo> findRegionInfoByParentRegionId(Integer parentRegionId);
-	
+
 	/**
 	 * 根据地区信息表主键查询地区信息表记录的业务逻辑接口
 	 * 
@@ -189,5 +190,68 @@ public interface LohService {
 	 */
 	public abstract boolean updateLohFileInfo(LohHouseInfo lohHouseInfo, List<Integer> imageIdList,
 			List<LohFileInfo> lohFileInfoList, String webRootPath);
+
+	/**
+	 * 分页查询房屋信息浏览记录的业务逻辑接口
+	 *
+	 * @param pageIndex
+	 * @param pageSize
+	 * @param queryParam
+	 * @return
+	 */
+	public abstract Map<String, Object> queryLohHouseViewHistoryPagination(Integer pageIndex, Integer pageSize,
+			Map<String, Object> queryParam);
+
+	/**
+	 * 根据房屋信息id与用户id查询房屋信息浏览记录的业务逻辑接口
+	 *
+	 * @param lohHouseInfoId
+	 * @param userInfoId
+	 * @return
+	 */
+	public abstract LohHouseViewHistory findLohHouseViewHistoryByLohHouseInfoIdAndUserInfoId(Integer lohHouseInfoId,
+			Integer userInfoId);
+
+	/**
+	 * 添加房屋信息浏览记录的业务逻辑接口
+	 *
+	 * @param lohHouseViewHistory
+	 * @return
+	 */
+	public abstract boolean addLohHouseViewHistory(LohHouseViewHistory lohHouseViewHistory);
+
+	/**
+	 * 更新房屋信息浏览记录的业务逻辑接口
+	 *
+	 * @param lohHouseViewHistory
+	 * @return
+	 */
+	public abstract boolean updateLohHouseViewHistoryByPrimaryKey(LohHouseViewHistory lohHouseViewHistory);
+
+	/**
+	 * 查询房屋信息浏览记录的业务逻辑接口
+	 *
+	 * @param lohHoueseViewHistoryId
+	 * @return
+	 */
+	public abstract LohHouseViewHistory findLohHouseViewHistoryByPrimaryKey(Integer lohHoueseViewHistoryId);
+
+	/**
+	 * 根据房屋信息浏览记录id与用户id查询房屋信息浏览记录的业务逻辑接口
+	 *
+	 * @param lohHouseInfoId
+	 * @param userInfoId
+	 * @return
+	 */
+	public abstract LohHouseViewHistory findLohHouseViewHistoryByLohHouseViewHistoryIdAndUserInfoId(
+			Integer lohHoueseViewHistoryId, Integer userInfoId);
+
+	/**
+	 * 根据主键删除房屋信息浏览记录的业务逻辑接口
+	 *
+	 * @param lohHouseViewHistoryId
+	 * @return
+	 */
+	public abstract boolean deleteLohHouseViewHistoryByPrimaryKey(Integer lohHouseViewHistoryId);
 
 }

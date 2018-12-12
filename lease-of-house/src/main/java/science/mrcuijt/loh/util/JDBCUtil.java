@@ -21,6 +21,7 @@ import science.mrcuijt.loh.entity.LoginInfo;
 import science.mrcuijt.loh.entity.LohFileInfo;
 import science.mrcuijt.loh.entity.LohHouseInfo;
 import science.mrcuijt.loh.entity.LohHouseType;
+import science.mrcuijt.loh.entity.LohHouseViewHistory;
 import science.mrcuijt.loh.entity.RegionInfo;
 import science.mrcuijt.loh.entity.UserInfo;
 
@@ -383,5 +384,25 @@ public class JDBCUtil {
 		userInfo.setDetailedInformation(rs.getString("detailed_information"));
 		
 		return userInfo;
+	}
+
+	/**
+	 * 转换 ResultSet 为 LohHouseViewHistory 的方法
+	 *
+	 * @param rs
+	 * @return
+	 * @throws SQLException
+	 */
+	public static LohHouseViewHistory convertResultSetToLohHouseViewHistory(ResultSet rs) throws SQLException {
+
+		LohHouseViewHistory lohHouseViewHistory = new LohHouseViewHistory();
+
+		lohHouseViewHistory.setLohHouseViewHistoryId(rs.getInt("loh_house_view_history_id"));
+		lohHouseViewHistory.setGmtCreate(rs.getTimestamp("gmt_create"));
+		lohHouseViewHistory.setGmtModified(rs.getTimestamp("gmt_modified"));
+		lohHouseViewHistory.setLohHouseId(rs.getInt("loh_house_id"));
+		lohHouseViewHistory.setUserInfoId(rs.getInt("user_info_id"));
+
+		return lohHouseViewHistory;
 	}
 }

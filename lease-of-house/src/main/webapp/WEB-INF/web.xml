@@ -206,6 +206,26 @@
 		<url-pattern>/loh/showReleaseHouse.do</url-pattern>
 	</servlet-mapping>
 
+	<!-- 查看房屋信息浏览历史 -->
+	<servlet>
+		<servlet-name>loh.viewHistoryServlet</servlet-name>
+		<servlet-class>science.mrcuijt.loh.servlet.loh.ViewHistoryServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>loh.viewHistoryServlet</servlet-name>
+		<url-pattern>/loh/viewHistory.do</url-pattern>
+	</servlet-mapping>
+
+	<!-- 删除房屋信息浏览历史 -->
+	<servlet>
+		<servlet-name>loh.deleteLohHouseViewHistoryServlet</servlet-name>
+		<servlet-class>science.mrcuijt.loh.servlet.loh.DeleteLohHouseViewHistoryServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>loh.deleteLohHouseViewHistoryServlet</servlet-name>
+		<url-pattern>/loh/deleteLohHouseViewHistory.do</url-pattern>
+	</servlet-mapping>
+
 	<!-- 发布房屋租赁信息的 Servlet -->
 	<servlet>
 		<servlet-name>loh.lease.releaseHouseServlet</servlet-name>

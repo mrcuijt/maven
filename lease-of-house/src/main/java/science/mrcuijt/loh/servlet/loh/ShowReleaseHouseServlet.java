@@ -4,6 +4,7 @@
 package science.mrcuijt.loh.servlet.loh;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -17,7 +18,9 @@ import org.slf4j.LoggerFactory;
 import science.mrcuijt.loh.entity.LohFileInfo;
 import science.mrcuijt.loh.entity.LohHouseInfo;
 import science.mrcuijt.loh.entity.LohHouseType;
+import science.mrcuijt.loh.entity.LohHouseViewHistory;
 import science.mrcuijt.loh.entity.RegionInfo;
+import science.mrcuijt.loh.entity.UserInfo;
 import science.mrcuijt.loh.service.LohService;
 import science.mrcuijt.loh.service.impl.LohServiceImpl;
 
@@ -34,6 +37,8 @@ public class ShowReleaseHouseServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
+		boolean debug = log.isDebugEnabled();
 
 		String message = null;
 
@@ -57,6 +62,41 @@ public class ShowReleaseHouseServlet extends HttpServlet {
 
 			// 查询房屋信息
 			LohHouseInfo lohHouseInfo = lohService.findLohHouseInfoByPrimaryKey(lohHouseInfoId);
+
+			// 保存房屋信息浏览记录
+			LohHouseViewHistory lohHouseViewHistory = null;
+
+			// 获取登录用户标识
+			Integer loginInfoId = (Integer) request.getSession().getAttribute("login_info_id");
+
+			Integer userInfoId = (Integer) request.getSession().getAttribute("user_info_id");
+
+			// 根据用户登录标识查询用户信息
+			UserInfo userInfo = lohService.findUserInfoByPrimaryKey(userInfoId);
+
+			// 查询房屋信息浏览记录是否存在
+			lohHouseViewHistory = lohService.findLohHouseViewHistoryByLohHouseInfoIdAndUserInfoId(
+					lohHouseInfo.getLohHouseInfoId(), userInfo.getUserInfoId());
+
+			if (lohHouseViewHistory == null) {
+				// 添加新的房屋信息浏览记录
+				lohHouseViewHistory = new LohHouseViewHistory();
+				lohHouseViewHistory.setGmtCreate(new Date());
+				lohHouseViewHistory.setGmtModified(new Date());
+				lohHouseViewHistory.setLohHouseId(lohHouseInfo.getLohHouseInfoId());
+				lohHouseViewHistory.setUserInfoId(userInfo.getUserInfoId());
+				boolean addResult = lohService.addLohHouseViewHistory(lohHouseViewHistory);
+				if (!addResult) {
+					log.info("Add LohHouseViewHistory fail {}", lohHouseViewHistory);
+				}
+			} else {
+				// 更新房屋信息浏览记录
+				lohHouseViewHistory.setGmtModified(new Date());
+				boolean updateResult = lohService.updateLohHouseViewHistoryByPrimaryKey(lohHouseViewHistory);
+				if (!updateResult) {
+					log.info("Upadte LohHouseViewHistory fail {}", lohHouseViewHistory);
+				}
+			}
 
 			// 查询房屋类型信息
 			LohHouseType lohHouseType = lohService.findLohHouseTypeByPrimaryKey(lohHouseInfo.getLohHouseTypeId());
