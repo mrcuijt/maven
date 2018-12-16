@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+	<display-name>servlet-demo</display-name>
+
+	<!-- A filter that sets character encoding that is used to decode -->
+	<!-- parameters in a POST request -->
+	<filter>
+		<filter-name>setCharacterEncodingFilter</filter-name>
+		<filter-class>org.apache.catalina.filters.SetCharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	
+	<!-- The mapping for the Set Character Encoding Filter -->
+	<filter-mapping>
+        <filter-name>setCharacterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+	<filter>
+		<filter-name>parameterFilter</filter-name>
+		<filter-class>science.mrcuijt.servlet.filter.ParameterFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>parameterFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+    
+	<filter>
+		<filter-name>requestDumperFilter</filter-name>
+		<filter-class>science.mrcuijt.servlet.filter.RequestDumperFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>requestDumperFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<!-- Servlet / -->
+	<servlet>
+		<servlet-name>demoServlet</servlet-name>
+		<servlet-class>science.mrcuijt.servlet.DemoServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>demoServlet</servlet-name>
+		<url-pattern>/demo.do</url-pattern>
+	</servlet-mapping>
+	
+	<!-- /dispatcherPostRequset.do -->
+	<servlet>
+		<servlet-name>dispatcherPostRequsetServlet</servlet-name>
+		<servlet-class>science.mrcuijt.servlet.DispatcherPostRequsetServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>dispatcherPostRequsetServlet</servlet-name>
+		<url-pattern>/dispatcherPostRequset.do</url-pattern>
+	</servlet-mapping>
+
+	<!-- /dispatcherRequsetGet.do -->
+	<servlet>
+		<servlet-name>dispatcherRequsetGetServlet</servlet-name>
+		<servlet-class>science.mrcuijt.servlet.DispatcherRequsetGetServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>dispatcherRequsetGetServlet</servlet-name>
+		<url-pattern>/dispatcherRequsetGet.do</url-pattern>
+	</servlet-mapping>
+
+	<!-- /getRequest.do -->
+	<servlet>
+		<servlet-name>getRequestServlet</servlet-name>
+		<servlet-class>science.mrcuijt.servlet.GetRequestServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>getRequestServlet</servlet-name>
+		<url-pattern>/getRequest.do</url-pattern>
+	</servlet-mapping>
+
+	<!-- /postRequest.do -->
+	<servlet>
+		<servlet-name>postRequestServlet</servlet-name>
+		<servlet-class>science.mrcuijt.servlet.PostRequestServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>postRequestServlet</servlet-name>
+		<url-pattern>/postRequest.do</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Servlet /redirect -->
+	<!-- /redirect/redirectPost.do -->
+	<servlet>
+		<servlet-name>redirect.redirectPostServlet</servlet-name>
+		<servlet-class>science.mrcuijt.servlet.redirect.RedirectPostServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>redirect.redirectPostServlet</servlet-name>
+		<url-pattern>/redirect/redirectPost.do</url-pattern>
+	</servlet-mapping>
+
+	<!-- /redirect/redirectGet.do -->
+	<servlet>
+		<servlet-name>redirect.redirectGetServlet</servlet-name>
+		<servlet-class>science.mrcuijt.servlet.redirect.RedirectGetServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>redirect.redirectGetServlet</servlet-name>
+		<url-pattern>/redirect/redirectGet.do</url-pattern>
+	</servlet-mapping>
+
+	<!-- /redirect/getRequest.do -->
+	<servlet>
+		<servlet-name>redirect.getRequestServlet</servlet-name>
+		<servlet-class>science.mrcuijt.servlet.redirect.GetRequestServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>redirect.getRequestServlet</servlet-name>
+		<url-pattern>/redirect/getRequest.do</url-pattern>
+	</servlet-mapping>
+
+	<!-- /redirect/postRequest.do -->
+	<servlet>
+		<servlet-name>redirect.postRequestServlet</servlet-name>
+		<servlet-class>science.mrcuijt.servlet.redirect.PostRequestServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>redirect.postRequestServlet</servlet-name>
+		<url-pattern>/redirect/postRequest.do</url-pattern>
+	</servlet-mapping>
+
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
+</web-app>
