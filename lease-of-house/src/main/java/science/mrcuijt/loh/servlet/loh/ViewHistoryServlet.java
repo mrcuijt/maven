@@ -33,6 +33,8 @@ public class ViewHistoryServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		boolean debug = log.isDebugEnabled();
+
 		// 获取登录用户标识
 		Integer loginInfoId = (Integer) request.getSession().getAttribute("login_info_id");
 
@@ -50,28 +52,28 @@ public class ViewHistoryServlet extends HttpServlet {
 		String strPageIndex = request.getParameter("pageIndex");
 		String strPageSize = request.getParameter("pageSize");
 
-		if (strPageIndex == null || strPageIndex.trim().length() == 0) {
-			pageIndex = 1;
-		} else {
-			try {
+		try {
+			if (strPageIndex != null && strPageIndex.trim().length() > 0) {
+				strPageIndex = strPageIndex.trim();
 				pageIndex = Integer.parseInt(strPageIndex);
-			} catch (NumberFormatException e) {
-				pageIndex = 1;
-				e.printStackTrace();
+			}
+		} catch (NumberFormatException e) {
+			if (debug) {
+				log.debug("Convert pageIndex fail userId={} message={}", userInfoId, e.getMessage(), e);
 			}
 		}
 
-		if (strPageSize == null || strPageSize.trim().length() == 0) {
-			pageSize = 10;
-		} else {
-			try {
+		try {
+			if (strPageSize != null && strPageSize.trim().length() > 0) {
+				strPageSize = strPageSize.trim();
 				pageSize = Integer.parseInt(strPageSize);
-			} catch (NumberFormatException e) {
-				pageSize = 10;
-				e.printStackTrace();
+			}
+		} catch (NumberFormatException e) {
+			if (debug) {
+				log.debug("Convert pageSize fail userId={} message={}", userInfoId, e.getMessage(), e);
 			}
 		}
-		
+
 		// 分页查询条件
 		Map<String, Object> queryParam = new HashMap<String, Object>();
 

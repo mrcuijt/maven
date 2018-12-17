@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import science.mrcuijt.loh.comm.LohConstants;
 import science.mrcuijt.loh.entity.LohHouseType;
 import science.mrcuijt.loh.entity.RegionInfo;
@@ -27,11 +30,15 @@ import science.mrcuijt.loh.service.impl.LohServiceImpl;
  */
 public class MainServlet extends HttpServlet {
 
+	private static Logger log = LoggerFactory.getLogger(MainServlet.class);
+
 	LohService lohService = new LohServiceImpl();
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
+		boolean debug = log.isDebugEnabled();
 
 		// 获取登录用户标识
 		Integer loginInfoId = (Integer) request.getSession().getAttribute("login_info_id");
@@ -70,48 +77,64 @@ public class MainServlet extends HttpServlet {
 		Integer countyId = null;
 
 		try {
-			provinceId = Integer.parseInt(province);
+			if (province != null && province.trim().length() > 0) {
+				province = province.trim();
+				provinceId = Integer.parseInt(province);
+			}
 		} catch (NumberFormatException e) {
 			if (LohConstants.getProvinceId() > 0) {
 				provinceId = LohConstants.getProvinceId();
 			}
-			e.printStackTrace();
+			if (debug) {
+				log.debug("Convert provinceId fail userId={} message={}", userInfoId, e.getMessage(), e);
+			}
 		}
 		try {
-			cityId = Integer.parseInt(city);
+			if (city != null && city.trim().length() > 0) {
+				city = city.trim();
+				cityId = Integer.parseInt(city);
+			}
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
+			if (debug) {
+				log.debug("Convert cityId fail userId={} message={}", userInfoId, e.getMessage(), e);
+			}
 		}
 		try {
-			countyId = Integer.parseInt(county);
+			if (county != null && county.trim().length() > 0) {
+				county = county.trim();
+				countyId = Integer.parseInt(county);
+			}
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
+			if (debug) {
+				log.debug("Convert countyId fail userId={} message={}", userInfoId, e.getMessage(), e);
+			}
 		}
 
 		if (lohHouseType != null && lohHouseType.trim().length() > 0) {
+			lohHouseType = lohHouseType.trim();
 			try {
 				lohHouseTypeId = Integer.parseInt(lohHouseType);
 				if(lohHouseTypeId <= 0) {
 					lohHouseTypeId = null;
 				}
 			} catch (NumberFormatException e) {
-				e.printStackTrace();
+				if (debug) {
+					log.debug("Convert lohHouseTypeId fail userId={} message={}", userInfoId, e.getMessage(), e);
+				}
 			}
 		}
 
-		if (lohPrice == null || lohPrice.trim().length() == 0) {
-			price = null;
-		} else {
+		if (lohPrice != null && lohPrice.trim().length() > 0) {
 			try {
+				lohPrice = lohPrice.trim();
 				price = new BigDecimal(lohPrice);
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.debug("Convert price fail userId={} message={}", userInfoId, e.getMessage(), e);
 			}
 		}
 
-		if (houseAddress == null || houseAddress.trim().length() == 0) {
-			houseAddress = null;
-		}else{
+		if (houseAddress != null && houseAddress.trim().length() > 0) {
+			houseAddress = houseAddress.trim();
 			houseAddress = new String(houseAddress.getBytes("ISO-8859-1"), "UTF-8");
 		}
 
@@ -119,25 +142,27 @@ public class MainServlet extends HttpServlet {
 		String strPageIndex = request.getParameter("pageIndex");
 		String strPageSize = request.getParameter("pageSize");
 
-		if (strPageIndex == null || strPageIndex.trim().length() == 0) {
-			strPageIndex = "0";
-		}
-
-		if (strPageSize == null || strPageSize.trim().length() == 0) {
-			strPageSize = "0";
-		}
-
 		Integer pageIndex = null;
 		try {
-			pageIndex = Integer.parseInt(strPageIndex);
+			if (strPageIndex != null && strPageIndex.trim().length() > 0) {
+				strPageIndex = strPageIndex.trim();
+				pageIndex = Integer.parseInt(strPageIndex);
+			}
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
+			if (debug) {
+				log.debug("Convert pageIndex fail userId={} message={}", userInfoId, e.getMessage(), e);
+			}
 		}
 		Integer pageSize = null;
 		try {
-			pageSize = Integer.parseInt(strPageSize);
+			if (strPageSize != null && strPageSize.trim().length() > 0) {
+				strPageSize = strPageSize.trim();
+				pageSize = Integer.parseInt(strPageSize);
+			}
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
+			if (debug) {
+				log.debug("Convert pageSize fail userId={} message={}", userInfoId, e.getMessage(), e);
+			}
 		}
 
 		if (pageIndex == null || pageIndex <= 0) {

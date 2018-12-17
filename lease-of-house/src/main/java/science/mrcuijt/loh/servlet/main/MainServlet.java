@@ -72,6 +72,8 @@ public class MainServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		boolean debug = log.isDebugEnabled();
+
 		// 房屋所在省
 		String province = request.getParameter("province");
 		// 房屋所在市
@@ -99,65 +101,87 @@ public class MainServlet extends HttpServlet {
 		Integer countyId = null;
 
 		try {
-			provinceId = Integer.parseInt(province);
+			if (province != null && province.trim().length() > 0) {
+				province = province.trim();
+				provinceId = Integer.parseInt(province);
+			}
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
+			if (debug) {
+				log.debug("Convert provinceId fail message={}", e.getMessage(), e);
+			}
 		}
 		try {
-			cityId = Integer.parseInt(city);
+			if (city != null && city.trim().length() > 0) {
+				city = city.trim();
+				cityId = Integer.parseInt(city);
+			}
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
+			if (debug) {
+				log.debug("Convert cityId fail message={}", e.getMessage(), e);
+			}
 		}
 		try {
-			countyId = Integer.parseInt(county);
+			if (county != null && county.trim().length() > 0) {
+				county = county.trim();
+				countyId = Integer.parseInt(county);
+			}
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
+			if (debug) {
+				log.debug("Convert countyId fail message={}", e.getMessage(), e);
+			}
 		}
 
 		if (lohHouseType != null && lohHouseType.trim().length() > 0) {
 			try {
+				lohHouseType = lohHouseType.trim();
 				lohHouseTypeId = Integer.parseInt(lohHouseType);
 				if (lohHouseTypeId <= 0) {
 					lohHouseTypeId = null;
 				}
 			} catch (NumberFormatException e) {
-				e.printStackTrace();
+				if (debug) {
+					log.debug("Convert lohHouseTypeId fail message={}", e.getMessage(), e);
+				}
 			}
 		}
 
-		if (lohPrice == null || lohPrice.trim().length() == 0) {
-			price = null;
-		} else {
+		if (lohPrice != null && lohPrice.trim().length() > 0) {
 			try {
+				lohPrice = lohPrice.trim();
 				price = new BigDecimal(lohPrice);
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.debug("Convert price fail message={}", e.getMessage(), e);
 			}
 		}
-
+		if (houseAddress != null && houseAddress.trim().length() > 0) {
+			houseAddress = houseAddress.trim();
+			houseAddress = new String(houseAddress.getBytes("ISO-8859-1"), "UTF-8");
+		}
 		// 准备分页参数
 		String strPageIndex = request.getParameter("pageIndex");
 		String strPageSize = request.getParameter("pageSize");
 
-		if (strPageIndex == null || strPageIndex.trim().length() == 0) {
-			strPageIndex = "0";
-		}
-
-		if (strPageSize == null || strPageSize.trim().length() == 0) {
-			strPageSize = "0";
-		}
-
 		Integer pageIndex = null;
 		try {
-			pageIndex = Integer.parseInt(strPageIndex);
+			if (strPageIndex != null && strPageIndex.trim().length() > 0) {
+				strPageIndex = strPageIndex.trim();
+				pageIndex = Integer.parseInt(strPageIndex);
+			}
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
+			if (debug) {
+				log.debug("Convert pageIndex fail message={}", e.getMessage(), e);
+			}
 		}
 		Integer pageSize = null;
 		try {
-			pageSize = Integer.parseInt(strPageSize);
+			if (strPageSize != null && strPageSize.trim().length() > 0) {
+				strPageSize = strPageSize.trim();
+				pageSize = Integer.parseInt(strPageSize);
+			}
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
+			if (debug) {
+				log.debug("Convert pageSize fail message={}", e.getMessage(), e);
+			}
 		}
 
 		if (pageIndex == null || pageIndex <= 0) {
