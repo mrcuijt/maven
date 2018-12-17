@@ -181,6 +181,7 @@
 					<table class="loh-house-info" border="2">
 						<tr>
 							<th>序号</th>
+							<th>房屋标题</th>
 							<th>房屋类型</th>
 							<th>房屋价格</th>
 							<th>房屋地址</th>
@@ -289,6 +290,8 @@
 	<script src="<%=request.getContextPath()%>/js/require/jquery/fix/jquery.fix.clone.js"></script>
 	<!-- 引入 Bootstrap -->
 	<script src="<%=request.getContextPath()%>/js/require/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<!-- 引入 XSS 处理的脚本 -->
+	<script src="<%=request.getContextPath()%>/js/require/js-xss-1.0.3/xss.min.js"></script>
 	<!-- 引入当前页面的 js -->
 	<script src="<%=request.getContextPath()%>/js/loh/main.js?dfsddffsffddff"></script>
 </body>

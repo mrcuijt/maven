@@ -106,7 +106,7 @@ function nextPage(e){
 		break;
 	case "perv":
 		if (pageIndex > 1) {
-			pageIndex = 1;
+			pageIndex -= 1;
 		}
 		break;
 	case "next":
@@ -129,7 +129,7 @@ function nextPage(e){
 // 房屋信息列表查询
 function queryLohHousePagination(){
 	
-	const tds = ["lohHouseTypeId","price","houseAddress","pushDate","contacts","cellPhone","img"];
+	const tds = ["houseTitle","lohHouseTypeId","price","houseAddress","pushDate","contacts","cellPhone","img"];
 	
 	var queryParam = $("<form>").append($(".container>.row>.col-sm-8").clone()).serialize();
 
@@ -143,8 +143,10 @@ function queryLohHousePagination(){
 		
 		table.addClass($(".loh-house-info").attr("class"));
 		table.attr("border",$(".loh-house-info").attr("border"));
-		
+
 		table.append(tableHead);
+
+		data = filterXSS(data);
 
 		data = JSON.parse(data);
 
