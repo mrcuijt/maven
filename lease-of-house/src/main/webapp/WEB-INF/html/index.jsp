@@ -216,7 +216,7 @@
 							</tr>
 						</c:if>
 						<tr>
-							<td colspan="5">总共有 <span class="totalRecord"></span> 条记录，当前是第 <span class="pageIndex"></span> 页，共有 <span class="totalPage"></span> 页</td>
+							<td colspan="6">总共有 <span class="totalRecord"></span> 条记录，当前是第 <span class="pageIndex"></span> 页，共有 <span class="totalPage"></span> 页</td>
 							<td colspan="2">
 								每页
 								<select name="pageSize">

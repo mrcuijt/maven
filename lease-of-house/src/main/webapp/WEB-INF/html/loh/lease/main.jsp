@@ -102,6 +102,7 @@
 					<table class="loh-house-info" border="2">
 						<tr>
 							<th width="100px;">序号</th>
+							<th width="100px;">房屋标题</th>
 							<th width="100px;">房屋类型</th>
 							<th width="100px;">房屋价格</th>
 							<th width="100px;">房屋地址</th>
@@ -115,15 +116,16 @@
 						<c:forEach items="${pagination }" var="houseInfo" varStatus="vs">
 							<tr>
 								<td>${vs.count }</td>
-								<td>${houseInfo.lohHouseTypeId }</td>
-								<td>${houseInfo.price }</td>
-								<td>${houseInfo.houseAddress }</td>
+								<td>${fn:escapeXml(houseInfo.houseTitle) }</td>
+								<td>${fn:escapeXml(houseInfo.lohHouseTypeId) }</td>
+								<td>${fn:escapeXml(houseInfo.price) }</td>
+								<td>${fn:escapeXml(houseInfo.houseAddress) }</td>
 								<td>
 									<fmt:formatDate value="${houseInfo.pushDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
 								</td>
-								<td>${houseInfo.contacts }</td>
-								<td>${houseInfo.cellPhone }</td>
-								<td>${houseInfo.cellPhone }</td>
+								<td>${fn:escapeXml(houseInfo.contacts) }</td>
+								<td>${fn:escapeXml(houseInfo.cellPhone) }</td>
+								<td>${fn:escapeXml(houseInfo.cellPhone) }</td>
 								<td>
 									<a href="<%=request.getContextPath() %>/loh/lease/showReleaseHouse.do?id=${houseInfo.lohHouseInfoId}">查看</a>
 									<a href="<%=request.getContextPath() %>/loh/lease/toUpdateReleaseHouse.do?id=${houseInfo.lohHouseInfoId}">更新</a>

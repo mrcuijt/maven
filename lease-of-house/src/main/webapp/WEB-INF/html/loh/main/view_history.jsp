@@ -51,15 +51,15 @@
 						<c:forEach items="${lohHouseInfoList }" var="houseInfo" varStatus="vs">
 							<tr>
 								<td>${vs.count }</td>
-								<td>${houseInfo.lohHouseTypeId }</td>
-								<td>${houseInfo.price }</td>
-								<td>${houseInfo.houseAddress }</td>
+								<td>${fn:escapeXml(houseInfo.lohHouseTypeId) }</td>
+								<td>${fn:escapeXml(houseInfo.price) }</td>
+								<td>${fn:escapeXml(houseInfo.houseAddress) }</td>
 								<td>
 									<fmt:formatDate value="${houseInfo.pushDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
 								</td>
-								<td>${houseInfo.contacts }</td>
-								<td>${houseInfo.cellPhone }</td>
-								<td>${houseInfo.cellPhone }</td>
+								<td>${fn:escapeXml(houseInfo.contacts) }</td>
+								<td>${fn:escapeXml(houseInfo.cellPhone) }</td>
+								<td>${fn:escapeXml(houseInfo.cellPhone) }</td>
 								<td>
 									<a href="<%=request.getContextPath() %>/loh/lease/showReleaseHouse.do?id=${houseInfo.lohHouseInfoId}">查看</a>
 									<a href="javascript:void(0);" onclick="deleteLohHouseViewHistory(this);" data="${houseInfo.lohHouseInfoId}">删除</a>

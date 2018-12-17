@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,39 +30,39 @@
 				<table>
 					<tr>
 						<td>
-							<span>房屋标题：${lohHouseInfo.houseTitle }</span>
+							<span>房屋标题：${fn:escapeXml(lohHouseInfo.houseTitle) }</span>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span>房屋类型：${lohHouseType.houseType }</span>
+							<span>房屋类型：${fn:escapeXml(lohHouseType.houseType) }</span>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span>房屋价格：${lohHouseInfo.price }</span>
+							<span>房屋价格：${fn:escapeXml(lohHouseInfo.price) }</span>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span>房屋所在地区：${provience.regionName }</span>
-							<span>${city.regionName }</span>
-							<span>${country.regionName }</span>
+							<span>房屋所在地区：${fn:escapeXml(provience.regionName) }</span>
+							<span>${fn:escapeXml(city.regionName) }</span>
+							<span>${fn:escapeXml(country.regionName) }</span>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span>房屋所在地址：${lohHouseInfo.houseAddress }</span>
+							<span>房屋所在地址：${fn:escapeXml(lohHouseInfo.houseAddress) }</span>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span>联系人：${lohHouseInfo.contacts }</span>
+							<span>联系人：${fn:escapeXml(lohHouseInfo.contacts) }</span>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<span>联系方式：${lohHouseInfo.cellPhone }</span>
+							<span>联系方式：${fn:escapeXml(lohHouseInfo.cellPhone) }</span>
 						</td>
 					</tr>
 				</table>
