@@ -33,6 +33,7 @@ import science.mrcuijt.loh.service.LohService;
 import science.mrcuijt.loh.service.impl.LohServiceImpl;
 import science.mrcuijt.loh.util.AppMD5Util;
 import science.mrcuijt.loh.util.Constants;
+import science.mrcuijt.loh.util.XSSUtil;
 
 /**
  * @author Administrator
@@ -151,40 +152,42 @@ public class ReleaseHouseServlet extends HttpServlet {
 				if (item.isFormField()) {
 
 					String name = item.getFieldName();
+					String value = item.getString("UTF-8");
+
+					value = XSSUtil.cleanXSS(value);
 
 					if (debug) {
-						String value = item.getString("UTF-8");
 						LOG.debug("name: {} \t value: {}", name, value);
 					}
 
 					switch (name) {
 
 					case "houseTitle": // 房屋标题
-						houseTitle = item.getString("UTF-8");
+						houseTitle = value;
 						break;
 					case "houseType": // 房屋类型
-						houseType = item.getString();
+						houseType = value;
 						break;
 					case "housePrice": // 房屋价格
-						housePrice = item.getString();
+						housePrice = value;
 						break;
 					case "houseAddress": // 房屋地址
-						houseAddress = item.getString("UTF-8");
+						houseAddress = value;
 						break;
 					case "province": // 房屋所在省
-						province = item.getString();
+						province = value;
 						break;
 					case "city": // 房屋所在市
-						city = item.getString();
+						city = value;
 						break;
 					case "county": // 房屋所在县
-						county = item.getString();
+						county = value;
 						break;
 					case "contacts": // 联系人
-						contacts = item.getString("UTF-8");
+						contacts = value;
 						break;
 					case "cellPhone": // 联系方式
-						cellPhone = item.getString();
+						cellPhone = value;
 						break;
 					}
 
