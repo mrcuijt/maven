@@ -6,6 +6,8 @@ package science.mrcuijt.loh.filter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
+import science.mrcuijt.loh.util.XSSUtil;
+
 /**
  * @author Administrator
  *
@@ -32,7 +34,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
 		for (int i = 0; i < count; i++) {
 
-			encodedValues[i] = cleanXSS(values[i]);
+			encodedValues[i] = XSSUtil.cleanXSS(values[i]);
 
 		}
 
@@ -50,7 +52,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
 		}
 
-		return cleanXSS(value);
+		return XSSUtil.cleanXSS(value);
 
 	}
 
@@ -62,27 +64,8 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
 			return null;
 
-		return cleanXSS(value);
+		return XSSUtil.cleanXSS(value);
 
 	}
 
-	private String cleanXSS(String value) {
-
-		// You'll need to remove the spaces from the html entities below
-
-		value = value.replaceAll("<", "& lt;").replaceAll(">", "& gt;");
-
-		value = value.replaceAll("\\(", "& #40;").replaceAll("\\)", "& #41;");
-
-		value = value.replaceAll("'", "& #39;");
-
-		value = value.replaceAll("eval\\((.*)\\)", "");
-
-		value = value.replaceAll("[\\\"\\\'][\\s]*javascript:(.*)[\\\"\\\']", "\"\"");
-
-		value = value.replaceAll("script", "");
-
-		return value;
-
-	}
 }
