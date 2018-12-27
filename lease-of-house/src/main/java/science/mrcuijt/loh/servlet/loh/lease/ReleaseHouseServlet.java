@@ -6,6 +6,7 @@ package science.mrcuijt.loh.servlet.loh.lease;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -49,9 +50,11 @@ public class ReleaseHouseServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		LOG.info("查询全部类型的房屋类型信息");
 		// 查询加载房屋类型
 		List<LohHouseType> lohHouseTypeList = lohService.findAllLohHouseType();
 
+		LOG.info("查询地区级别为[{}]的地区信息", 1);
 		// 加载地区信息
 		List<RegionInfo> regionInfoList = lohService.findRegionInfoByLevel(1);
 
@@ -62,6 +65,7 @@ public class ReleaseHouseServlet extends HttpServlet {
 		request.setAttribute("regionInfoList", regionInfoList);
 
 		request.getRequestDispatcher("/WEB-INF/html/loh/lease/release_house.jsp").forward(request, response);
+		LOG.info("request.getRequestDispatcher(\"/WEB-INF/html/loh/lease/release_house.jsp\").forward(request, response)");
 	}
 
 	@Override
@@ -116,10 +120,12 @@ public class ReleaseHouseServlet extends HttpServlet {
 		filepath = request.getSession().getServletContext().getRealPath(Constants.UPLOAD_DIR);
 
 		if (!new File(temppath).exists()) {
+			LOG.info("if (!new File(temppath).exists()) [{}]", (!new File(temppath).exists()));
 			new File(temppath).mkdirs();
 		}
 
 		if (!new File(filepath).exists()) {
+			LOG.info("if (!new File(filepath).exists()) [{}]", (!new File(filepath).exists()));
 			new File(filepath).mkdirs();
 		}
 
@@ -140,6 +146,9 @@ public class ReleaseHouseServlet extends HttpServlet {
 
 		try {
 
+			if (debug) {
+				LOG.debug("解析 request 请求");
+			}
 			List<FileItem> fileItems = upload.parseRequest(request);
 
 			Iterator<FileItem> iter = fileItems.iterator();
@@ -150,6 +159,7 @@ public class ReleaseHouseServlet extends HttpServlet {
 
 				// 判断是否是普通文本字段
 				if (item.isFormField()) {
+					LOG.info("if (item.isFormField()) [{}]", (item.isFormField()));
 
 					String name = item.getFieldName();
 					String value = item.getString("UTF-8");
@@ -192,7 +202,7 @@ public class ReleaseHouseServlet extends HttpServlet {
 					}
 
 				} else {
-
+					LOG.info("if (item.isFormField()) [{}]", (item.isFormField()));
 					fileItemList.add(item);
 				}
 			}
@@ -216,15 +226,25 @@ public class ReleaseHouseServlet extends HttpServlet {
 		Integer cityId = null;
 		// 房屋所在县id
 		Integer countyId = null;
+
 		try {
-			lohHouseTypeId = Integer.parseInt(houseType);
-			pushPrice = new BigDecimal(housePrice);
+			if (houseType != null && houseType.trim().length() > 0) {
+				LOG.info("if (houseType != null && houseType.trim().length() > 0) [{}]", (houseType != null && houseType.trim().length() > 0));
+				houseType = houseType.trim();
+				lohHouseTypeId = Integer.parseInt(houseType);
+			}
 		} catch (NumberFormatException e) {
-			LOG.warn("NumberFormatException", e);
-			e.printStackTrace();
+			LOG.warn("Convert houseType [{}] has error",houseType , e);
+		}
+
+		try {
+			if (housePrice != null && housePrice.trim().length() > 0) {
+				LOG.info("if (housePrice != null && housePrice.trim().length() > 0) [{}]", (housePrice != null && housePrice.trim().length() > 0));
+				housePrice = housePrice.trim();
+				pushPrice = new BigDecimal(housePrice);
+			}
 		} catch (Exception e) {
-			LOG.warn("Exception", e);
-			e.printStackTrace();
+			LOG.warn("Convert pushPrice [{}] has error",housePrice , e);
 		}
 
 		if (lohHouseTypeId == null) {
@@ -236,9 +256,11 @@ public class ReleaseHouseServlet extends HttpServlet {
 		if (verifyResult) {
 
 			// 查询房屋类型是否存在
+			LOG.info("查询指定房屋类型[{}]是否存在", lohHouseTypeId);
 			boolean existsHouseType = lohService.existsLohHouseTypeByPrimaryKey(lohHouseTypeId);
 
 			if (!existsHouseType) {
+				LOG.info("if (!existsHouseType) [{}]", (!existsHouseType));
 				verifyResult = false;
 				message = "请选择房屋类型后重试。";
 			}
@@ -248,6 +270,7 @@ public class ReleaseHouseServlet extends HttpServlet {
 		if (verifyResult) {
 
 			if (pushPrice == null) {
+				LOG.info("if (pushPrice == null) [{}]", (pushPrice == null));
 				verifyResult = false;
 				message = "请输入合法的金额。";
 			}
@@ -268,17 +291,19 @@ public class ReleaseHouseServlet extends HttpServlet {
 				LOG.warn("NumberFormatException", e);
 				verifyResult = false;
 				message = "请选择房屋地区后重试。";
-				e.printStackTrace();
 			}
 		}
 
 		if (!verifyResult) {
+			LOG.info("if (!verifyResult) [{}]", (!verifyResult));
 			message = URLEncoder.encode(message, "UTF-8");
 			response.sendRedirect(request.getContextPath() + "/loh/lease/releaseHouse.do?message=" + message);
+			LOG.info("response.sendRedirect(request.getContextPath() + \"/loh/lease/releaseHouse.do?message=\" + [{}])", URLDecoder.decode(message,"UTF-8"));
 			return;
 		}
 
 		// 3、 文件上传处理
+		LOG.info("文件上传处理");
 		List<LohFileInfo> lohFileInfoList = new ArrayList<>();
 
 		Iterator<FileItem> fileItemIterator = fileItemList.iterator();
@@ -288,7 +313,7 @@ public class ReleaseHouseServlet extends HttpServlet {
 			FileItem item = fileItemIterator.next();
 
 			String filename = item.getName();
-			LOG.warn("完整文件名：{}", filename);
+			LOG.info("完整文件名：{}", filename);
 			int index = filename.indexOf("\\");
 			filename = filename.substring(index + 1);
 			// 获取文件的大小
@@ -309,6 +334,7 @@ public class ReleaseHouseServlet extends HttpServlet {
 			String relFilePath = filepath + "/" + timeznoe + "/";
 
 			if (!new File(relFilePath).exists()) {
+				LOG.info("if (!new File(relFilePath).exists()) [{}]", (!new File(relFilePath).exists()));
 				new File(relFilePath).mkdirs();
 			}
 
@@ -357,15 +383,32 @@ public class ReleaseHouseServlet extends HttpServlet {
 
 		// boolean addLohHouseInfoResult = lohService.addLohHouseInfo(lohHouseInfo);
 
+		LOG.info("保存房屋租赁信息和上传文件信息");
 		boolean addLohHouseInfoResult = lohService.addLohHouseInfo(lohHouseInfo, lohFileInfoList);
 
 		if (!addLohHouseInfoResult) {
+			LOG.info("if (!addLohHouseInfoResult) [{}]", (!addLohHouseInfoResult));
+			LOG.info("添加房屋租赁信息失败 [{}]", lohHouseInfo);
+			LOG.info("查询全部类型的房屋类型信息");
+			// 查询加载房屋类型
+			List<LohHouseType> lohHouseTypeList = lohService.findAllLohHouseType();
+
+			LOG.info("查询地区级别为[{}]的地区信息", 1);
+			// 加载地区信息
+			List<RegionInfo> regionInfoList = lohService.findRegionInfoByLevel(1);
+
+			// 添加房屋类型列表
+			request.setAttribute("lohHouseTypeList", lohHouseTypeList);
+
+			// 添加地区信息
+			request.setAttribute("regionInfoList", regionInfoList);
 			message = "添加失败，请重试";
 			request.setAttribute("message", message);
-			request.getRequestDispatcher("/loh/lease/releaseHouse.do").forward(request, response);
+			request.getRequestDispatcher("/WEB-INF/html/loh/lease/release_house.jsp").forward(request, response);
+			LOG.info("request.getRequestDispatcher(\"/WEB-INF/html/loh/lease/release_house.jsp\").forward(request, response)");
 			return;
 		}
-
+		LOG.info("房屋租赁信息[{}]添加成功", lohHouseInfo.getLohHouseInfoId());
 		// 添加成功，跳转到发布房屋信息列表页
 		message = "添加成功！";
 
@@ -374,6 +417,7 @@ public class ReleaseHouseServlet extends HttpServlet {
 
 		response.sendRedirect(request.getContextPath() + "/loh/lease/showReleaseHouse.do?id="
 				+ lohHouseInfo.getLohHouseInfoId() + "&message=" + message);
+		LOG.info("response.sendRedirect(request.getContextPath() + \"/loh/lease/showReleaseHouse.do?id=[{}]&message=[{}]);", lohHouseInfo.getLohHouseInfoId(), URLDecoder.decode(message,"UTF-8"));
 	}
 
 }
