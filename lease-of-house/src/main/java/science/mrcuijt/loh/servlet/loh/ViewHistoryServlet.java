@@ -25,7 +25,7 @@ import science.mrcuijt.loh.service.impl.LohServiceImpl;
  */
 public class ViewHistoryServlet extends HttpServlet {
 
-	private static Logger log = LoggerFactory.getLogger(ViewHistoryServlet.class);
+	private static Logger LOG = LoggerFactory.getLogger(ViewHistoryServlet.class);
 
 	private static LohService lohService = new LohServiceImpl();
 
@@ -33,13 +33,14 @@ public class ViewHistoryServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		boolean debug = log.isDebugEnabled();
+		boolean debug = LOG.isDebugEnabled();
 
 		// 获取登录用户标识
 		Integer loginInfoId = (Integer) request.getSession().getAttribute("login_info_id");
 
 		Integer userInfoId = (Integer) request.getSession().getAttribute("user_info_id");
 
+		LOG.info("查询当前登录用户[{}]的信息记录", userInfoId);
 		// 根据用户登录标识查询用户信息
 		UserInfo userInfo = lohService.findUserInfoByPrimaryKey(userInfoId);
 
@@ -54,24 +55,36 @@ public class ViewHistoryServlet extends HttpServlet {
 
 		try {
 			if (strPageIndex != null && strPageIndex.trim().length() > 0) {
+				LOG.info("if (strPageIndex != null && strPageIndex.trim().length() > 0) [{}]", (strPageIndex != null && strPageIndex.trim().length() > 0));
 				strPageIndex = strPageIndex.trim();
 				pageIndex = Integer.parseInt(strPageIndex);
 			}
 		} catch (NumberFormatException e) {
 			if (debug) {
-				log.debug("Convert pageIndex fail userId={} message={}", userInfoId, e.getMessage(), e);
+				LOG.debug("Convert pageIndex fail userId={} message={}", userInfoId, e.getMessage(), e);
 			}
 		}
 
 		try {
 			if (strPageSize != null && strPageSize.trim().length() > 0) {
+				LOG.info("if (strPageSize != null && strPageSize.trim().length() > 0) [{}]", (strPageSize != null && strPageSize.trim().length() > 0));
 				strPageSize = strPageSize.trim();
 				pageSize = Integer.parseInt(strPageSize);
 			}
 		} catch (NumberFormatException e) {
 			if (debug) {
-				log.debug("Convert pageSize fail userId={} message={}", userInfoId, e.getMessage(), e);
+				LOG.debug("Convert pageSize fail userId={} message={}", userInfoId, e.getMessage(), e);
 			}
+		}
+
+		if (pageIndex == null || pageIndex <= 0) {
+			LOG.info("if (pageIndex == null || pageIndex <= 0) [{}]", (pageIndex == null || pageIndex <= 0));
+			pageIndex = 1;
+		}
+
+		if (pageSize == null || pageSize <= 0) {
+			LOG.info("if (pageSize == null || pageSize <= 0) [{}]", (pageSize == null || pageSize <= 0));
+			pageSize = 10;
 		}
 
 		// 分页查询条件
@@ -92,5 +105,6 @@ public class ViewHistoryServlet extends HttpServlet {
 		request.setAttribute("lohHouseInfoList", pagination.get("lohHouseInfoList"));
 
 		request.getRequestDispatcher("/WEB-INF/html/loh/main/view_history.jsp").forward(request, response);
+		LOG.info("request.getRequestDispatcher(\"/WEB-INF/html/loh/main/view_history.jsp\").forward(request, response)");
 	}
 }
