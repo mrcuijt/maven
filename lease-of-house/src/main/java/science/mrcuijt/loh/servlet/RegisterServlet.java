@@ -26,7 +26,7 @@ import science.mrcuijt.loh.util.AppMD5Util;
  */
 public class RegisterServlet extends HttpServlet {
 
-	private static final Logger logger = LoggerFactory.getLogger(RegisterServlet.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RegisterServlet.class);
 	
 	private LohService lohService = new LohServiceImpl();
 	
@@ -35,6 +35,7 @@ public class RegisterServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		request.getRequestDispatcher("/WEB-INF/html/login/register.jsp").forward(request, response);
+		LOG.info("request.getRequestDispatcher(\"/WEB-INF/html/login/register.jsp\").forward(request, response);");
 	}
 
 	@Override
@@ -49,26 +50,29 @@ public class RegisterServlet extends HttpServlet {
 
 		// 获取密码
 		String password = request.getParameter("password");
-		
+
 		// 获取验证码
 		String verifyCode = request.getParameter("verifyCode");
-				
+
 		String message = null;
-		
+
 		boolean verifyResult = true;
-		
+
 		// 基本数据校验
-		if(userName == null || userName.trim().length() == 0) {
+		if (userName == null || userName.trim().length() == 0) {
+			LOG.info("if(userName == null || userName.trim().length() == 0) [{}]", (userName == null || userName.trim().length() == 0));
 			message = "用户名不能为空";
 			verifyResult = false;
-		}else if(password == null || password.trim().length() == 0) {
+		} else if (password == null || password.trim().length() == 0) {
+			LOG.info("else if (password == null || password.trim().length() == 0) [{}]", (password == null || password.trim().length() == 0));
 			message = "密码不能为空";
 			verifyResult = false;
-		}else if (verifyCode == null || verifyCode.trim().length() == 0) {
+		} else if (verifyCode == null || verifyCode.trim().length() == 0) {
+			LOG.info("else if (verifyCode == null || verifyCode.trim().length() == 0) [{}]", (verifyCode == null || verifyCode.trim().length() == 0));
 			message = "验证码不能为空";
 			verifyResult = false;
 		}
-		
+
 		if (verifyResult) {
 			// TODO 密码复杂度校验、密码 MD5 加密操作
 			if (!verifyCode.trim().equals(request.getSession().getAttribute("verifyCode"))) {
@@ -76,53 +80,61 @@ public class RegisterServlet extends HttpServlet {
 				verifyResult = false;
 			}
 		}
-		
+
 		// 查询是否有同名的用户
-		if(verifyResult) {
-			if(lohService.existsUser(userName)) {
+		if (verifyResult) {
+			if (lohService.existsUser(userName)) {
 				message = "用户名已存在";
 				verifyResult = false;
 			}
 		}
-		
-		if(!verifyResult) {
+
+		if (!verifyResult) {
+			LOG.info("if (!verifyResult) [{}]", (!verifyResult));
+			LOG.info("用户名[{}]注册失败，message=[{}]", userName, message);
 			request.setAttribute("userName", userName);
 			request.setAttribute("message", message);
 			request.getRequestDispatcher("/WEB-INF/html/login/register.jsp").forward(request, response);
 			return;
 		}
-		
+
 		// 初始化用户信息
 		UserInfo userInfo = new UserInfo();
 		userInfo.setGmtCreate(new Date());
 		userInfo.setGmtModified(new Date());
 		userInfo.setUserName(userName);
-		
+
 		// 初始用户登录信息
 		LoginInfo loginInfo = new LoginInfo();
 		loginInfo.setGmtCreate(new Date());
 		loginInfo.setGmtModified(new Date());
 		loginInfo.setLoginAccount(userName);
 		loginInfo.setLoginPassword(AppMD5Util.getMD5(password.trim()));
-		
+
+		LOG.info("用户[{}]注册", userName);
 		// 调用用户注册的业务逻辑
 		boolean registerResult = lohService.userRegister(userInfo, loginInfo);
-		
-		if(!registerResult) {
+
+		if (!registerResult) {
+			LOG.info("if (!registerResult) [{}]", (!registerResult));
+			LOG.info("用户[{}]，注册失败", userName);
 			message = "用户注册失败，请刷新页面后重试。";
 			request.setAttribute("userName", userName);
 			request.setAttribute("message", message);
 			request.getRequestDispatcher("/WEB-INF/html/login/register.jsp").forward(request, response);
+			LOG.info("request.getRequestDispatcher(\"/WEB-INF/html/login/register.jsp\").forward(request, response);");
 			return;
 		}
-		
+
+		LOG.info("用户[{}]注册成功", userName);
 		message = "注册成功！";
-		
+
 		// 设置会话消息
 		request.getSession().setAttribute("message", message);
-		
+
 		// 注册成功重定向到结果页面
 		response.sendRedirect(request.getContextPath() + "/registerResult.do");
+		LOG.info("response.sendRedirect(request.getContextPath() + \"/registerResult.do\");");
 	}
 
 }

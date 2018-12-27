@@ -36,7 +36,7 @@ import science.mrcuijt.loh.util.PageUtil;
  */
 public class MainServlet extends HttpServlet {
 
-	private static Logger log = LoggerFactory.getLogger(MainServlet.class);
+	private static final Logger LOG = LoggerFactory.getLogger(MainServlet.class);
 
 	private static LohService lohService = new LohServiceImpl();
 
@@ -51,12 +51,15 @@ public class MainServlet extends HttpServlet {
 
 		// 根据用户登录标识查询用户信息
 		if (userInfoId != null) {
+			LOG.info("if (userInfoId != null) [{}]", (userInfoId != null));
 			UserInfo userInfo = lohService.findUserInfoByPrimaryKey(userInfoId);
 		}
 
+		LOG.info("查询地区级别为[{}]的地区信息", 1);
 		// 加载地区信息
 		List<RegionInfo> provinceList = lohService.findRegionInfoByLevel(1);
 
+		LOG.info("查询全部类型的房屋类型信息");
 		// 查询房屋类型列表
 		List<LohHouseType> lohHouseTypeList = lohService.findAllLohHouseType();
 
@@ -66,13 +69,14 @@ public class MainServlet extends HttpServlet {
 		request.setAttribute("lohHouseTypeList", lohHouseTypeList);
 
 		request.getRequestDispatcher("/WEB-INF/html/index.jsp").forward(request, response);
+		LOG.info("request.getRequestDispatcher(\"/WEB-INF/html/index.jsp\").forward(request, response)");
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		boolean debug = log.isDebugEnabled();
+		boolean debug = LOG.isDebugEnabled();
 
 		// 房屋所在省
 		String province = request.getParameter("province");
@@ -100,63 +104,82 @@ public class MainServlet extends HttpServlet {
 		// 房屋所在县id
 		Integer countyId = null;
 
+		// 房屋所在省id
 		try {
 			if (province != null && province.trim().length() > 0) {
+				LOG.info("if (province != null && province.trim().length() > 0) [{}]", (province != null && province.trim().length() > 0));
 				province = province.trim();
 				provinceId = Integer.parseInt(province);
 			}
 		} catch (NumberFormatException e) {
 			if (debug) {
-				log.debug("Convert provinceId fail message={}", e.getMessage(), e);
+				LOG.debug("Convert provinceId fail message={}", e.getMessage(), e);
 			}
 		}
+
+		// 房屋所在市id
 		try {
 			if (city != null && city.trim().length() > 0) {
+				LOG.info("if (city != null && city.trim().length() > 0) [{}]",(city != null && city.trim().length() > 0));
 				city = city.trim();
 				cityId = Integer.parseInt(city);
 			}
 		} catch (NumberFormatException e) {
 			if (debug) {
-				log.debug("Convert cityId fail message={}", e.getMessage(), e);
+				LOG.debug("Convert cityId fail message={}", e.getMessage(), e);
 			}
 		}
+
+		// 房屋所在县id
 		try {
 			if (county != null && county.trim().length() > 0) {
+				LOG.info("if (county != null && county.trim().length() > 0) [{}]", (county != null && county.trim().length() > 0));
 				county = county.trim();
 				countyId = Integer.parseInt(county);
 			}
 		} catch (NumberFormatException e) {
 			if (debug) {
-				log.debug("Convert countyId fail message={}", e.getMessage(), e);
+				LOG.debug("Convert countyId fail message={}", e.getMessage(), e);
 			}
 		}
 
-		if (lohHouseType != null && lohHouseType.trim().length() > 0) {
-			try {
+		// 房屋类型id
+		try {
+			if (lohHouseType != null && lohHouseType.trim().length() > 0) {
+				LOG.info("if (lohHouseType != null && lohHouseType.trim().length() > 0) [{}]", (lohHouseType != null && lohHouseType.trim().length() > 0));
 				lohHouseType = lohHouseType.trim();
 				lohHouseTypeId = Integer.parseInt(lohHouseType);
 				if (lohHouseTypeId <= 0) {
 					lohHouseTypeId = null;
 				}
-			} catch (NumberFormatException e) {
-				if (debug) {
-					log.debug("Convert lohHouseTypeId fail message={}", e.getMessage(), e);
-				}
+			}
+		} catch (NumberFormatException e) {
+			if (debug) {
+				LOG.debug("Convert lohHouseTypeId fail message={}", e.getMessage(), e);
 			}
 		}
 
-		if (lohPrice != null && lohPrice.trim().length() > 0) {
-			try {
+		// 房屋价格
+		try {
+			if (lohPrice != null && lohPrice.trim().length() > 0) {
+				LOG.info("if (lohPrice != null && lohPrice.trim().length() > 0) [{}]",(lohPrice != null && lohPrice.trim().length() > 0));
 				lohPrice = lohPrice.trim();
 				price = new BigDecimal(lohPrice);
-			} catch (Exception e) {
-				log.debug("Convert price fail message={}", e.getMessage(), e);
 			}
+		} catch (Exception e) {
+			LOG.debug("Convert price fail message={}", e.getMessage(), e);
 		}
+
+		// 房屋地址
 		if (houseAddress != null && houseAddress.trim().length() > 0) {
+			LOG.info("if (houseAddress != null && houseAddress.trim().length() > 0) [{}]", (houseAddress != null && houseAddress.trim().length() > 0));
 			houseAddress = houseAddress.trim();
 			houseAddress = new String(houseAddress.getBytes("ISO-8859-1"), "UTF-8");
+		}else {
+			LOG.info("if (houseAddress != null && houseAddress.trim().length() > 0) [{}]", (houseAddress != null && houseAddress.trim().length() > 0));
+			houseAddress = null;
 		}
+
 		// 准备分页参数
 		String strPageIndex = request.getParameter("pageIndex");
 		String strPageSize = request.getParameter("pageSize");
@@ -164,23 +187,25 @@ public class MainServlet extends HttpServlet {
 		Integer pageIndex = null;
 		try {
 			if (strPageIndex != null && strPageIndex.trim().length() > 0) {
+				LOG.info("if (strPageIndex != null && strPageIndex.trim().length() > 0) [{}]", (strPageIndex != null && strPageIndex.trim().length() > 0));
 				strPageIndex = strPageIndex.trim();
 				pageIndex = Integer.parseInt(strPageIndex);
 			}
 		} catch (NumberFormatException e) {
 			if (debug) {
-				log.debug("Convert pageIndex fail message={}", e.getMessage(), e);
+				LOG.debug("Convert pageIndex fail message={}", e.getMessage(), e);
 			}
 		}
 		Integer pageSize = null;
 		try {
 			if (strPageSize != null && strPageSize.trim().length() > 0) {
+				LOG.info("if (strPageSize != null && strPageSize.trim().length() > 0) [{}]", (strPageSize != null && strPageSize.trim().length() > 0));
 				strPageSize = strPageSize.trim();
 				pageSize = Integer.parseInt(strPageSize);
 			}
 		} catch (NumberFormatException e) {
 			if (debug) {
-				log.debug("Convert pageSize fail message={}", e.getMessage(), e);
+				LOG.debug("Convert pageSize fail message={}", e.getMessage(), e);
 			}
 		}
 
@@ -224,6 +249,8 @@ public class MainServlet extends HttpServlet {
 		if (houseAddress != null) {
 			queryParam.put("houseAddress", houseAddress);
 		}
+
+		LOG.info("分页查询房屋租赁信息，分页查询参数 {}", queryParam);
 		// 分页查询
 		Map<String, Object> pagination = lohService.queryHouseInfoPagination(pageIndex, pageSize, queryParam);
 
@@ -240,6 +267,7 @@ public class MainServlet extends HttpServlet {
 		lohHouseInfoVO.setStatus(LohConstants.SUCCESS_CODE);
 		lohHouseInfoVO.setResult(pageUtil);
 
+		LOG.info("返回房屋租赁信息分页结果的JSON字符串");
 		response.setContentType("text/plain;charset=utf-8");
 		PrintWriter pw = response.getWriter();
 		pw.write(JSON.toJSONString(lohHouseInfoVO));

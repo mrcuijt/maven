@@ -6,6 +6,7 @@ package science.mrcuijt.loh.servlet.loh.lease;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -213,13 +214,25 @@ public class UpdateReleaseHouseServlet extends HttpServlet {
 		Integer cityId = null;
 		// 房屋所在县id
 		Integer countyId = null;
+
 		try {
-			lohHouseTypeId = Integer.parseInt(houseType);
-			pushPrice = new BigDecimal(housePrice);
+			if (houseType != null && houseType.trim().length() > 0) {
+				LOG.info("if (houseType != null && houseType.trim().length() > 0) [{}]", (houseType != null && houseType.trim().length() > 0));
+				houseType = houseType.trim();
+				lohHouseTypeId = Integer.parseInt(houseType);
+			}
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
+			LOG.warn("Convert houseType [{}] has error",houseType , e);
+		}
+
+		try {
+			if (housePrice != null && housePrice.trim().length() > 0) {
+				LOG.info("if (housePrice != null && housePrice.trim().length() > 0) [{}]", (housePrice != null && housePrice.trim().length() > 0));
+				housePrice = housePrice.trim();
+				pushPrice = new BigDecimal(housePrice);
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.warn("Convert pushPrice [{}] has error",housePrice , e);
 		}
 
 		if (lohHouseInfoId == null) {
@@ -235,16 +248,19 @@ public class UpdateReleaseHouseServlet extends HttpServlet {
 		// 查询房屋信息是否存在
 		LohHouseInfo lohHouseInfo = null;
 		if (verifyResult) {
+			LOG.info("查询指定的房屋租赁信息[{}]", lohHouseInfoId);
 			lohHouseInfo = lohService.findLohHouseInfoByPrimaryKey(lohHouseInfoId);
-			if(lohHouseInfo == null) {
+			if (lohHouseInfo == null) {
+				LOG.info("if(lohHouseInfo == null) [{}]", (lohHouseInfo == null));
 				verifyResult = false;
 				message = "不存在的房屋信息，请刷新后重试。";
 			}
 		}
-		
+
 		// 判断是否是该用户发布的房屋信息
 		if(verifyResult) {
-			if(lohHouseInfo.getUserInfoId().intValue() != userInfoId.intValue()) {
+			if (lohHouseInfo.getUserInfoId().intValue() != userInfoId.intValue()) {
+				LOG.info("if (lohHouseInfo.getUserInfoId().intValue() != userInfoId.intValue()) [{}]", (lohHouseInfo.getUserInfoId().intValue() != userInfoId.intValue()));
 				verifyResult = false;
 				message = "当前用户没有权限修改该房屋信息。";
 			}
@@ -252,11 +268,12 @@ public class UpdateReleaseHouseServlet extends HttpServlet {
 
 		// 验证房屋类型
 		if (verifyResult) {
-
+			LOG.info("查询指定房屋类型[{}]是否存在", lohHouseTypeId);
 			// 查询房屋类型是否存在
 			boolean existsHouseType = lohService.existsLohHouseTypeByPrimaryKey(lohHouseTypeId);
 
 			if (!existsHouseType) {
+				LOG.info("if (!existsHouseType) [{}]", (!existsHouseType));
 				verifyResult = false;
 				message = "请选择房屋类型后重试。";
 			}
@@ -264,8 +281,8 @@ public class UpdateReleaseHouseServlet extends HttpServlet {
 
 		// 验证输入金额
 		if (verifyResult) {
-
 			if (pushPrice == null) {
+				LOG.info("if (pushPrice == null) [{}]", (pushPrice == null));
 				verifyResult = false;
 				message = "请输入合法的金额。";
 			}
@@ -273,7 +290,6 @@ public class UpdateReleaseHouseServlet extends HttpServlet {
 		
 		// 验证房屋所在地区信息
 		if (verifyResult) {
-
 			try {
 
 				provinceId = Integer.parseInt(province);
@@ -283,15 +299,19 @@ public class UpdateReleaseHouseServlet extends HttpServlet {
 				countyId = Integer.parseInt(county);
 
 			} catch (NumberFormatException e) {
+				if (debug) {
+					LOG.debug("转换地区信息id出现异常", e.getMessage(), e);
+				}
 				verifyResult = false;
 				message = "请选择房屋地区后重试。";
-				e.printStackTrace();
 			}
 		}
 
 		if (!verifyResult) {
-
+			LOG.info("if (!verifyResult) [{}]", (!verifyResult));
+			message = URLEncoder.encode(message, "UTF-8");
 			response.sendRedirect(request.getContextPath() + "/loh/lease/releaseHouse.do?message=" + message);
+			LOG.info("response.sendRedirect(request.getContextPath() + \"/loh/lease/releaseHouse.do?message=\" + message)");
 			return;
 		}
 
@@ -305,14 +325,14 @@ public class UpdateReleaseHouseServlet extends HttpServlet {
 			FileItem item = fileItemIterator.next();
 
 			String filename = item.getName();
-			System.out.println("完整文件名：" + filename);
+			LOG.info("完整文件名：{}", filename);
 			int index = filename.indexOf("\\");
 			filename = filename.substring(index + 1);
 			// 获取文件的大小
 			long filesize = item.getSize();
 
 			if (filename == null || filename.equals("")) {
-				System.out.println("文件名为空。");
+				LOG.warn("完整文件名：{}", filename);
 				continue;
 			}
 
@@ -335,8 +355,11 @@ public class UpdateReleaseHouseServlet extends HttpServlet {
 			try {
 
 				item.write(uploadFile);
-				System.out.println(filename + "文件保存完毕。");
-				System.out.println("文件大小为:" + filesize);
+
+				if (debug) {
+					LOG.debug("{} 文件保存完毕。", filename);
+					LOG.debug("文件大小为: {}", filesize);
+				}
 
 				// 添加 LohFileInfo 信息记录
 				LohFileInfo lohFileInfo = new LohFileInfo();
@@ -374,16 +397,20 @@ public class UpdateReleaseHouseServlet extends HttpServlet {
 		// 设置新的发布时间 
 		lohHouseInfo.setPushDate(new Date());
 
+		LOG.info("更新指定房屋租赁信息[{}]", lohHouseInfo.getLohHouseInfoId());
 		// 更新房屋信息，以及房屋图片信息 
 		boolean updateHouseInfoResult = lohService.updateHouseInfoResult(lohHouseInfo);
 		
+		LOG.info("更新房屋文件信息列表");
 		// 更新房屋图片信息列表
 		boolean updateLohFileInfoResult = lohService.updateLohFileInfo(lohHouseInfo,imageIdList,lohFileInfoList,request.getServletContext().getRealPath("/"));
 		
 		if (!updateHouseInfoResult) {
+			LOG.info("if (!updateHouseInfoResult) [{}]", (!updateHouseInfoResult));
 			message = "更新失败，请重试";
 			request.setAttribute("message", message);
 			request.getRequestDispatcher("/WEB-INF/html/loh/lease/release_house.jsp").forward(request, response);
+			LOG.info("request.getRequestDispatcher(\"/WEB-INF/html/loh/lease/release_house.jsp\").forward(request, response)");
 			return;
 		}
 
@@ -395,6 +422,7 @@ public class UpdateReleaseHouseServlet extends HttpServlet {
 
 		response.sendRedirect(request.getContextPath() + "/loh/lease/showReleaseHouse.do?id="
 				+ lohHouseInfo.getLohHouseInfoId() + "&message=" + message);
+		LOG.info("response.sendRedirect({}/loh/lease/showReleaseHouse.do?id={}&message={}", request.getContextPath(), lohHouseInfo.getLohHouseInfoId(), URLDecoder.decode(message, "UTF-8"));
 
 	}
 }

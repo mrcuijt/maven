@@ -30,7 +30,7 @@ import science.mrcuijt.loh.service.impl.LohServiceImpl;
  */
 public class MainServlet extends HttpServlet {
 
-	private static Logger log = LoggerFactory.getLogger(MainServlet.class);
+	private static Logger LOG = LoggerFactory.getLogger(MainServlet.class);
 
 	LohService lohService = new LohServiceImpl();
 
@@ -38,7 +38,7 @@ public class MainServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		boolean debug = log.isDebugEnabled();
+		boolean debug = LOG.isDebugEnabled();
 
 		// 获取登录用户标识
 		Integer loginInfoId = (Integer) request.getSession().getAttribute("login_info_id");
@@ -82,7 +82,7 @@ public class MainServlet extends HttpServlet {
 				provinceId = Integer.parseInt(province);
 			}
 		} catch (NumberFormatException e) {
-			log.debug("Convert provinceId fail userId={} message={}", userInfoId, e.getMessage(), e);
+			LOG.debug("Convert provinceId fail userId={} message={}", userInfoId, e.getMessage(), e);
 		}
 		try {
 			if (city != null && city.trim().length() > 0) {
@@ -90,7 +90,9 @@ public class MainServlet extends HttpServlet {
 				cityId = Integer.parseInt(city);
 			}
 		} catch (NumberFormatException e) {
-			log.debug("Convert cityId fail userId={} message={}", userInfoId, e.getMessage(), e);
+			if (debug) {
+				LOG.debug("Convert cityId fail userId={} message={}", userInfoId, e.getMessage(), e);
+			}
 		}
 		try {
 			if (county != null && county.trim().length() > 0) {
@@ -98,7 +100,9 @@ public class MainServlet extends HttpServlet {
 				countyId = Integer.parseInt(county);
 			}
 		} catch (NumberFormatException e) {
-			log.debug("Convert countyId fail userId={} message={}", userInfoId, e.getMessage(), e);
+			if (debug) {
+				LOG.debug("Convert countyId fail userId={} message={}", userInfoId, e.getMessage(), e);
+			}
 		}
 		
 		if (lohHouseType != null && lohHouseType.trim().length() > 0) {
@@ -108,7 +112,9 @@ public class MainServlet extends HttpServlet {
 					lohHouseTypeId = null;
 				}
 			} catch (NumberFormatException e) {
-				log.debug("Convert lohHouseTypeId fail userId={} message={}", userInfoId, e.getMessage(), e);
+				if (debug) {
+					LOG.debug("Convert lohHouseTypeId fail userId={} message={}", userInfoId, e.getMessage(), e);
+				}
 			}
 		}
 
@@ -117,7 +123,9 @@ public class MainServlet extends HttpServlet {
 				lohPrice = lohPrice.trim();
 				price = new BigDecimal(lohPrice);
 			} catch (Exception e) {
-				log.debug("Convert price fail userId={} message={}", userInfoId, e.getMessage(), e);
+				if (debug) {
+					LOG.debug("Convert price fail userId={} message={}", userInfoId, e.getMessage(), e);
+				}
 			}
 		}
 
@@ -137,7 +145,9 @@ public class MainServlet extends HttpServlet {
 				pageIndex = Integer.parseInt(strPageIndex);
 			}
 		} catch (NumberFormatException e) {
-			log.debug("Convert pageIndex fail userId={} message={}", userInfoId, e.getMessage(), e);
+			if (debug) {
+				LOG.debug("Convert pageIndex fail userId={} message={}", userInfoId, e.getMessage(), e);
+			}
 		}
 		Integer pageSize = null;
 		try {
@@ -146,7 +156,9 @@ public class MainServlet extends HttpServlet {
 				pageSize = Integer.parseInt(strPageSize);
 			}
 		} catch (NumberFormatException e) {
-			log.debug("Convert pageSize fail userId={} message={}", userInfoId, e.getMessage(), e);
+			if (debug) {
+				LOG.debug("Convert pageSize fail userId={} message={}", userInfoId, e.getMessage(), e);
+			}
 		}
 
 		if (pageIndex == null || pageIndex <= 0) {
@@ -269,6 +281,7 @@ public class MainServlet extends HttpServlet {
 		request.setAttribute("lohPrice", price);
 		request.setAttribute("houseAddress", houseAddress);
 		request.getRequestDispatcher("/WEB-INF/html/loh/lease/main.jsp").forward(request, response);
+		LOG.info("request.getRequestDispatcher(\"/WEB-INF/html/loh/lease/main.jsp\").forward(request, response)");
 	}
 
 	@Override

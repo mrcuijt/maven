@@ -30,7 +30,7 @@ import science.mrcuijt.loh.service.impl.LohServiceImpl;
  */
 public class MainServlet extends HttpServlet {
 
-	private static Logger log = LoggerFactory.getLogger(MainServlet.class);
+	private static final Logger LOG = LoggerFactory.getLogger(MainServlet.class);
 
 	LohService lohService = new LohServiceImpl();
 
@@ -38,7 +38,7 @@ public class MainServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		boolean debug = log.isDebugEnabled();
+		boolean debug = LOG.isDebugEnabled();
 
 		// 获取登录用户标识
 		Integer loginInfoId = (Integer) request.getSession().getAttribute("login_info_id");
@@ -46,6 +46,7 @@ public class MainServlet extends HttpServlet {
 		Integer userInfoId = (Integer) request.getSession().getAttribute("user_info_id");
 
 		// 根据用户登录标识查询用户信息
+		LOG.info("查询用户[{}]信息", userInfoId);
 		UserInfo userInfo = lohService.findUserInfoByPrimaryKey(userInfoId);
 
 		// 根据用户信息Id 查询发布的房屋信息列表(分页查询)
@@ -78,64 +79,74 @@ public class MainServlet extends HttpServlet {
 
 		try {
 			if (province != null && province.trim().length() > 0) {
+				LOG.info("if (province != null && province.trim().length() > 0) [{}]", (province != null && province.trim().length() > 0));
 				province = province.trim();
 				provinceId = Integer.parseInt(province);
 			}
 		} catch (NumberFormatException e) {
 			if (LohConstants.getProvinceId() > 0) {
+				LOG.info("if (LohConstants.getProvinceId() > 0) [{}]", (LohConstants.getProvinceId() > 0));
 				provinceId = LohConstants.getProvinceId();
 			}
 			if (debug) {
-				log.debug("Convert provinceId fail userId={} message={}", userInfoId, e.getMessage(), e);
+				LOG.debug("Convert provinceId fail userId={} message={}", userInfoId, e.getMessage(), e);
 			}
 		}
 		try {
 			if (city != null && city.trim().length() > 0) {
+				LOG.info("if (city != null && city.trim().length() > 0) [{}]",(city != null && city.trim().length() > 0));
 				city = city.trim();
 				cityId = Integer.parseInt(city);
 			}
 		} catch (NumberFormatException e) {
 			if (debug) {
-				log.debug("Convert cityId fail userId={} message={}", userInfoId, e.getMessage(), e);
+				LOG.debug("Convert cityId fail userId={} message={}", userInfoId, e.getMessage(), e);
 			}
 		}
 		try {
 			if (county != null && county.trim().length() > 0) {
+				LOG.info("if (county != null && county.trim().length() > 0) [{}]", (county != null && county.trim().length() > 0));
 				county = county.trim();
 				countyId = Integer.parseInt(county);
 			}
 		} catch (NumberFormatException e) {
 			if (debug) {
-				log.debug("Convert countyId fail userId={} message={}", userInfoId, e.getMessage(), e);
+				LOG.debug("Convert countyId fail userId={} message={}", userInfoId, e.getMessage(), e);
 			}
 		}
 
-		if (lohHouseType != null && lohHouseType.trim().length() > 0) {
-			lohHouseType = lohHouseType.trim();
-			try {
+		try {
+			if (lohHouseType != null && lohHouseType.trim().length() > 0) {
+				lohHouseType = lohHouseType.trim();
+				LOG.info("if (lohHouseType != null && lohHouseType.trim().length() > 0) [{}]", (lohHouseType != null && lohHouseType.trim().length() > 0));
 				lohHouseTypeId = Integer.parseInt(lohHouseType);
 				if(lohHouseTypeId <= 0) {
 					lohHouseTypeId = null;
 				}
-			} catch (NumberFormatException e) {
-				if (debug) {
-					log.debug("Convert lohHouseTypeId fail userId={} message={}", userInfoId, e.getMessage(), e);
-				}
+			}
+		} catch (NumberFormatException e) {
+			if (debug) {
+				LOG.debug("Convert lohHouseTypeId fail userId={} message={}", userInfoId, e.getMessage(), e);
 			}
 		}
 
-		if (lohPrice != null && lohPrice.trim().length() > 0) {
-			try {
+		try {
+			if (lohPrice != null && lohPrice.trim().length() > 0) {
+				LOG.info("if (lohPrice != null && lohPrice.trim().length() > 0) [{}]",(lohPrice != null && lohPrice.trim().length() > 0));
 				lohPrice = lohPrice.trim();
 				price = new BigDecimal(lohPrice);
-			} catch (Exception e) {
-				log.debug("Convert price fail userId={} message={}", userInfoId, e.getMessage(), e);
 			}
+		} catch (Exception e) {
+			LOG.debug("Convert price fail userId={} message={}", userInfoId, e.getMessage(), e);
 		}
 
 		if (houseAddress != null && houseAddress.trim().length() > 0) {
+			LOG.info("if (houseAddress != null && houseAddress.trim().length() > 0) [{}]", (houseAddress != null && houseAddress.trim().length() > 0));
 			houseAddress = houseAddress.trim();
 			houseAddress = new String(houseAddress.getBytes("ISO-8859-1"), "UTF-8");
+		}else {
+			LOG.info("if (houseAddress != null && houseAddress.trim().length() > 0) [{}]", (houseAddress != null && houseAddress.trim().length() > 0));
+			houseAddress = null;
 		}
 
 		// 准备分页参数
@@ -145,23 +156,25 @@ public class MainServlet extends HttpServlet {
 		Integer pageIndex = null;
 		try {
 			if (strPageIndex != null && strPageIndex.trim().length() > 0) {
+				LOG.info("if (strPageIndex != null && strPageIndex.trim().length() > 0) [{}]", (strPageIndex != null && strPageIndex.trim().length() > 0));
 				strPageIndex = strPageIndex.trim();
 				pageIndex = Integer.parseInt(strPageIndex);
 			}
 		} catch (NumberFormatException e) {
 			if (debug) {
-				log.debug("Convert pageIndex fail userId={} message={}", userInfoId, e.getMessage(), e);
+				LOG.debug("Convert pageIndex fail userId={} message={}", userInfoId, e.getMessage(), e);
 			}
 		}
 		Integer pageSize = null;
 		try {
 			if (strPageSize != null && strPageSize.trim().length() > 0) {
+				LOG.info("if (strPageSize != null && strPageSize.trim().length() > 0) [{}]", (strPageSize != null && strPageSize.trim().length() > 0));
 				strPageSize = strPageSize.trim();
 				pageSize = Integer.parseInt(strPageSize);
 			}
 		} catch (NumberFormatException e) {
 			if (debug) {
-				log.debug("Convert pageSize fail userId={} message={}", userInfoId, e.getMessage(), e);
+				LOG.debug("Convert pageSize fail userId={} message={}", userInfoId, e.getMessage(), e);
 			}
 		}
 
@@ -206,6 +219,7 @@ public class MainServlet extends HttpServlet {
 			queryParam.put("houseAddress", houseAddress);
 		}
 		// 分页查询
+		LOG.info("分页查询房屋租赁信息，分页查询参数 {}", queryParam);
 		Map<String, Object> pagination = lohService.queryHouseInfoPagination(pageIndex, pageSize, queryParam);
 
 		StringBuffer strbQueryParam = new StringBuffer();
@@ -245,19 +259,27 @@ public class MainServlet extends HttpServlet {
 			strbQueryParam.append(houseAddress);
 		}
 
+		LOG.info("返回页面的查询参数 {}", strbQueryParam);
+
 		// 加载地区信息
+		LOG.info("查询指定地区信息[{}]", 1);
 		List<RegionInfo> provinceList = lohService.findRegionInfoByLevel(1);
 		List<RegionInfo> cityList = null;
 		List<RegionInfo> countyList = null;
 
 		if (cityId != null && cityId > 0) {
+			LOG.info("if (cityId != null && cityId > 0) [{}] [{}] [{}]", (cityId != null && cityId > 0), (cityId != null), (cityId > 0));
+			LOG.info("查询指定父级地区[{}]下的子地区信息", provinceId);
 			cityList = lohService.findRegionInfoByParentRegionId(provinceId);
 		}
 		if (countyId != null && countyId > 0) {
+			LOG.info("if (countyId != null && countyId > 0) [{}] [{}] [{}]", (countyId != null && countyId > 0), (countyId != null), (countyId > 0));
+			LOG.info("查询指定父级地区[{}]下的子地区信息", cityId);
 			countyList = lohService.findRegionInfoByParentRegionId(cityId);
 		}
 
 		// 查询加载房屋类型
+		LOG.info("查询全部房屋类型信息");
 		List<LohHouseType> lohHouseTypeList = lohService.findAllLohHouseType();
 
 		// 添加地区信息
@@ -283,5 +305,6 @@ public class MainServlet extends HttpServlet {
 		request.setAttribute("houseAddress", houseAddress);
 
 		request.getRequestDispatcher("/WEB-INF/html/loh/main/main.jsp").forward(request, response);
+		LOG.info("request.getRequestDispatcher(\"/WEB-INF/html/loh/main/main.jsp\").forward(request, response)");
 	}
 }

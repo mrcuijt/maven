@@ -53,14 +53,18 @@ public class NewSessionFilter implements Filter {
 			String attributeName = attributeNames.nextElement();
 			attributeMap.put(attributeName, oldSession.getAttribute(attributeName));
 		}
+
+		LOG.info("Invalidate current session");
 		oldSession.invalidate();
-		HttpSession newSession = ((HttpServletRequest)request).getSession(true);
+
+		LOG.info("Get new session bind current request");
+		HttpSession newSession = ((HttpServletRequest) request).getSession(true);
 		// put the content into the new session.
 		for (String key : attributeMap.keySet()) {
 			newSession.setAttribute(key, attributeMap.get(key));
 		}
-		
-        chain.doFilter(request, response);
+
+		chain.doFilter(request, response);
 	}
 
 	private void createNewSession(ServletRequest request) {
