@@ -30,7 +30,7 @@ import science.mrcuijt.loh.service.impl.LohServiceImpl;
  */
 public class DeleteLohHouseViewHistoryServlet extends HttpServlet {
 
-	private static Logger log = LoggerFactory.getLogger(DeleteLohHouseViewHistoryServlet.class);
+	private static Logger LOG = LoggerFactory.getLogger(DeleteLohHouseViewHistoryServlet.class);
 
 	private static LohService lohService = new LohServiceImpl();
 
@@ -43,6 +43,10 @@ public class DeleteLohHouseViewHistoryServlet extends HttpServlet {
 
 		Integer userInfoId = (Integer) request.getSession().getAttribute("user_info_id");
 
+		// 验证结果标识
+		boolean verifyResult = true;
+
+		LOG.info("查询指定用户信息[{}]记录", userInfoId);
 		// 根据用户登录标识查询用户信息
 		UserInfo userInfo = lohService.findUserInfoByPrimaryKey(userInfoId);
 
@@ -50,50 +54,63 @@ public class DeleteLohHouseViewHistoryServlet extends HttpServlet {
 		Integer lohHoueseViewHistoryId = null;
 
 		try {
-			if (request.getParameter("id") != null && request.getParameter("id").trim().length() > 0) {
-				lohHouseInfoId = Integer.parseInt(request.getParameter("id"));
+			String paramId = request.getParameter("id");
+			if (paramId != null && paramId.trim().length() > 0) {
+				paramId = paramId.trim();
+				lohHouseInfoId = Integer.parseInt(paramId);
 			}
 		} catch (NumberFormatException e) {
-			e.printStackTrace();
+			LOG.info("Convert lohHouseInfoId [{}] has error", request.getParameter("id"));
+			verifyResult = false;
 		}
 
 		LohHouseViewHistoryVO lohHouseViewHistoryVO = new LohHouseViewHistoryVO();
 
-		if (lohHouseInfoId == null) {
-			PrintWriter out = response.getWriter();
-			lohHouseViewHistoryVO.setStatus(LohConstants.ERROR_CODE);
-			lohHouseViewHistoryVO.setMessage("Paramenter not support");
-			out.write(JSON.toJSONString(lohHouseViewHistoryVO));
-			return;
+		if(verifyResult) {
+			if (lohHouseInfoId == null || lohHouseInfoId <= 0) {
+				LOG.info("if (lohHouseInfoId == null || lohHouseInfoId <= 0) [{}]", (lohHouseInfoId == null || lohHouseInfoId <= 0));
+				verifyResult = false;
+			}
 		}
 		
 		// 查询房屋信息是否存在
-		LohHouseInfo lohHouseInfo = lohService.findLohHouseInfoByPrimaryKey(lohHouseInfoId);
-		
-		if (lohHouseInfo == null) {
-			PrintWriter out = response.getWriter();
-			lohHouseViewHistoryVO.setStatus(LohConstants.ERROR_CODE);
-			lohHouseViewHistoryVO.setMessage("Paramenter not support");
-			out.write(JSON.toJSONString(lohHouseViewHistoryVO));
-			return;
+		LohHouseInfo lohHouseInfo = null;
+		if(verifyResult) {
+			LOG.info("查询指定房屋信息[{}]记录", lohHouseInfoId);
+			lohHouseInfo = lohService.findLohHouseInfoByPrimaryKey(lohHouseInfoId);
+			if (lohHouseInfo == null) {
+				verifyResult = false;
+			}
 		}
 		
 		// 查询房屋信息浏览记录
-		LohHouseViewHistory lohHouseViewHistory = lohService
-				.findLohHouseViewHistoryByLohHouseInfoIdAndUserInfoId(lohHouseInfoId, userInfoId);
+		LohHouseViewHistory lohHouseViewHistory = null;
+		if(verifyResult) {
+			LOG.info("查询当前用户[{}]指定房屋信息浏览记录[{}]", userInfoId, lohHouseInfoId);
+			lohHouseViewHistory = lohService
+					.findLohHouseViewHistoryByLohHouseInfoIdAndUserInfoId(lohHouseInfoId, userInfoId);
+			if (lohHouseViewHistory == null) {
+				LOG.info("if (lohHouseViewHistory == null) [{}]", (lohHouseViewHistory == null));
+				verifyResult = false;
+			}
+		}
 
-		if (lohHouseViewHistory == null) {
+		// 验证不通过
+		if (!verifyResult) {
+			LOG.info("if (!verifyResult) [{}]", (!verifyResult));
 			PrintWriter out = response.getWriter();
 			lohHouseViewHistoryVO.setStatus(LohConstants.ERROR_CODE);
-			lohHouseViewHistoryVO.setMessage("Paramenter not support");
+			lohHouseViewHistoryVO.setMessage("Parameter not support");
 			out.write(JSON.toJSONString(lohHouseViewHistoryVO));
 			return;
 		}
-		
+
+		LOG.info("删除指定房屋信息浏览记录[{}]", lohHouseViewHistory.getLohHouseViewHistoryId());
 		boolean deleteLohHoueseViewHistoryResult = lohService
 				.deleteLohHouseViewHistoryByPrimaryKey(lohHouseViewHistory.getLohHouseViewHistoryId());
 
 		if (!deleteLohHoueseViewHistoryResult) {
+			LOG.info("if (!deleteLohHoueseViewHistoryResult) [{}]", (!deleteLohHoueseViewHistoryResult));
 			PrintWriter out = response.getWriter();
 			lohHouseViewHistoryVO.setStatus(LohConstants.ERROR_CODE);
 			lohHouseViewHistoryVO.setMessage("Delete fail , please try again ");
@@ -101,6 +118,7 @@ public class DeleteLohHouseViewHistoryServlet extends HttpServlet {
 			return;
 		}
 
+		LOG.info("删除房屋信息浏览记录[{}]成功", lohHouseViewHistory.getLohHouseViewHistoryId());
 		PrintWriter out = response.getWriter();
 		lohHouseViewHistoryVO.setStatus(LohConstants.SUCCESS_CODE);
 		lohHouseViewHistoryVO.setMessage(LohConstants.SUCCESS_MESSAGE);
